@@ -120,9 +120,7 @@
       overflow-y: auto;
     }
 
-    .sidebar.open {
-      right: 0;
-    }
+    .sidebar.open { right: 0; }
 
     .sidebar-header {
       display: flex;
@@ -133,12 +131,8 @@
       margin-bottom: 15px;
     }
 
-    .sidebar-header h3 {
-      font-size: 20px;
-      color: var(--primary-color);
-    }
+    .sidebar-header h3 { font-size: 20px; color: var(--primary-color); }
 
-    /* Sidebar Search Box */
     .sidebar-search-box {
       margin-bottom: 15px;
       position: relative;
@@ -155,9 +149,7 @@
       outline: none;
     }
 
-    .sidebar-search-input:focus {
-      border-color: var(--primary-color);
-    }
+    .sidebar-search-input:focus { border-color: var(--primary-color); }
 
     .sidebar-search-icon {
       position: absolute;
@@ -168,13 +160,8 @@
       font-size: 14px;
     }
 
-    .sidebar-menu {
-      list-style: none;
-    }
-
-    .sidebar-menu li {
-      margin-bottom: 8px;
-    }
+    .sidebar-menu { list-style: none; }
+    .sidebar-menu li { margin-bottom: 8px; }
 
     .sidebar-menu a, .sidebar-menu button {
       color: var(--text-color);
@@ -214,21 +201,15 @@
 
     .overlay {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(0,0,0,0.7);
       backdrop-filter: blur(2px);
       display: none;
       z-index: 150;
     }
 
-    .overlay.active {
-      display: block;
-    }
+    .overlay.active { display: block; }
 
-    /* Main Header Title */
     .section-title {
       font-size: 20px;
       font-weight: bold;
@@ -241,7 +222,6 @@
       padding-right: 10px;
     }
 
-    /* Main Container & Grid */
     .container {
       max-width: 1200px;
       margin: 15px auto;
@@ -282,14 +262,11 @@
       cursor: pointer;
     }
 
-    .show-card:hover {
-      transform: translateY(-4px);
-    }
+    .show-card:hover { transform: translateY(-4px); }
 
     .show-badge {
       position: absolute;
-      top: 8px;
-      right: 8px;
+      top: 8px; right: 8px;
       background-color: var(--primary-color);
       color: #fff;
       padding: 3px 7px;
@@ -301,8 +278,7 @@
 
     .show-type-tag {
       position: absolute;
-      top: 8px;
-      left: 8px;
+      top: 8px; left: 8px;
       background-color: rgba(0, 0, 0, 0.75);
       color: #fff;
       padding: 3px 7px;
@@ -319,17 +295,9 @@
       display: block;
     }
 
-    @media (min-width: 600px) {
-      .show-thumb {
-        height: 260px;
-      }
-    }
+    @media (min-width: 600px) { .show-thumb { height: 260px; } }
 
-    .show-info {
-      padding: 10px;
-      text-align: center;
-    }
-
+    .show-info { padding: 10px; text-align: center; }
     .show-title {
       font-size: 14px;
       font-weight: 600;
@@ -343,10 +311,7 @@
     .modal {
       display: none;
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      top: 0; left: 0; width: 100%; height: 100%;
       background-color: rgba(0,0,0,0.85);
       z-index: 300;
       justify-content: center;
@@ -354,9 +319,7 @@
       padding: 15px;
     }
 
-    .modal.active {
-      display: flex;
-    }
+    .modal.active { display: flex; }
 
     .modal-content {
       background-color: var(--card-bg);
@@ -387,7 +350,6 @@
       cursor: pointer;
     }
 
-    /* Security Notice Banner */
     .admin-warning-box {
       background-color: rgba(229, 9, 20, 0.15);
       border: 1px solid var(--primary-color);
@@ -402,20 +364,26 @@
       line-height: 1.5;
     }
 
-    .admin-warning-box i {
-      font-size: 20px;
-      color: var(--primary-color);
+    .admin-warning-box i { font-size: 20px; color: var(--primary-color); }
+
+    .admin-verified-box {
+      background-color: rgba(39, 174, 96, 0.15);
+      border: 1px solid #27ae60;
+      color: #2ecc71;
+      padding: 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      line-height: 1.5;
     }
 
-    .lockout-msg {
-      color: #ff4d4d;
-      font-size: 13px;
-      margin-top: 10px;
-      text-align: center;
-      font-weight: bold;
-    }
+    .admin-verified-box i { font-size: 20px; color: #27ae60; }
 
-    /* Admin Tabs */
+    .lockout-msg { color: #ff4d4d; font-size: 13px; margin-top: 10px; text-align: center; font-weight: bold; }
+
     .admin-tabs {
       display: flex;
       gap: 8px;
@@ -443,25 +411,11 @@
       border-color: var(--primary-color);
     }
 
-    .tab-content {
-      display: none;
-    }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
 
-    .tab-content.active {
-      display: block;
-    }
-
-    .form-group {
-      margin-bottom: 14px;
-    }
-
-    .form-group label {
-      display: block;
-      margin-bottom: 6px;
-      font-size: 13px;
-      color: var(--text-secondary);
-    }
-
+    .form-group { margin-bottom: 14px; }
+    .form-group label { display: block; margin-bottom: 6px; font-size: 13px; color: var(--text-secondary); }
     .form-group input, .form-group select, .form-group textarea {
       width: 100%;
       padding: 10px 12px;
@@ -490,25 +444,11 @@
       transition: background 0.2s;
     }
 
-    .btn:disabled {
-      background-color: #555;
-      cursor: not-allowed;
-    }
+    .btn:disabled { background-color: #555; cursor: not-allowed; }
+    .btn:hover:not(:disabled) { background-color: var(--primary-hover); }
+    .btn-secondary { background-color: #333; margin-top: 8px; }
+    .btn-secondary:hover { background-color: #444; }
 
-    .btn:hover:not(:disabled) {
-      background-color: var(--primary-hover);
-    }
-
-    .btn-secondary {
-      background-color: #333;
-      margin-top: 8px;
-    }
-
-    .btn-secondary:hover {
-      background-color: #444;
-    }
-
-    /* Users & Ban List Styling */
     .user-card {
       background-color: #121212;
       border: 1px solid var(--border-color);
@@ -521,21 +461,9 @@
       gap: 10px;
     }
 
-    .user-info {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .user-name {
-      font-size: 14px;
-      font-weight: bold;
-    }
-
-    .user-email {
-      font-size: 12px;
-      color: var(--text-secondary);
-    }
+    .user-info { display: flex; flex-direction: column; gap: 4px; }
+    .user-name { font-size: 14px; font-weight: bold; }
+    .user-email { font-size: 12px; color: var(--text-secondary); }
 
     .status-badge {
       font-size: 11px;
@@ -548,7 +476,6 @@
     .status-active { background-color: #27ae60; color: #fff; }
     .status-banned { background-color: #c0392b; color: #fff; }
 
-    /* Video Player Modal Elements */
     .video-container {
       position: relative;
       padding-bottom: 56.25%;
@@ -564,19 +491,8 @@
       top: 0; left: 0; width: 100%; height: 100%; border: 0;
     }
 
-    .video-details {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .quality-tags {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-
+    .video-details { display: flex; flex-direction: column; gap: 12px; }
+    .quality-tags { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
     .quality-tag {
       background-color: #2a2a2a;
       color: #fff;
@@ -639,7 +555,6 @@
     .btn-ban { background-color: #e67e22; }
     .btn-unban { background-color: #27ae60; }
 
-    /* Multi-Server & Features CSS */
     .server-btn-group {
       display: flex;
       gap: 8px;
@@ -663,7 +578,6 @@
       border-color: var(--primary-color);
     }
 
-    /* Player Tools Bar (Subtitles & Enhance Controls) */
     .player-tools-bar {
       background: #141414;
       border: 1px solid var(--border-color);
@@ -691,7 +605,7 @@
       color: var(--text-secondary);
     }
 
-    .tool-group select, .tool-group input[type="range"] {
+    .tool-group select {
       background: #222;
       color: #fff;
       border: 1px solid var(--border-color);
@@ -746,7 +660,7 @@
 </head>
 <body>
 
-  <!-- Hacker Blocked Overlay Screen -->
+  <!-- Hacker Blocked Screen -->
   <div id="hackerBlockedScreen">
     <i class="fas fa-user-ninja"></i>
     <h1 style="font-size: 28px; margin-bottom: 10px;">تم اكتشاف محاولة اختراق!</h1>
@@ -766,7 +680,6 @@
     </div>
   </nav>
 
-  <!-- Sidebar Overlay -->
   <div class="overlay" id="overlay"></div>
 
   <!-- Sidebar -->
@@ -776,7 +689,6 @@
       <button class="close-btn" id="closeSidebarBtn">&times;</button>
     </div>
 
-    <!-- Sidebar Search Box -->
     <div class="sidebar-search-box">
       <input type="text" class="sidebar-search-input" id="sidebarSearchInput" placeholder="بحث عن فيلم أو مسلسل...">
       <i class="fas fa-search sidebar-search-icon"></i>
@@ -811,7 +723,7 @@
     </ul>
   </aside>
 
-  <!-- Main Content -->
+  <!-- Main Container -->
   <main class="container">
     <div class="ad-banner">
       <p>📢 مساحة إعلانية - ضع كود الإعلان الخاص بك هنا (AdSense / Native Ads)</p>
@@ -824,13 +736,13 @@
     <div class="shows-grid" id="showsGrid"></div>
   </main>
 
-  <!-- Welcome Modal for First-time Visitors -->
+  <!-- Welcome Modal -->
   <div class="modal" id="welcomeModal">
     <div class="modal-content" style="text-align: center; max-width: 450px;">
       <i class="fas fa-film" style="font-size: 50px; color: var(--primary-color); margin-bottom: 15px;"></i>
       <h2 style="margin-bottom: 10px; color: #fff;">مرحباً بك في منصة mrstoud!</h2>
       <p style="color: var(--text-secondary); font-size: 14px; line-height: 1.6; margin-bottom: 20px;">
-        يسعدنا انضمامك إلينا. يمكنك الآن مشاهدة أحدث الأفلام والمسلسلات عالية الجودة بكل أمان وسهولة. نتمنى لك تجربة ممتعة!
+        يسعدنا انضمامك إلينا. يمكنك الآن مشاهدة أحدث الأفلام والمسلسلات عالية الجودة بكل أمان وسهولة.
       </p>
       <button class="btn closeModal">ابدأ المشاهدة الآن</button>
     </div>
@@ -846,13 +758,9 @@
       <div style="font-size: 13px; color: #ccc; line-height: 1.7; display: flex; flex-direction: column; gap: 12px;">
         <p>مرحباً بك في منصة <strong>mrstoud</strong>. نحن نولي أهمية قصوى لخصوصية مستخدمينا وأمان بياناتهم الشخصية.</p>
         <h4 style="color: var(--primary-color); margin-top: 5px;">1. جمع البيانات</h4>
-        <p>قد نقوم بجمع بعض البيانات غير الشخصية مثل نوع المتصفح، عنوان IP، والتعليقات التي توضع على المحتوى لغرض تحسين الأداء وتجربة المستخدم.</p>
+        <p>قد نقوم بجمع بعض البيانات غير الشخصية مثل نوع المتصفح، عنوان IP، والتعليقات التي توضع على المحتوى لغرض تحسين الأداء.</p>
         <h4 style="color: var(--primary-color); margin-top: 5px;">2. حماية البيانات وأمانها</h4>
         <p>نحن نستخدم أنظمة جدار حماية (WAF) متطورة لرصد أي هجمات أو محاولات اختراق وضمان حماية المستخدمين والسيرفرات من أي استغلال خبيث.</p>
-        <h4 style="color: var(--primary-color); margin-top: 5px;">3. الإعلانات وملفات الكوكيز (Cookies)</h4>
-        <p>قد تستخدم المنصة شبكات إعلانية خارجية (مثل Google AdSense) تضع ملفات تعريف ارتباط لتقديم إعلانات مخصصة للمستخدم بناءً على زياراته للموقع.</p>
-        <h4 style="color: var(--primary-color); margin-top: 5px;">4. التعليقات والاستخدام المقبول</h4>
-        <p>يتحمل المستخدم المسؤولية كاملة عن أي تعليق يتم نشره عبر المنصة، ويُمنع استخدام ألفاظ خرسانية أو محاولات إغراق، وتخضع المدخلات لفحص أمني آلي.</p>
       </div>
       <button class="btn closeModal" style="margin-top: 20px;">إغلاق</button>
     </div>
@@ -869,7 +777,7 @@
       <div class="admin-warning-box">
         <i class="fas fa-exclamation-triangle"></i>
         <div>
-          <strong>تنبيه أمني مشدد:</strong> هذه اللوحة محمية بنظام WAF لصد الهجمات. أي محاولة حقن أو تخمين ستؤدي لحظر الجهاز فوراً!
+          <strong>تنبيه أمني مشدد:</strong> هذه اللوحة محمية بنظام WAF لصد الهجمات. أدخل كلمة المرور لتفعيل بصمة المدير الدائمة في جهازك.
         </div>
       </div>
 
@@ -878,18 +786,26 @@
           <label for="adminPassword">كلمة المرور:</label>
           <input type="password" id="adminPassword" placeholder="أدخل كلمة المرور" required autocomplete="off">
         </div>
-        <button type="submit" class="btn" id="loginSubmitBtn">دخول</button>
+        <button type="submit" class="btn" id="loginSubmitBtn">دخول وتوثيق الجهاز</button>
         <div id="lockoutTimer" class="lockout-msg"></div>
       </form>
     </div>
   </div>
 
-  <!-- Admin Control Panel Modal -->
+  <!-- Admin Modal -->
   <div class="modal" id="adminModal">
     <div class="modal-content">
       <div class="modal-header">
         <h3 id="adminModalTitle">لوحة التحكم والتنفيذ</h3>
         <button class="close-btn closeModal">&times;</button>
+      </div>
+
+      <!-- System Recognized Admin Notification -->
+      <div class="admin-verified-box">
+        <i class="fas fa-user-check"></i>
+        <div>
+          <strong>حالة النظام:</strong> تم التعرف عليك كـ <strong>[مدير النظام الرئيسي]</strong>. جهازك محصّن بالكامل ومستثنى من الحظر التلقائي.
+        </div>
       </div>
 
       <div class="admin-tabs">
@@ -898,7 +814,7 @@
         <button class="tab-btn" onclick="switchAdminTab('tab-ban')"><i class="fas fa-user-slash"></i> الحظر وفك الحظر</button>
       </div>
 
-      <!-- Tab 1: Shows & Movies -->
+      <!-- Tab 1: Shows -->
       <div id="tab-shows" class="tab-content active">
         <form id="saveShowForm" style="margin-bottom: 25px;">
           <input type="hidden" id="editShowId" value="">
@@ -968,13 +884,13 @@
         <div id="adminShowsList"></div>
       </div>
 
-      <!-- Tab 2: Users List -->
+      <!-- Tab 2: Users -->
       <div id="tab-users" class="tab-content">
         <h4 style="margin-bottom: 12px; color: var(--primary-color);">جميع المستخدمين المسجلين</h4>
         <div id="usersListContainer"></div>
       </div>
 
-      <!-- Tab 3: Ban / Unban Control -->
+      <!-- Tab 3: Ban -->
       <div id="tab-ban" class="tab-content">
         <h4 style="margin-bottom: 12px; color: var(--primary-color);">حظر مستخدم جديد</h4>
         <form id="banUserForm" style="margin-bottom: 20px;">
@@ -1006,10 +922,9 @@
         <button class="close-btn closeModal">&times;</button>
       </div>
 
-      <!-- Server Selector Section -->
       <div id="serverSelectorContainer" class="server-btn-group"></div>
 
-      <!-- Interactive Player Tools (Subtitles, Quality & Audio Booster) -->
+      <!-- Player Controls Bar -->
       <div class="player-tools-bar">
         <div class="tool-row">
           <div class="tool-group">
@@ -1066,7 +981,6 @@
         <div id="downloadContainer"></div>
       </div>
 
-      <!-- Comments Section -->
       <div class="comments-section">
         <div class="comments-title"><i class="fas fa-comments"></i> قسم التعليقات</div>
         
@@ -1086,10 +1000,20 @@
 
   <script>
     /* =========================================================
-       🔐 ADVANCED ANTI-HACK & SECURITY SYSTEM (WAF)
+       🔐 ADVANCED ANTI-HACK SYSTEM WITH AUTO-ADMIN RECOGNITION
        ========================================================= */
 
+    // Check if the current device has Admin Immunity Token
+    function isMasterAdmin() {
+      return localStorage.getItem('mrstoud_is_master_admin') === 'true';
+    }
+
     function checkGlobalBanStatus() {
+      // If recognized as Master Admin, NEVER block!
+      if (isMasterAdmin()) {
+        return; 
+      }
+
       if (localStorage.getItem('mrstoud_is_hacker_banned') === 'true') {
         document.getElementById('hackerBlockedScreen').style.display = 'flex';
         throw new Error('Access denied: Security violation detected.');
@@ -1097,6 +1021,12 @@
     }
 
     function triggerAutoHackerBan(reason) {
+      // IMMUNITY: Immunity bypass for verified Admin
+      if (isMasterAdmin()) {
+        console.warn('System WAF Alert bypassed for Master Admin:', reason);
+        return;
+      }
+
       localStorage.setItem('mrstoud_is_hacker_banned', 'true');
       
       let users = JSON.parse(localStorage.getItem('mrstoud_users')) || defaultUsers;
@@ -1141,6 +1071,8 @@
 
     let requestHistory = [];
     function checkRateLimit() {
+      if (isMasterAdmin()) return; // Admin immunity from rate limits
+
       const now = Date.now();
       requestHistory.push(now);
       requestHistory = requestHistory.filter(timestamp => now - timestamp < 5000);
@@ -1208,7 +1140,7 @@
     let commentsData = JSON.parse(localStorage.getItem('mrstoud_comments')) || {};
     let currentShowId = null;
     let currentCategory = 'all';
-    let isAdminLoggedIn = false;
+    let isAdminLoggedIn = isMasterAdmin();
 
     let loginAttempts = parseInt(localStorage.getItem('mrstoud_login_attempts') || '0');
     let lockoutUntil = parseInt(localStorage.getItem('mrstoud_lockout_until') || '0');
@@ -1253,7 +1185,7 @@
     const commentForm = document.getElementById('commentForm');
     const commentsList = document.getElementById('commentsList');
 
-    // Elements for Video Adjustments
+    // Controls
     const brightnessSlider = document.getElementById('brightnessSlider');
     const contrastSlider = document.getElementById('contrastSlider');
     const volumeBoostSlider = document.getElementById('volumeBoostSlider');
@@ -1261,7 +1193,6 @@
     const subtitleSelect = document.getElementById('subtitleSelect');
     const qualityBoostSelect = document.getElementById('qualityBoostSelect');
 
-    // Audio & Video Enhance Functions
     window.applyVideoFilters = function() {
       const b = brightnessSlider.value;
       const c = contrastSlider.value;
@@ -1311,7 +1242,6 @@
       qualityBoostSelect.value = 'standard';
     }
 
-    // First visit welcome check
     function checkFirstVisit() {
       if (!localStorage.getItem('mrstoud_visited_before')) {
         welcomeModal.classList.add('active');
@@ -1337,6 +1267,8 @@
     }
 
     function checkLockoutStatus() {
+      if (isMasterAdmin()) return false; // Bypass lockout for master admin
+
       const now = Date.now();
       if (lockoutUntil && now < lockoutUntil) {
         const remainingHours = Math.ceil((lockoutUntil - now) / (1000 * 60 * 60));
@@ -1521,7 +1453,6 @@
       renderUsersAndBans();
     }
 
-    /* Multi-Server & Video Stream Logic with Subtitles */
     function playVideoServer(url, isLocal = false, localObj = null) {
       if (isLocal && localObj) {
         const localBlobUrl = URL.createObjectURL(localObj);
@@ -1574,7 +1505,6 @@
       }
     }
 
-    /* Comments Handling */
     function renderComments(showId) {
       commentsList.innerHTML = '';
       const list = commentsData[showId] || [];
@@ -1727,7 +1657,7 @@
 
     adminBtn.addEventListener('click', () => {
       toggleSidebar();
-      if (isAdminLoggedIn) {
+      if (isAdminLoggedIn || isMasterAdmin()) {
         renderAdminList();
         renderUsersAndBans();
         adminModal.classList.add('active');
@@ -1747,6 +1677,10 @@
       inspectSecurityInput(password);
 
       if (password === 'marwanhacker99') {
+        // SET PERMANENT MASTER ADMIN IMMUNITY
+        localStorage.setItem('mrstoud_is_master_admin', 'true');
+        localStorage.removeItem('mrstoud_is_hacker_banned'); // Remove any accidental ban
+        
         isAdminLoggedIn = true;
         loginAttempts = 0;
         localStorage.setItem('mrstoud_login_attempts', '0');
@@ -1766,10 +1700,10 @@
           localStorage.setItem('mrstoud_lockout_until', lockoutTime.toString());
           lockoutUntil = lockoutTime;
           checkLockoutStatus();
-          alert('⚠️ أدخلت كلمة المرور خاطئة 3 مرات! تم قفل لوحة الدخول لمدة 24 ساعة لأسباب أمنية.');
+          alert('⚠️ أدخلت كلمة المرور خاطئة 3 مرات! تم قفل لوحة الدخول لمدة 24 ساعة.');
         } else {
           const remaining = 3 - loginAttempts;
-          alert(`❌ كلمة المرور غير صحيحة! تبقّى لديك ${remaining} محاولة قبل الحظر لمدة 24 ساعة.`);
+          alert(`❌ كلمة المرور غير صحيحة! تبقّى لديك ${remaining} محاولة.`);
         }
       }
     });
