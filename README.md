@@ -462,7 +462,7 @@
       color: var(--text-secondary);
     }
 
-    .form-group input, .form-group select {
+    .form-group input, .form-group select, .form-group textarea {
       width: 100%;
       padding: 10px 12px;
       border-radius: 6px;
@@ -473,7 +473,7 @@
       outline: none;
     }
 
-    .form-group input:focus, .form-group select:focus {
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
       border-color: var(--primary-color);
     }
 
@@ -638,6 +638,60 @@
     .btn-del { background-color: #c0392b; }
     .btn-ban { background-color: #e67e22; }
     .btn-unban { background-color: #27ae60; }
+
+    /* New Elements CSS: Server Selector & Comments */
+    .server-btn-group {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    .server-btn {
+      background: #1f1f1f;
+      border: 1px solid var(--border-color);
+      color: var(--text-color);
+      padding: 8px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      transition: all 0.2s;
+    }
+
+    .server-btn.active, .server-btn:hover {
+      background: var(--primary-color);
+      border-color: var(--primary-color);
+    }
+
+    .comments-section {
+      margin-top: 20px;
+      border-top: 1px solid var(--border-color);
+      padding-top: 15px;
+    }
+
+    .comments-title {
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 12px;
+      color: var(--primary-color);
+    }
+
+    .comment-item {
+      background: #121212;
+      border: 1px solid var(--border-color);
+      padding: 10px 12px;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      font-size: 13px;
+    }
+
+    .comment-header {
+      display: flex;
+      justify-content: space-between;
+      color: var(--text-secondary);
+      font-size: 11px;
+      margin-bottom: 4px;
+    }
   </style>
 </head>
 <body>
@@ -697,6 +751,11 @@
           <span class="badge-count" id="countMovies">0</span>
         </a>
       </li>
+      <li>
+        <a href="#" id="privacyBtn">
+          <div class="sidebar-menu-left"><i class="fas fa-user-lock"></i> سياسة الخصوصية</div>
+        </a>
+      </li>
       <hr style="border-color: var(--border-color); margin: 15px 0;">
       <li><button id="adminBtn"><div class="sidebar-menu-left"><i class="fas fa-user-shield"></i> الإدارة</div></button></li>
     </ul>
@@ -724,6 +783,28 @@
         يسعدنا انضمامك إلينا. يمكنك الآن مشاهدة أحدث الأفلام والمسلسلات عالية الجودة بكل أمان وسهولة. نتمنى لك تجربة ممتعة!
       </p>
       <button class="btn closeModal">ابدأ المشاهدة الآن</button>
+    </div>
+  </div>
+
+  <!-- Privacy Policy Modal -->
+  <div class="modal" id="privacyModal">
+    <div class="modal-content" style="max-width: 600px;">
+      <div class="modal-header">
+        <h3><i class="fas fa-user-lock"></i> سياسة الخصوصية</h3>
+        <button class="close-btn closeModal">&times;</button>
+      </div>
+      <div style="font-size: 13px; color: #ccc; line-height: 1.7; display: flex; flex-direction: column; gap: 12px;">
+        <p>مرحباً بك في منصة <strong>mrstoud</strong>. نحن نولي أهمية قصوى لخصوصية مستخدمينا وأمان بياناتهم الشخصية.</p>
+        <h4 style="color: var(--primary-color); margin-top: 5px;">1. جمع البيانات</h4>
+        <p>قد نقوم بجمع بعض البيانات غير الشخصية مثل نوع المتصفح، عنوان IP، والتعليقات التي توضع على المحتوى لغرض تحسين الأداء وتجربة المستخدم.</p>
+        <h4 style="color: var(--primary-color); margin-top: 5px;">2. حماية البيانات وأمانها</h4>
+        <p>نحن نستخدم أنظمة جدار حماية (WAF) متطورة لرصد أي هجمات أو محاولات اختراق وضمان حماية المستخدمين والسيرفرات من أي استغلال خبيث.</p>
+        <h4 style="color: var(--primary-color); margin-top: 5px;">3. الإعلانات وملفات الكوكيز (Cookies)</h4>
+        <p>قد تستخدم المنصة شبكات إعلانية خارجية (مثل Google AdSense) تضع ملفات تعريف ارتباط لتقديم إعلانات مخصصة للمستخدم بناءً على زياراته للموقع.</p>
+        <h4 style="color: var(--primary-color); margin-top: 5px;">4. التعليقات والاستخدام المقبول</h4>
+        <p>يتحمل المستخدم المسؤولية كاملة عن أي تعليق يتم نشره عبر المنصة، ويُمنع استخدام ألفاظ خرسانية أو محاولات إغراق، وتخضع المدخلات لفحص أمني آلي.</p>
+      </div>
+      <button class="btn closeModal" style="margin-top: 20px;">إغلاق</button>
     </div>
   </div>
 
@@ -801,11 +882,21 @@
             <input type="file" id="showVideoFile" accept="video/*" style="padding: 6px; cursor: pointer;">
           </div>
 
-          <div style="text-align: center; margin: 10px 0; color: var(--text-secondary); font-size: 12px;">— أو رابط فيديو خارجي —</div>
+          <div style="text-align: center; margin: 10px 0; color: var(--text-secondary); font-size: 12px;">— أو روابط السيرفرات الخارجية —</div>
 
           <div class="form-group">
-            <label for="showVideoUrl">رابط البث / المشغل (Embed URL):</label>
+            <label for="showVideoUrl">سيرفر المشغل الرئيسي (Server 1):</label>
             <input type="text" id="showVideoUrl" placeholder="https://www.youtube.com/embed/...">
+          </div>
+
+          <div class="form-group">
+            <label for="showVideoUrl2">سيرفر المشغل الاحتياطي (Server 2):</label>
+            <input type="text" id="showVideoUrl2" placeholder="https://www.youtube.com/embed/...">
+          </div>
+
+          <div class="form-group">
+            <label for="showVideoUrl3">سيرفر المشغل السريع (Server 3):</label>
+            <input type="text" id="showVideoUrl3" placeholder="https://www.youtube.com/embed/...">
           </div>
 
           <div class="form-group">
@@ -864,6 +955,10 @@
         <h3 id="playerTitle">عرض الفيديو</h3>
         <button class="close-btn closeModal">&times;</button>
       </div>
+
+      <!-- Server Selector Section -->
+      <div id="serverSelectorContainer" class="server-btn-group"></div>
+
       <div class="video-container" id="videoPlayerBox"></div>
       <div class="video-details">
         <div class="quality-tags">
@@ -872,6 +967,22 @@
         </div>
         <div id="downloadContainer"></div>
       </div>
+
+      <!-- Comments Section -->
+      <div class="comments-section">
+        <div class="comments-title"><i class="fas fa-comments"></i> قسم التعليقات</div>
+        
+        <form id="commentForm" style="margin-bottom: 15px;">
+          <div class="form-group">
+            <input type="text" id="commentUserName" placeholder="اسمك (اختياري)" style="margin-bottom: 8px;">
+            <textarea id="commentText" rows="2" placeholder="اكتب تعليقك هنا..." required></textarea>
+          </div>
+          <button type="submit" class="btn" style="padding: 8px 15px; font-size: 13px;">إرسال التعليق</button>
+        </form>
+
+        <div id="commentsList"></div>
+      </div>
+
     </div>
   </div>
 
@@ -970,6 +1081,8 @@
         badge: "حلقة 1",
         image: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=400&q=80",
         videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        videoUrl2: "",
+        videoUrl3: "",
         quality: "1080p Full HD",
         downloadUrl: "https://example.com/download.mp4"
       },
@@ -980,6 +1093,8 @@
         badge: "2:15 ساعة",
         image: "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=400&q=80",
         videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        videoUrl2: "",
+        videoUrl3: "",
         quality: "4K Ultra HD",
         downloadUrl: "https://example.com/download.mp4"
       }
@@ -992,6 +1107,8 @@
 
     let shows = JSON.parse(localStorage.getItem('mrstoud_shows')) || defaultShows;
     let users = JSON.parse(localStorage.getItem('mrstoud_users')) || defaultUsers;
+    let commentsData = JSON.parse(localStorage.getItem('mrstoud_comments')) || {};
+    let currentShowId = null;
     let currentCategory = 'all';
     let isAdminLoggedIn = false;
 
@@ -1012,10 +1129,12 @@
     const countMovies = document.getElementById('countMovies');
 
     const adminBtn = document.getElementById('adminBtn');
+    const privacyBtn = document.getElementById('privacyBtn');
     const loginModal = document.getElementById('loginModal');
     const adminModal = document.getElementById('adminModal');
     const playerModal = document.getElementById('playerModal');
     const welcomeModal = document.getElementById('welcomeModal');
+    const privacyModal = document.getElementById('privacyModal');
     const loginForm = document.getElementById('loginForm');
     const saveShowForm = document.getElementById('saveShowForm');
     const adminShowsList = document.getElementById('adminShowsList');
@@ -1032,6 +1151,9 @@
     const playerTitle = document.getElementById('playerTitle');
     const playerQuality = document.getElementById('playerQuality');
     const downloadContainer = document.getElementById('downloadContainer');
+    const serverSelectorContainer = document.getElementById('serverSelectorContainer');
+    const commentForm = document.getElementById('commentForm');
+    const commentsList = document.getElementById('commentsList');
 
     // First visit welcome check
     function checkFirstVisit() {
@@ -1247,18 +1369,113 @@
       renderUsersAndBans();
     }
 
+    /* Multi-Server & Video Stream Logic */
+    function playVideoServer(url, isLocal = false, localObj = null) {
+      if (isLocal && localObj) {
+        const localBlobUrl = URL.createObjectURL(localObj);
+        videoPlayerBox.innerHTML = `<video controls autoplay style="width:100%; height:100%;"><source src="${localBlobUrl}" type="${localObj.type}">متصفحك لا يدعم تشغيل هذا الفيديو</video>`;
+      } else if (url) {
+        const safeUrl = sanitizeInput(url);
+        videoPlayerBox.innerHTML = `<iframe id="videoIframe" src="${safeUrl}" allowfullscreen></iframe>`;
+      } else {
+        videoPlayerBox.innerHTML = `<div style="padding:20px; text-align:center; color:#aaa;">لا يوجد فيديو متاح في هذا السيرفر</div>`;
+      }
+    }
+
+    function renderServerButtons(show) {
+      serverSelectorContainer.innerHTML = '';
+      const servers = [];
+
+      if (show.isVideoLocal) {
+        servers.push({ name: 'سيرفر الهاتف المحلي', action: () => playVideoServer(null, true, show.videoObject) });
+      }
+      if (show.videoUrl) {
+        servers.push({ name: 'سيرفر 1 (الرئيسي)', action: () => playVideoServer(show.videoUrl) });
+      }
+      if (show.videoUrl2) {
+        servers.push({ name: 'سيرفر 2 (احتياطي)', action: () => playVideoServer(show.videoUrl2) });
+      }
+      if (show.videoUrl3) {
+        servers.push({ name: 'سيرفر 3 (سريع)', action: () => playVideoServer(show.videoUrl3) });
+      }
+
+      if (servers.length > 1) {
+        servers.forEach((srv, index) => {
+          const btn = document.createElement('button');
+          btn.className = `server-btn ${index === 0 ? 'active' : ''}`;
+          btn.innerHTML = `<i class="fas fa-server"></i> ${srv.name}`;
+          btn.onclick = (e) => {
+            document.querySelectorAll('.server-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            srv.action();
+          };
+          serverSelectorContainer.appendChild(btn);
+        });
+      }
+    }
+
+    /* Comments Handling */
+    function renderComments(showId) {
+      commentsList.innerHTML = '';
+      const list = commentsData[showId] || [];
+
+      if (list.length === 0) {
+        commentsList.innerHTML = '<p style="color:#777; font-size:12px; text-align:center;">لا توجد تعليقات بعد. كن أول من يعلق!</p>';
+        return;
+      }
+
+      list.forEach(item => {
+        const commentBox = document.createElement('div');
+        commentBox.className = 'comment-item';
+        commentBox.innerHTML = `
+          <div class="comment-header">
+            <span><i class="fas fa-user-circle"></i> ${sanitizeInput(item.user)}</span>
+            <span>${item.date}</span>
+          </div>
+          <div>${sanitizeInput(item.text)}</div>
+        `;
+        commentsList.appendChild(commentBox);
+      });
+    }
+
+    commentForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const nameInput = document.getElementById('commentUserName');
+      const textInput = document.getElementById('commentText');
+
+      const userName = nameInput.value.trim() || 'زائر';
+      const commentText = textInput.value.trim();
+
+      if (commentText && currentShowId) {
+        if (!commentsData[currentShowId]) {
+          commentsData[currentShowId] = [];
+        }
+
+        const newComment = {
+          user: userName,
+          text: commentText,
+          date: new Date().toLocaleDateString('ar-EG')
+        };
+
+        commentsData[currentShowId].unshift(newComment);
+        localStorage.setItem('mrstoud_comments', JSON.stringify(commentsData));
+
+        renderComments(currentShowId);
+        textInput.value = '';
+      }
+    });
+
     function openPlayer(show) {
+      currentShowId = show.id;
       playerTitle.textContent = show.title;
       playerQuality.textContent = show.quality || 'عالية';
       
+      renderServerButtons(show);
+
       if (show.isVideoLocal && show.videoObject) {
-        const localBlobUrl = URL.createObjectURL(show.videoObject);
-        videoPlayerBox.innerHTML = `<video controls autoplay style="width:100%; height:100%;"><source src="${localBlobUrl}" type="${show.videoObject.type}">متصفحك لا يدعم تشغيل هذا الفيديو</video>`;
-      } else if (show.videoUrl) {
-        const safeUrl = sanitizeInput(show.videoUrl);
-        videoPlayerBox.innerHTML = `<iframe id="videoIframe" src="${safeUrl}" allowfullscreen></iframe>`;
+        playVideoServer(null, true, show.videoObject);
       } else {
-        videoPlayerBox.innerHTML = `<div style="padding:20px; text-align:center; color:#aaa;">لا يوجد فيديو متاح لهذا العمل</div>`;
+        playVideoServer(show.videoUrl);
       }
       
       if (show.downloadUrl) {
@@ -1271,6 +1488,7 @@
         downloadContainer.innerHTML = '';
       }
 
+      renderComments(show.id);
       playerModal.classList.add('active');
     }
 
@@ -1300,6 +1518,8 @@
         document.getElementById('showBadge').value = show.badge || '';
         document.getElementById('showImage').value = show.image || '';
         document.getElementById('showVideoUrl').value = show.videoUrl || '';
+        document.getElementById('showVideoUrl2').value = show.videoUrl2 || '';
+        document.getElementById('showVideoUrl3').value = show.videoUrl3 || '';
         document.getElementById('showQuality').value = show.quality || '';
         document.getElementById('showDownloadUrl').value = show.downloadUrl || '';
 
@@ -1328,12 +1548,18 @@
     closeSidebarBtn.addEventListener('click', toggleSidebar);
     overlay.addEventListener('click', toggleSidebar);
 
+    privacyBtn.addEventListener('click', () => {
+      toggleSidebar();
+      privacyModal.classList.add('active');
+    });
+
     closeModalBtns.forEach(btn => {
       btn.addEventListener('click', () => {
         welcomeModal.classList.remove('active');
         loginModal.classList.remove('active');
         adminModal.classList.remove('active');
         playerModal.classList.remove('active');
+        privacyModal.classList.remove('active');
         videoPlayerBox.innerHTML = '';
       });
     });
@@ -1395,6 +1621,8 @@
       const badge = document.getElementById('showBadge').value;
       const image = document.getElementById('showImage').value;
       const videoUrl = document.getElementById('showVideoUrl').value;
+      const videoUrl2 = document.getElementById('showVideoUrl2').value;
+      const videoUrl3 = document.getElementById('showVideoUrl3').value;
       const quality = document.getElementById('showQuality').value;
       const downloadUrl = document.getElementById('showDownloadUrl').value;
       const fileInput = showVideoFile.files[0];
@@ -1404,14 +1632,14 @@
         if (index !== -1) {
           shows[index] = { 
             ...shows[index],
-            category, title, badge, image, videoUrl, quality, downloadUrl,
+            category, title, badge, image, videoUrl, videoUrl2, videoUrl3, quality, downloadUrl,
             ...(fileInput && { isVideoLocal: true, videoObject: fileInput })
           };
         }
       } else {
         const newShow = {
           id: Date.now(),
-          category, title, badge, image, videoUrl, quality, downloadUrl,
+          category, title, badge, image, videoUrl, videoUrl2, videoUrl3, quality, downloadUrl,
           isVideoLocal: fileInput ? true : false,
           videoObject: fileInput || null
         };
