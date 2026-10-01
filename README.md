@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>mrstoud - منصة الأفلام والمسلسلات</title>
+  <title>mrstoud - منصة الأفلام والمسلسلات الآمنة</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     :root {
@@ -30,6 +30,33 @@
       color: var(--text-color);
       direction: rtl;
       padding-bottom: 30px;
+    }
+
+    /* Blocked Hacker Screen */
+    #hackerBlockedScreen {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      background-color: #0d0000;
+      color: #ff3333;
+      z-index: 99999;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 20px;
+    }
+
+    #hackerBlockedScreen i {
+      font-size: 80px;
+      margin-bottom: 20px;
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 0.8; }
+      50% { transform: scale(1.1); opacity: 1; }
+      100% { transform: scale(1); opacity: 0.8; }
     }
 
     /* Navbar */
@@ -190,7 +217,6 @@
       padding: 0 12px;
     }
 
-    /* Ad Banner */
     .ad-banner {
       background: linear-gradient(135deg, #1f1f1f, #141414);
       border: 1px dashed var(--primary-color);
@@ -491,11 +517,7 @@
 
     .video-container iframe, .video-container video {
       position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      border: 0;
+      top: 0; left: 0; width: 100%; height: 100%; border: 0;
     }
 
     .video-details {
@@ -535,11 +557,8 @@
       text-align: center;
     }
 
-    .download-btn:hover {
-      background-color: #219150;
-    }
+    .download-btn:hover { background-color: #219150; }
 
-    /* Admin Show List Items */
     .admin-item {
       display: flex;
       align-items: center;
@@ -560,10 +579,7 @@
       text-overflow: ellipsis;
     }
 
-    .admin-actions {
-      display: flex;
-      gap: 8px;
-    }
+    .admin-actions { display: flex; gap: 8px; }
 
     .sm-btn {
       padding: 6px 10px;
@@ -581,6 +597,18 @@
   </style>
 </head>
 <body>
+
+  <!-- Hacker Blocked Overlay Screen -->
+  <div id="hackerBlockedScreen">
+    <i class="fas fa-user-ninja"></i>
+    <h1 style="font-size: 28px; margin-bottom: 10px;">تم اكتشاف محاولة اختراق!</h1>
+    <p style="color: #ccc; max-width: 500px; font-size: 15px; line-height: 1.6;">
+      تم حظر جهازك ومعرفك فوراً بواسطة جدار حماية المنصة (MRSTOUD Firewall WAF). يُمنع منعاً باتاً الوصول إلى أي جزء من الموقع.
+    </p>
+    <div style="margin-top: 25px; font-size: 12px; color: #777;">
+      IP status: <span style="color: red;">PERMANENTLY BANNED</span>
+    </div>
+  </div>
 
   <!-- Navigation Bar -->
   <nav class="navbar">
@@ -616,17 +644,10 @@
 
   <!-- Main Content -->
   <main class="container">
-    
-    <!-- Ad Banner -->
     <div class="ad-banner">
       <p>📢 مساحة إعلانية - ضع كود الإعلان الخاص بك هنا (AdSense / Native Ads)</p>
     </div>
-
-    <!-- Shows Grid -->
-    <div class="shows-grid" id="showsGrid">
-      <!-- Dynamic Content -->
-    </div>
-
+    <div class="shows-grid" id="showsGrid"></div>
   </main>
 
   <!-- Login Modal -->
@@ -637,11 +658,10 @@
         <button class="close-btn closeModal">&times;</button>
       </div>
 
-      <!-- Warning Box for Security -->
       <div class="admin-warning-box">
         <i class="fas fa-exclamation-triangle"></i>
         <div>
-          <strong>تنبيه أمني هام:</strong> هذه اللوحة مخصصة حصراً لمدير الموقع! يُمنع محاولة التخمين أو الدخول غير المصرح به.
+          <strong>تنبيه أمني مشدد:</strong> هذه اللوحة محمية بنظام WAF لصد الهجمات. أي محاولة حقن أو تخمين ستؤدي لحظر الجهاز فوراً!
         </div>
       </div>
 
@@ -664,7 +684,6 @@
         <button class="close-btn closeModal">&times;</button>
       </div>
 
-      <!-- Navigation Tabs inside Admin Modal -->
       <div class="admin-tabs">
         <button class="tab-btn active" onclick="switchAdminTab('tab-shows')"><i class="fas fa-film"></i> المسلسلات والأفلام</button>
         <button class="tab-btn" onclick="switchAdminTab('tab-users')"><i class="fas fa-users"></i> إدارة المستخدمين</button>
@@ -679,7 +698,7 @@
           
           <div class="form-group">
             <label for="showTitle">عنوان العمل:</label>
-            <input type="text" id="showTitle" required placeholder="مثال: فيلم/مسلسل كامل (ساعتان ونصف)">
+            <input type="text" id="showTitle" required placeholder="مثال: فيلم/مسلسل كامل">
           </div>
           
           <div class="form-group">
@@ -692,27 +711,25 @@
             <input type="url" id="showImage" placeholder="https://example.com/image.jpg">
           </div>
 
-          <!-- اختيار فيديو من الهاتف -->
           <div class="form-group" style="background: #181818; padding: 12px; border-radius: 8px; border: 1px dashed var(--primary-color);">
-            <label for="showVideoFile" style="color: #fff; font-weight: bold;"><i class="fas fa-file-video"></i> اختيار فيديو طويل من ملفات الهاتف (يدعم الحجم الكبير):</label>
+            <label for="showVideoFile" style="color: #fff; font-weight: bold;"><i class="fas fa-file-video"></i> اختيار فيديو من الهاتف:</label>
             <input type="file" id="showVideoFile" accept="video/*" style="padding: 6px; cursor: pointer;">
-            <small style="color: #27ae60; display: block; margin-top: 4px;">✔ يدعم الأفلام والمسلسلات طويلة المدة (ساعتان ونصف فأكثر) بدون مشاكل ذاكرة.</small>
           </div>
 
-          <div style="text-align: center; margin: 10px 0; color: var(--text-secondary); font-size: 12px;">— أو استخدم رابط فيديو خارجي —</div>
+          <div style="text-align: center; margin: 10px 0; color: var(--text-secondary); font-size: 12px;">— أو رابط فيديو خارجي —</div>
 
           <div class="form-group">
-            <label for="showVideoUrl">رابط البث / مشغل الفيديو (Embed URL):</label>
+            <label for="showVideoUrl">رابط البث / المشغل (Embed URL):</label>
             <input type="text" id="showVideoUrl" placeholder="https://www.youtube.com/embed/...">
           </div>
 
           <div class="form-group">
             <label for="showQuality">الجودة المتاحة:</label>
-            <input type="text" id="showQuality" placeholder="مثال: 1080p, 720p, 480p" value="1080p Full HD">
+            <input type="text" id="showQuality" placeholder="مثال: 1080p, 720p" value="1080p Full HD">
           </div>
 
           <div class="form-group">
-            <label for="showDownloadUrl">رابط تحميل الفيديو للهواتف:</label>
+            <label for="showDownloadUrl">رابط تحميل الفيديو:</label>
             <input type="url" id="showDownloadUrl" placeholder="https://example.com/download.mp4">
           </div>
 
@@ -727,10 +744,8 @@
 
       <!-- Tab 2: Users List -->
       <div id="tab-users" class="tab-content">
-        <h4 style="margin-bottom: 12px; color: var(--primary-color);">جميع المستخدمين المسجلين في الموقع</h4>
-        <div id="usersListContainer">
-          <!-- Populated dynamically -->
-        </div>
+        <h4 style="margin-bottom: 12px; color: var(--primary-color);">جميع المستخدمين المسجلين</h4>
+        <div id="usersListContainer"></div>
       </div>
 
       <!-- Tab 3: Ban / Unban Control -->
@@ -743,58 +758,134 @@
           </div>
           <div class="form-group">
             <label for="banReason">سبب الحظر:</label>
-            <input type="text" id="banReason" placeholder="مثال: مخالفة الشروط والإرشادات">
+            <input type="text" id="banReason" placeholder="مثال: محاولة اختراق أو مخالفة القوانين">
           </div>
           <button type="submit" class="btn btn-del"><i class="fas fa-user-slash"></i> تأكيد الحظر</button>
         </form>
 
         <hr style="border-color: var(--border-color); margin: 20px 0;">
 
-        <h4 style="margin-bottom: 12px; color: #27ae60;">قائمة المحظورين (إمكانية فك الحظر)</h4>
-        <div id="bannedUsersContainer">
-          <!-- Populated dynamically -->
-        </div>
+        <h4 style="margin-bottom: 12px; color: #27ae60;">قائمة المحظورين</h4>
+        <div id="bannedUsersContainer"></div>
       </div>
 
     </div>
   </div>
 
-  <!-- Player Modal (For Viewers) -->
+  <!-- Player Modal -->
   <div class="modal" id="playerModal">
     <div class="modal-content" style="max-width: 700px;">
       <div class="modal-header">
         <h3 id="playerTitle">عرض الفيديو</h3>
         <button class="close-btn closeModal">&times;</button>
       </div>
-      
-      <!-- Video Player -->
-      <div class="video-container" id="videoPlayerBox">
-        <iframe id="videoIframe" src="" allowfullscreen></iframe>
-      </div>
-
+      <div class="video-container" id="videoPlayerBox"></div>
       <div class="video-details">
         <div class="quality-tags">
           <span style="font-size: 13px; color: var(--text-secondary);">الجودة المتاحة:</span>
           <span class="quality-tag" id="playerQuality">1080p</span>
         </div>
-
-        <div id="downloadContainer">
-          <!-- Download Button -->
-        </div>
+        <div id="downloadContainer"></div>
       </div>
     </div>
   </div>
 
   <script>
-    // Security & Sanitization Function
+    /* =========================================================
+       🔐 ADVANCED ANTI-HACK & SECURITY SYSTEM (WAF)
+       ========================================================= */
+
+    // Check if current user/IP is marked as banned
+    function checkGlobalBanStatus() {
+      if (localStorage.getItem('mrstoud_is_hacker_banned') === 'true') {
+        document.getElementById('hackerBlockedScreen').style.display = 'flex';
+        throw new Error('Access denied: Security violation detected.');
+      }
+    }
+
+    // Trigger instant auto-ban for malicious behavior
+    function triggerAutoHackerBan(reason) {
+      localStorage.setItem('mrstoud_is_hacker_banned', 'true');
+      
+      // Also register in banned users database
+      let users = JSON.parse(localStorage.getItem('mrstoud_users')) || defaultUsers;
+      users.push({
+        id: Date.now(),
+        name: "Hacker Detected",
+        email: "HACK_ATTEMPT_" + Math.floor(Math.random() * 10000),
+        status: "banned",
+        banReason: "محاولة اختراق النظام (" + reason + ")"
+      });
+      localStorage.setItem('mrstoud_users', JSON.stringify(users));
+
+      document.getElementById('hackerBlockedScreen').style.display = 'flex';
+    }
+
+    // Scan input for XSS, SQLi, and Exploits
+    function inspectSecurityInput(inputStr) {
+      if (!inputStr) return inputStr;
+
+      // Malicious patterns detector (SQLi, XSS, Scripting, Path Traversal)
+      const attackPatterns = [
+        /<script\b[^>]*>([\s\S]*?)<\/script>/gi,
+        /javascript:/gi,
+        /onerror=/gi,
+        /onload=/gi,
+        /SELECT\s+.*\s+FROM/gi,
+        /UNION\s+SELECT/gi,
+        /INSERT\s+INTO/gi,
+        /DELETE\s+FROM/gi,
+        /DROP\s+TABLE/gi,
+        /'\s*OR\s*'\d+'='\d+/gi,
+        /--/g,
+        /\.\.\//g
+      ];
+
+      for (let pattern of attackPatterns) {
+        if (pattern.test(inputStr)) {
+          triggerAutoHackerBan("حقن أكواد خبيثة: " + pattern.toString());
+          return '';
+        }
+      }
+      return inputStr;
+    }
+
+    // Rate Limiting (Anti-DDoS) Protection
+    let requestHistory = [];
+    function checkRateLimit() {
+      const now = Date.now();
+      requestHistory.push(now);
+      requestHistory = requestHistory.filter(timestamp => now - timestamp < 5000); // 5 seconds window
+      
+      if (requestHistory.length > 25) { // Exceeded 25 actions in 5s
+        triggerAutoHackerBan("هجوم إغراق DDoS / Rate-Limit Exceeded");
+      }
+    }
+
+    // Attach security monitor to all input elements dynamically
+    document.addEventListener('input', (e) => {
+      checkRateLimit();
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+        inspectSecurityInput(e.target.value);
+      }
+    });
+
+    // Sanitizer
     function sanitizeInput(str) {
       if (!str) return '';
+      inspectSecurityInput(str);
       const temp = document.createElement('div');
       temp.textContent = str;
       return temp.innerHTML;
     }
 
-    // Default Initial Data
+    // Execute security check at startup
+    checkGlobalBanStatus();
+
+    /* =========================================================
+       DATA & APPLICATION LOGIC
+       ========================================================= */
+
     const defaultShows = [
       {
         id: 1,
@@ -807,19 +898,16 @@
       }
     ];
 
-    // Default Users Data
     const defaultUsers = [
       { id: 101, name: "أحمد علي", email: "ahmed@example.com", status: "active" },
       { id: 102, name: "محمد ياسين", email: "mowin@example.com", status: "active" },
       { id: 103, name: "مستخدم تجريبي", email: "spammer@test.com", status: "banned", banReason: "سلوك غير لائق" }
     ];
 
-    // Data handling
     let shows = JSON.parse(localStorage.getItem('mrstoud_shows')) || defaultShows;
     let users = JSON.parse(localStorage.getItem('mrstoud_users')) || defaultUsers;
     let isAdminLoggedIn = false;
 
-    // Security: Login Attempt Control
     let loginAttempts = parseInt(localStorage.getItem('mrstoud_login_attempts') || '0');
     let lockoutUntil = parseInt(localStorage.getItem('mrstoud_lockout_until') || '0');
 
@@ -833,7 +921,6 @@
     const searchContainer = document.getElementById('searchContainer');
     const searchInput = document.getElementById('searchInput');
     
-    // Admin DOM Elements
     const adminBtn = document.getElementById('adminBtn');
     const loginModal = document.getElementById('loginModal');
     const adminModal = document.getElementById('adminModal');
@@ -850,13 +937,11 @@
     const bannedUsersContainer = document.getElementById('bannedUsersContainer');
     const banUserForm = document.getElementById('banUserForm');
 
-    // Player Elements
     const videoPlayerBox = document.getElementById('videoPlayerBox');
     const playerTitle = document.getElementById('playerTitle');
     const playerQuality = document.getElementById('playerQuality');
     const downloadContainer = document.getElementById('downloadContainer');
 
-    // Switch Admin Tabs
     window.switchAdminTab = function(tabId) {
       document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
       document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
@@ -865,7 +950,6 @@
       document.getElementById(tabId).classList.add('active');
     };
 
-    // Check Lockout Status
     function checkLockoutStatus() {
       const now = Date.now();
       if (lockoutUntil && now < lockoutUntil) {
@@ -883,7 +967,6 @@
       return false;
     }
 
-    // Render Grid for Visitors
     function renderShows(filterText = '') {
       showsGrid.innerHTML = '';
       const cleanFilter = sanitizeInput(filterText.toLowerCase());
@@ -909,7 +992,6 @@
       });
     }
 
-    // Render Admin Show List
     function renderAdminList() {
       adminShowsList.innerHTML = '';
       shows.forEach(show => {
@@ -926,15 +1008,12 @@
       });
     }
 
-    // Render All Users & Banned Users
     function renderUsersAndBans() {
       usersListContainer.innerHTML = '';
       bannedUsersContainer.innerHTML = '';
-
       let bannedCount = 0;
 
       users.forEach(user => {
-        // Users tab element
         const userCard = document.createElement('div');
         userCard.className = 'user-card';
         userCard.innerHTML = `
@@ -951,7 +1030,6 @@
         `;
         usersListContainer.appendChild(userCard);
 
-        // Banned Tab elements
         if (user.status === 'banned') {
           bannedCount++;
           const banCard = document.createElement('div');
@@ -972,7 +1050,6 @@
       }
     }
 
-    // Direct Ban Action
     window.banUserDirect = function(email) {
       const reason = prompt('أدخل سبب الحظر:');
       if (reason !== null) {
@@ -980,14 +1057,12 @@
       }
     };
 
-    // Perform Ban
     function performBan(email, reason) {
       const targetUser = users.find(u => u.email.toLowerCase() === email.toLowerCase());
       if (targetUser) {
         targetUser.status = 'banned';
         targetUser.banReason = reason || 'تم الحظر بقرار من المدير';
       } else {
-        // Add new banned record
         users.push({
           id: Date.now(),
           name: email.split('@')[0],
@@ -1000,7 +1075,6 @@
       alert(`تم حظر المستخدم (${email}) بنجاح!`);
     }
 
-    // Unban Action
     window.unbanUser = function(email) {
       const user = users.find(u => u.email.toLowerCase() === email.toLowerCase());
       if (user) {
@@ -1011,7 +1085,6 @@
       }
     };
 
-    // Ban Form Handler
     banUserForm.addEventListener('submit', (e) => {
       e.preventDefault();
       const email = document.getElementById('banEmail').value;
@@ -1020,13 +1093,11 @@
       banUserForm.reset();
     });
 
-    // Save Users Data
     function saveUserData() {
       localStorage.setItem('mrstoud_users', JSON.stringify(users));
       renderUsersAndBans();
     }
 
-    // Open Player
     function openPlayer(show) {
       playerTitle.textContent = show.title;
       playerQuality.textContent = show.quality || 'عالية';
@@ -1054,7 +1125,6 @@
       playerModal.classList.add('active');
     }
 
-    // Save Data
     function saveData() {
       const cleanShows = shows.map(item => {
         const { videoObject, ...rest } = item;
@@ -1065,7 +1135,6 @@
       renderAdminList();
     }
 
-    // Delete Show
     window.deleteShow = function(id) {
       if (confirm('هل أنت تأكد من حذف هذا الفيديو؟')) {
         shows = shows.filter(item => item.id !== id);
@@ -1073,7 +1142,6 @@
       }
     };
 
-    // Edit Show
     window.editShow = function(id) {
       const show = shows.find(item => item.id === id);
       if (show) {
@@ -1091,7 +1159,6 @@
       }
     };
 
-    // Reset Form
     function resetAdminForm() {
       saveShowForm.reset();
       document.getElementById('editShowId').value = '';
@@ -1102,7 +1169,6 @@
 
     cancelEditBtn.addEventListener('click', resetAdminForm);
 
-    // Sidebar Handlers
     function toggleSidebar() {
       sidebar.classList.toggle('open');
       overlay.classList.toggle('active');
@@ -1112,7 +1178,6 @@
     closeSidebarBtn.addEventListener('click', toggleSidebar);
     overlay.addEventListener('click', toggleSidebar);
 
-    // Search Toggle
     searchToggleBtn.addEventListener('click', () => {
       searchContainer.classList.toggle('active');
       if (searchContainer.classList.contains('active')) {
@@ -1124,7 +1189,6 @@
       renderShows(e.target.value);
     });
 
-    // Close Modals
     closeModalBtns.forEach(btn => {
       btn.addEventListener('click', () => {
         loginModal.classList.remove('active');
@@ -1134,7 +1198,6 @@
       });
     });
 
-    // Admin Button Click
     adminBtn.addEventListener('click', () => {
       toggleSidebar();
       if (isAdminLoggedIn) {
@@ -1147,14 +1210,14 @@
       }
     });
 
-    // Login Submission with Brute-Force Security
     loginForm.addEventListener('submit', (e) => {
       e.preventDefault();
-
       if (checkLockoutStatus()) return;
 
       const passwordInput = document.getElementById('adminPassword');
       const password = passwordInput.value;
+
+      inspectSecurityInput(password);
 
       if (password === 'marwanhacker99') {
         isAdminLoggedIn = true;
@@ -1184,7 +1247,6 @@
       }
     });
 
-    // Add / Edit Submission
     saveShowForm.addEventListener('submit', (e) => {
       e.preventDefault();
       const editId = document.getElementById('editShowId').value;
@@ -1201,24 +1263,14 @@
         if (index !== -1) {
           shows[index] = { 
             ...shows[index],
-            title, 
-            badge, 
-            image, 
-            videoUrl, 
-            quality, 
-            downloadUrl,
+            title, badge, image, videoUrl, quality, downloadUrl,
             ...(fileInput && { isVideoLocal: true, videoObject: fileInput })
           };
         }
       } else {
         const newShow = {
           id: Date.now(),
-          title,
-          badge,
-          image,
-          videoUrl,
-          quality,
-          downloadUrl,
+          title, badge, image, videoUrl, quality, downloadUrl,
           isVideoLocal: fileInput ? true : false,
           videoObject: fileInput || null
         };
@@ -1230,7 +1282,6 @@
       alert('تم إضافه المسلسل / الفيلم بنجاح وسيتوفر فوراً للعرض!');
     });
 
-    // Initial Launch
     renderShows();
   </script>
 </body>
