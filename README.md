@@ -1,261 +1,502 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة الأفلام والمسلسلات - لوحة التحكم والمحتوى</title>
-    <style>
-        :root {
-            --bg-color: #141414;
-            --card-bg: #1f1f1f;
-            --primary-color: #e50914;
-            --text-color: #ffffff;
-            --text-muted: #aaaaaa;
-            --border-color: #333333;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>mrstoud - منصة الأفلام والمسلسلات</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #e50914;
+      --primary-hover: #b80710;
+      --bg-color: #0f0f0f;
+      --card-bg: #1c1c1c;
+      --text-color: #ffffff;
+      --text-secondary: #aaa;
+      --sidebar-bg: #141414;
+      --border-color: #2a2a2a;
+    }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 0;
-            padding: 0;
-        }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
 
-        header {
-            background-color: #000000;
-            padding: 15px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--border-color);
-        }
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      direction: rtl;
+      padding-bottom: 30px;
+    }
 
-        header h1 {
-            color: var(--primary-color);
-            margin: 0;
-            font-size: 24px;
-        }
+    /* Blocked User Screen & Last Chance UI */
+    #hackerBlockedScreen {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      background-color: #0a0a0a;
+      color: #ff3333;
+      z-index: 99999;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 20px;
+    }
 
-        nav a {
-            color: var(--text-color);
-            text-decoration: none;
-            margin-right: 15px;
-            font-weight: 500;
-        }
+    #hackerBlockedScreen i {
+      font-size: 70px;
+      margin-bottom: 15px;
+      animation: pulse 1.5s infinite;
+    }
 
-        nav a:hover {
-            color: var(--primary-color);
-        }
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 0.8; }
+      50% { transform: scale(1.1); opacity: 1; }
+      100% { transform: scale(1); opacity: 0.8; }
+    }
 
-        .container {
-            max-width: 1100px;
-            margin: 20px auto;
-            padding: 0 20px;
-        }
+    .last-chance-box {
+      margin-top: 20px;
+      background: #141414;
+      border: 1px solid #333;
+      padding: 20px;
+      border-radius: 8px;
+      max-width: 420px;
+      width: 100%;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    }
 
-        .section-title {
-            border-right: 4px solid var(--primary-color);
-            padding-right: 10px;
-            margin-top: 30px;
-            margin-bottom: 20px;
-        }
+    .last-chance-box textarea {
+      width: 100%;
+      height: 80px;
+      background: #000;
+      border: 1px solid #333;
+      color: #fff;
+      padding: 10px;
+      border-radius: 6px;
+      margin-top: 10px;
+      outline: none;
+      font-size: 13px;
+      resize: none;
+    }
 
-        /* Admin Upload Form */
-        .admin-panel {
-            background-color: var(--card-bg);
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 30px;
-            border: 1px solid var(--border-color);
-        }
+    .btn-appeal {
+      background-color: #27ae60;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      width: 100%;
+      margin-top: 10px;
+      transition: background 0.2s;
+    }
 
-        .form-group {
-            margin-bottom: 15px;
-        }
+    .btn-appeal:hover { background-color: #219150; }
 
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            color: var(--text-muted);
-        }
+    /* Navbar */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #050505;
+      padding: 12px 18px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.8);
+      border-bottom: 1px solid var(--border-color);
+    }
 
-        .form-group input, .form-group textarea, .form-group select {
-            width: 100%;
-            padding: 10px;
-            border-radius: 4px;
-            border: 1px solid var(--border-color);
-            background-color: #2b2b2b;
-            color: #fff;
-            box-sizing: border-box;
-        }
+    .brand {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--primary-color);
+      text-decoration: none;
+      letter-spacing: 1px;
+    }
 
-        .btn-submit {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: bold;
-        }
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
 
-        .btn-submit:hover {
-            background-color: #b80710;
-        }
+    .icon-btn {
+      background: none;
+      border: none;
+      color: var(--text-color);
+      font-size: 20px;
+      padding: 8px;
+      cursor: pointer;
+      border-radius: 50%;
+      transition: background 0.2s, color 0.2s;
+    }
 
-        /* Movies Grid */
-        .media-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
-        }
+    .icon-btn:hover, .icon-btn:active {
+      background-color: #222;
+      color: var(--primary-color);
+    }
 
-        .media-card {
-            background-color: var(--card-bg);
-            border-radius: 8px;
-            overflow: hidden;
-            border: 1px solid var(--border-color);
-        }
+    /* Sidebar */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      right: -320px;
+      width: 300px;
+      height: 100%;
+      background-color: var(--sidebar-bg);
+      box-shadow: -4px 0 15px rgba(0, 0, 0, 0.8);
+      transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 200;
+      padding: 20px 15px;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
 
-        .media-card video {
-            width: 100%;
-            height: 180px;
-            background-color: #000;
-        }
+    .sidebar.open { right: 0; }
 
-        .media-info {
-            padding: 15px;
-        }
+    .sidebar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 15px;
+      margin-bottom: 15px;
+    }
 
-        .media-tag {
-            display: inline-block;
-            background-color: var(--primary-color);
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 12px;
-            margin-bottom: 5px;
-        }
+    .sidebar-header h3 { font-size: 20px; color: var(--primary-color); }
 
-        /* Privacy Policy */
-        .privacy-section {
-            background-color: var(--card-bg);
-            padding: 25px;
-            border-radius: 8px;
-            margin-top: 40px;
-            border: 1px solid var(--border-color);
-            line-height: 1.6;
-        }
+    .sidebar-menu { list-style: none; }
+    .sidebar-menu li { margin-bottom: 8px; }
 
-        .privacy-section h3 {
-            color: var(--primary-color);
-        }
-    </style>
+    .sidebar-menu a, .sidebar-menu button {
+      color: var(--text-color);
+      text-decoration: none;
+      font-size: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px;
+      border-radius: 6px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      width: 100%;
+      text-align: right;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .sidebar-menu a:hover, .sidebar-menu button:hover {
+      background-color: #222;
+      color: var(--primary-color);
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(2px);
+      display: none;
+      z-index: 150;
+    }
+
+    .overlay.active { display: block; }
+
+    .container {
+      max-width: 1200px;
+      margin: 15px auto;
+      padding: 0 12px;
+    }
+
+    .shows-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(145px, 1fr));
+      gap: 14px;
+    }
+
+    /* Modals */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background-color: rgba(0,0,0,0.85);
+      z-index: 300;
+      justify-content: center;
+      align-items: center;
+      padding: 15px;
+    }
+
+    .modal.active { display: flex; }
+
+    .modal-content {
+      background-color: var(--card-bg);
+      border-radius: 10px;
+      max-width: 650px;
+      width: 100%;
+      padding: 20px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.7);
+      max-height: 90vh;
+      overflow-y: auto;
+      border: 1px solid var(--border-color);
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 22px;
+      cursor: pointer;
+    }
+
+    .form-group { margin-bottom: 14px; }
+    .form-group label { display: block; margin-bottom: 6px; font-size: 13px; color: var(--text-secondary); }
+    .form-group input {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+      background-color: #121212;
+      color: #fff;
+      font-size: 14px;
+      outline: none;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 12px;
+      background-color: var(--primary-color);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 15px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+  </style>
 </head>
 <body>
 
-    <header>
-        <h1>منصة السينما</h1>
-        <nav>
-            <a href="#gallery">الأفلام والمسلسلات</a>
-            <a href="#admin">لوحة المدير</a>
-            <a href="#privacy">سياسة الخصوصية</a>
-        </nav>
-    </header>
+  <!-- Blocked User Screen with Last Chance Feature -->
+  <div id="hackerBlockedScreen">
+    <i class="fas fa-shield-alt"></i>
+    <h1 style="font-size: 26px; margin-bottom: 8px;">تم حظر الوصول إلى المنصة</h1>
+    <p style="color: #ccc; max-width: 480px; font-size: 14px; line-height: 1.5;">
+      تم حظر الوصول نظراً لرصد نشاط غير مصرح به أو مخالف لشروط الاستخدام.
+    </p>
 
-    <div class="container">
+    <!-- Last Chance Form Component -->
+    <div class="last-chance-box" id="lastChanceBox">
+      <h3 style="color: #27ae60; font-size: 16px; margin-bottom: 6px;">
+        <i class="fas fa-undo"></i> طلب فرصة أخيرة لفك الحظر
+      </h3>
+      <p style="color: #aaa; font-size: 12px;">يمكنك تقديم طلب فرصة أخيرة لإدارة المنصة لمراجعة حسابك وفك الحظر:</p>
+      
+      <form id="lastChanceForm">
+        <textarea id="appealText" placeholder="اكتب سبب طلب الفرصة الأخيرة هنا..." required maxlength="250"></textarea>
+        <button type="submit" class="btn-appeal" id="submitAppealBtn">
+          <i class="fas fa-paper-plane"></i> إرسال طلب الفرصة الأخيرة
+        </button>
+      </form>
+      <div id="appealStatusMsg" style="margin-top: 10px; font-size: 12px;"></div>
+    </div>
+  </div>
 
-        <!-- لوحة التحكم للمدير (إضافة فيديو من المعرض) -->
-        <section id="admin" class="admin-panel">
-            <h2 class="section-title">إضافة عمل جديد (خاص بالمدير)</h2>
-            <form id="uploadForm">
-                <div class="form-group">
-                    <label for="title">عنوان الفيلم / المسلسل:</label>
-                    <input type="text" id="title" required placeholder="أدخل العنوان هنا">
-                </div>
-                <div class="form-group">
-                    <label for="type">النوع:</label>
-                    <select id="type">
-                        <option value="فيلم">فيلم</option>
-                        <option value="مسلسل">مسلسل</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="videoFile">اختر الفيديو من المعرض فقط:</label>
-                    <!-- accept="video/*" مع عدم استخدام capture لضمان التوجيه للمعرض -->
-                    <input type="file" id="videoFile" accept="video/*" required>
-                </div>
-                <div class="form-group">
-                    <label for="description">الوصف:</label>
-                    <textarea id="description" rows="3" placeholder="أدخل وصفاً مختصراً"></textarea>
-                </div>
-                <button type="submit" class="btn-submit">رفع وإضافة إلى القائمة</button>
-            </form>
-        </section>
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <a href="#" class="brand">mrstoud</a>
+    <div class="nav-actions">
+      <button class="icon-btn" id="menuToggleBtn"><i class="fas fa-bars"></i></button>
+    </div>
+  </nav>
 
-        <!-- قائمة الأفلام والمسلسلات -->
-        <section id="gallery">
-            <h2 class="section-title">قائمة الأفلام والمسلسلات</h2>
-            <div class="media-grid" id="mediaGrid">
-                <!-- الأقسام تضاف ديناميكياً عن طريق JavaScript -->
-            </div>
-        </section>
+  <div class="overlay" id="overlay"></div>
 
-        <!-- سياسة الخصوصية -->
-        <section id="privacy" class="privacy-section">
-            <h2 class="section-title">سياسة الخصوصية</h2>
-            <p>مرحباً بك في منصتنا. نحن نحترم خصوصيتك ونلتزم بحماية البيانات الشخصية التي تشاركها معنا:</p>
-            <ul>
-                <li><strong>جمع البيانات:</strong> نقوم بجمع معلومات بسيطة تهدف إلى تحسين تجربة المشاهدة والتصفح.</li>
-                <li><strong>رفع الفيديو:</strong> ميزة رفع الفيديوهات مخصصة للمدير المعتمد فقط. يتم اختيار الملفات المرفوعة مباشرة من المعرض المحلي للجهاز دون الوصول لأي ملفات شخصية أخرى.</li>
-                <li><strong>حماية المحتوى:</strong> جميع الفيديوهات والمحتويات المعروضة محميّة وتخضع لمعايير الاستخدام العادل والملكية الفكرية.</li>
-                <li><strong>مشاركة البيانات:</strong> لا نقوم ببيع أو مشاركة بيانات المستخدمين مع أي أطراف خارجية.</li>
-            </ul>
-        </section>
-
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <h3>mrstoud</h3>
+      <button class="close-btn" id="closeSidebarBtn">&times;</button>
     </div>
 
-    <script>
-        const uploadForm = document.getElementById('uploadForm');
-        const mediaGrid = document.getElementById('mediaGrid');
+    <ul class="sidebar-menu">
+      <li><a href="#"><i class="fas fa-home"></i> الرئيسية</a></li>
+      <hr style="border-color: var(--border-color); margin: 15px 0;">
+      <li><button id="adminBtn"><i class="fas fa-user-shield"></i> لوحة التحكم</button></li>
+    </ul>
+  </aside>
 
-        // التعامل مع رفع الفيديو إضافة العمل
-        uploadForm.addEventListener('submit', function(e) {
-            e.preventDefault();
+  <!-- Main Container -->
+  <main class="container">
+    <h2 style="margin-bottom: 15px;">مرحباً بك في منصة mrstoud</h2>
+    <div class="shows-grid" id="showsGrid">
+      <p style="color: #888;">جاري تحميل المحتوى الآمن...</p>
+    </div>
+  </main>
 
-            const title = document.getElementById('title').value;
-            const type = document.getElementById('type').value;
-            const description = document.getElementById('description').value;
-            const videoFileInput = document.getElementById('videoFile');
-            const file = videoFileInput.files[0];
+  <!-- Admin Login Modal -->
+  <div class="modal" id="loginModal">
+    <div class="modal-content">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+        <h3>تسجيل الدخول للمسؤولين</h3>
+        <button class="close-btn closeModal">&times;</button>
+      </div>
 
-            if (file) {
-                const videoURL = URL.createObjectURL(file);
+      <form id="loginForm">
+        <div class="form-group">
+          <label>كلمة المرور:</label>
+          <input type="password" id="adminPassword" placeholder="أدخل كلمة المرور" required>
+        </div>
+        <button type="submit" class="btn">دخول</button>
+      </form>
+    </div>
+  </div>
 
-                // إنشاء بطاقة الفيديو
-                const card = document.createElement('div');
-                card.className = 'media-card';
+  <script>
+    // System Master Encryption & Secure Admin Email Config
+    const SECURE_ADMIN_HASH = "alvariz267@gmail.com"; 
 
-                card.innerHTML = `
-                    <video controls>
-                        <source src="${videoURL}" type="${file.type}">
-                        متصفحك لا يدعم تشغيل الفيديو.
-                    </video>
-                    <div class="media-info">
-                        <span class="media-tag">${type}</span>
-                        <h3 style="margin: 5px 0;">${title}</h3>
-                        <p style="color: var(--text-muted); font-size: 14px;">${description}</p>
-                    </div>
-                `;
+    function isMasterAdmin() {
+      return localStorage.getItem('mrstoud_is_master_admin') === 'true';
+    }
 
-                mediaGrid.prepend(card);
+    function checkGlobalBanStatus() {
+      if (isMasterAdmin()) return;
 
-                // إعادة ضبط النموذج
-                uploadForm.reset();
-                alert('تمت إضافة الفيديو بنجاح إلى القائمة!');
-            }
-        });
-    </script>
+      if (localStorage.getItem('mrstoud_is_hacker_banned') === 'true') {
+        document.getElementById('hackerBlockedScreen').style.display = 'flex';
+        checkAppealState();
+        throw new Error('Access Denied');
+      }
+    }
+
+    // Inspect user appeals against injection/hacking attempts
+    function sanitizeAppealInput(str) {
+      if (!str) return '';
+      return str.replace(/[<>'"]/g, '');
+    }
+
+    // Direct Safe Mail Dispatcher (Hidden Admin Email from Client)
+    function dispatchAppealToAdmin(appealMessage) {
+      const clientIdentifier = localStorage.getItem('mrstoud_device_token') || 'User_ID_' + Math.floor(Math.random() * 888888 + 100000);
+      localStorage.setItem('mrstoud_device_token', clientIdentifier);
+
+      const pageUrl = window.location.href.split('?')[0];
+      const directUnbanLink = `${pageUrl}?action=grant_last_chance&token=${encodeURIComponent(clientIdentifier)}`;
+
+      const subject = encodeURIComponent(`📩 [طلب فرصة أخيرة] التماس جديد لفك الحظر`);
+      const body = encodeURIComponent(
+`وصلك طلب "فرصة أخيرة" جديد من مستخدم محظور على المنصة:
+
+---------------------------------------------------
+معرف الجهاز/المستخدم: ${clientIdentifier}
+رسالة التماس الفرصة الأخيرة:
+"${appealMessage}"
+
+تاريخ الطلب: ${new Date().toLocaleString('ar-EG')}
+---------------------------------------------------
+
+للموافقة على إعطائه الفرصة الأخيرة وفك الحظر فوراً، اضغط على الرابط التالي:
+${directUnbanLink}
+`
+      );
+
+      // Trigger Dispatch to Master Email
+      window.open(`mailto:${SECURE_ADMIN_HASH}?subject=${subject}&body=${body}`, '_blank');
+    }
+
+    function checkAppealState() {
+      if (localStorage.getItem('mrstoud_appeal_submitted') === 'true') {
+        const statusMsg = document.getElementById('appealStatusMsg');
+        const lastChanceBox = document.getElementById('lastChanceBox');
+        
+        lastChanceBox.innerHTML = `
+          <h3 style="color: #e67e22; font-size: 15px; margin-bottom: 6px;">
+            <i class="fas fa-clock"></i> طلبك قيد المراجعة
+          </h3>
+          <p style="color: #aaa; font-size: 12px; line-height: 1.5;">
+            لقد قمت بتقديم طلب الفرصة الأخيرة بالفعل. الطلب حالياً معروض على إدارة المنصة للمراجعة.
+          </p>
+        `;
+      }
+    }
+
+    // Handle Email Action Link Execution
+    function handleEmailActions() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const action = urlParams.get('action');
+      const token = urlParams.get('token');
+
+      if (action === 'grant_last_chance' && token) {
+        localStorage.removeItem('mrstoud_is_hacker_banned');
+        localStorage.removeItem('mrstoud_appeal_submitted');
+        alert(`✅ تم منح الفرصة الأخيرة وفك الحظر بنجاح!`);
+        window.location.href = window.location.pathname;
+      }
+    }
+
+    // Last Chance Appeal Form Submit
+    document.getElementById('lastChanceForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const appealRaw = document.getElementById('appealText').value;
+      const cleanAppeal = sanitizeAppealInput(appealRaw);
+
+      if (cleanAppeal.length < 5) {
+        alert('يرجى كتابة سبب التماس واضح.');
+        return;
+      }
+
+      dispatchAppealToAdmin(cleanAppeal);
+      localStorage.setItem('mrstoud_appeal_submitted', 'true');
+      checkAppealState();
+    });
+
+    // Sidebar and Modal controls
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('overlay');
+
+    document.getElementById('menuToggleBtn').addEventListener('click', () => {
+      sidebar.classList.add('open');
+      overlay.classList.add('active');
+    });
+
+    document.getElementById('closeSidebarBtn').addEventListener('click', () => {
+      sidebar.classList.remove('open');
+      overlay.classList.remove('active');
+    });
+
+    document.getElementById('adminBtn').addEventListener('click', () => {
+      document.getElementById('loginModal').classList.add('active');
+    });
+
+    document.querySelectorAll('.closeModal').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.getElementById('loginModal').classList.remove('active');
+      });
+    });
+
+    document.getElementById('loginForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const pwd = document.getElementById('adminPassword').value;
+      if (pwd === 'marwanhacker99') {
+        localStorage.setItem('mrstoud_is_master_admin', 'true');
+        localStorage.removeItem('mrstoud_is_hacker_banned');
+        alert('تم الدخول كمسؤول.');
+        window.location.reload();
+      } else {
+        alert('كلمة المرور غير صحيحة');
+      }
+    });
+
+    // Run Security Checks
+    checkGlobalBanStatus();
+    handleEmailActions();
+  </script>
 </body>
 </html>
