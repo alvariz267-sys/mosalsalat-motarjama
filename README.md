@@ -380,7 +380,7 @@
       margin-bottom: 15px;
     }
 
-    .video-container iframe {
+    .video-container iframe, .video-container video {
       position: absolute;
       top: 0;
       left: 0;
@@ -560,12 +560,21 @@
 
         <div class="form-group">
           <label for="showImage">رابط صورة الغلاف (URL):</label>
-          <input type="url" id="showImage" required placeholder="https://example.com/image.jpg">
+          <input type="url" id="showImage" placeholder="https://example.com/image.jpg">
         </div>
+
+        <!-- إضافة خيار رفع فيديو من ملفات الهاتف -->
+        <div class="form-group" style="background: #181818; padding: 12px; border-radius: 8px; border: 1px dashed var(--primary-color);">
+          <label for="showVideoFile" style="color: #fff; font-weight: bold;"><i class="fas fa-file-video"></i> اختيار فيديو من ملفات الهاتف:</label>
+          <input type="file" id="showVideoFile" accept="video/*" style="padding: 6px; cursor: pointer;">
+          <small style="color: var(--text-secondary); display: block; margin-top: 4px;">اختر ملف فيديو مباشر من ذاكرة جهازك</small>
+        </div>
+
+        <div style="text-align: center; margin: 10px 0; color: var(--text-secondary); font-size: 12px;">— أو استخدم رابط فيديو خارجي —</div>
 
         <div class="form-group">
           <label for="showVideoUrl">رابط البث / مشغل الفيديو (Embed URL):</label>
-          <input type="text" id="showVideoUrl" placeholder="https://www.youtube.com/embed/..." required>
+          <input type="text" id="showVideoUrl" placeholder="https://www.youtube.com/embed/...">
         </div>
 
         <div class="form-group">
@@ -599,7 +608,8 @@
         <button class="close-btn closeModal">&times;</button>
       </div>
       
-      <div class="video-container">
+      <!-- إمكانية التبديل بين Iframe ومُشغل فيديو HTML5 محلي -->
+      <div class="video-container" id="videoPlayerBox">
         <iframe id="videoIframe" src="" allowfullscreen></iframe>
       </div>
 
@@ -663,8 +673,10 @@
     const adminShowsList = document.getElementById('adminShowsList');
     const closeModalBtns = document.querySelectorAll('.closeModal');
     const cancelEditBtn = document.getElementById('cancelEditBtn');
+    const showVideoFile = document.getElementById('showVideoFile');
 
     // Player Elements
+    const videoPlayerBox = document.getElementById('videoPlayerBox');
     const videoIframe = document.getElementById('videoIframe');
     const playerTitle = document.getElementById('playerTitle');
     const playerQuality = document.getElementById('playerQuality');
@@ -686,7 +698,7 @@
         card.onclick = () => openPlayer(show);
         card.innerHTML = `
           ${show.badge ? `<div class="show-badge">${show.badge}</div>` : ''}
-          <img src="${show.image}" alt="${show.title}" class="show-thumb" onerror="this.src='https://via.placeholder.com/300x400/222/fff?text=mrstoud'">
+          <img src="${show.image || 'https://via.placeholder.com/300x400/222/fff?text=mrstoud'}" alt="${show.title}" class="show-thumb" onerror="this.src='https://via.placeholder.com/300x400/222/fff?text=mrstoud'">
           <div class="show-info">
             <div class="show-title">${show.title}</div>
           </div>
@@ -715,12 +727,19 @@
     // Open Player
     function openPlayer(show) {
       playerTitle.textContent = show.title;
-      videoIframe.src = show.videoUrl || '';
       playerQuality.textContent = show.quality || 'عالية';
       
-      if (show.downloadUrl) {
+      // التمييز بين ملف فيديو محلي رفع من الهاتف ورابط خارجي
+      if (show.isVideoLocal) {
+        videoPlayerBox.innerHTML = `<video controls autoplay style="width:100%; height:100%;"><source src="${show.videoUrl}" type="video/mp4">متصفحك لا يدعم هذا الفيديو</video>`;
+      } else {
+        videoPlayerBox.innerHTML = `<iframe id="videoIframe" src="${show.videoUrl || ''}" allowfullscreen></iframe>`;
+      }
+      
+      if (show.downloadUrl || show.isVideoLocal) {
+        const dUrl = show.downloadUrl || show.videoUrl;
         downloadContainer.innerHTML = `
-          <a href="${show.downloadUrl}" target="_blank" class="download-btn">
+          <a href="${dUrl}" download target="_blank" class="download-btn">
             <i class="fas fa-download"></i> تحميل الفيديو على الهاتف
           </a>
         `;
@@ -733,7 +752,11 @@
 
     // Save Data
     function saveData() {
-      localStorage.setItem('mrstoud_shows', JSON.stringify(shows));
+      try {
+        localStorage.setItem('mrstoud_shows', JSON.stringify(shows));
+      } catch (e) {
+        alert('حجم ملف الفيديو كبير جداً للتخزين الداخلي المحلي! يفضل استخدام الفيديوهات الخفيفة.');
+      }
       renderShows();
       renderAdminList();
     }
@@ -754,7 +777,7 @@
         document.getElementById('showTitle').value = show.title;
         document.getElementById('showBadge').value = show.badge || '';
         document.getElementById('showImage').value = show.image || '';
-        document.getElementById('showVideoUrl').value = show.videoUrl || '';
+        document.getElementById('showVideoUrl').value = show.isVideoLocal ? '' : (show.videoUrl || '');
         document.getElementById('showQuality').value = show.quality || '';
         document.getElementById('showDownloadUrl').value = show.downloadUrl || '';
 
@@ -803,7 +826,7 @@
         loginModal.classList.remove('active');
         adminModal.classList.remove('active');
         playerModal.classList.remove('active');
-        videoIframe.src = ''; // stop playback
+        videoPlayerBox.innerHTML = `<iframe id="videoIframe" src="" allowfullscreen></iframe>`; // Stop video
       });
     });
 
@@ -840,15 +863,30 @@
       const title = document.getElementById('showTitle').value;
       const badge = document.getElementById('showBadge').value;
       const image = document.getElementById('showImage').value;
-      const videoUrl = document.getElementById('showVideoUrl').value;
+      let videoUrl = document.getElementById('showVideoUrl').value;
       const quality = document.getElementById('showQuality').value;
       const downloadUrl = document.getElementById('showDownloadUrl').value;
+      const fileInput = showVideoFile.files[0];
 
+      // معالجة إضافة ملف فيديو من الهاتف
+      if (fileInput) {
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          const fileDataUrl = evt.target.result;
+          saveShowObject(editId, title, badge, image, fileDataUrl, quality, downloadUrl, true);
+        };
+        reader.readAsDataURL(fileInput);
+      } else {
+        saveShowObject(editId, title, badge, image, videoUrl, quality, downloadUrl, false);
+      }
+    });
+
+    function saveShowObject(editId, title, badge, image, videoUrl, quality, downloadUrl, isVideoLocal) {
       if (editId) {
         // Update
         const index = shows.findIndex(item => item.id == editId);
         if (index !== -1) {
-          shows[index] = { id: Number(editId), title, badge, image, videoUrl, quality, downloadUrl };
+          shows[index] = { id: Number(editId), title, badge, image, videoUrl, quality, downloadUrl, isVideoLocal };
         }
       } else {
         // Add New
@@ -859,15 +897,16 @@
           image,
           videoUrl,
           quality,
-          downloadUrl
+          downloadUrl,
+          isVideoLocal
         };
         shows.unshift(newShow);
       }
 
       saveData();
       resetAdminForm();
-      alert('تم حفظ البيانات بنجاح!');
-    });
+      alert('تم حفظ الفيديو بنجاح!');
+    }
 
     // Initial Launch
     renderShows();
