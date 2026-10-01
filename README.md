@@ -17,6 +17,17 @@
       --border-color: #2a2a2a;
     }
 
+    [data-theme="light"] {
+      --primary-color: #e50914;
+      --primary-hover: #b80710;
+      --bg-color: #f4f4f4;
+      --card-bg: #ffffff;
+      --text-color: #111111;
+      --text-secondary: #666;
+      --sidebar-bg: #ffffff;
+      --border-color: #ddd;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
@@ -30,6 +41,7 @@
       color: var(--text-color);
       direction: rtl;
       padding-bottom: 30px;
+      transition: background-color 0.3s, color 0.3s;
     }
 
     /* Blocked Hacker Screen */
@@ -64,12 +76,12 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background-color: #050505;
+      background-color: var(--sidebar-bg);
       padding: 12px 18px;
       position: sticky;
       top: 0;
       z-index: 100;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.8);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
       border-bottom: 1px solid var(--border-color);
     }
 
@@ -99,7 +111,7 @@
     }
 
     .icon-btn:hover, .icon-btn:active {
-      background-color: #222;
+      background-color: var(--border-color);
       color: var(--primary-color);
     }
 
@@ -111,7 +123,7 @@
       width: 300px;
       height: 100%;
       background-color: var(--sidebar-bg);
-      box-shadow: -4px 0 15px rgba(0, 0, 0, 0.8);
+      box-shadow: -4px 0 15px rgba(0, 0, 0, 0.4);
       transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       z-index: 200;
       padding: 20px 15px;
@@ -149,8 +161,8 @@
       padding: 10px 12px 10px 35px;
       border-radius: 6px;
       border: 1px solid var(--border-color);
-      background-color: #1a1a1a;
-      color: #fff;
+      background-color: var(--card-bg);
+      color: var(--text-color);
       font-size: 14px;
       outline: none;
     }
@@ -200,13 +212,13 @@
     }
 
     .sidebar-menu a:hover, .sidebar-menu button:hover, .sidebar-menu a.active-link {
-      background-color: #222;
+      background-color: var(--border-color);
       color: var(--primary-color);
     }
 
     .badge-count {
-      background-color: #2a2a2a;
-      color: #aaa;
+      background-color: var(--border-color);
+      color: var(--text-secondary);
       font-size: 11px;
       padding: 2px 7px;
       border-radius: 10px;
@@ -218,7 +230,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0,0,0,0.7);
+      background: rgba(0,0,0,0.6);
       backdrop-filter: blur(2px);
       display: none;
       z-index: 150;
@@ -249,7 +261,7 @@
     }
 
     .ad-banner {
-      background: linear-gradient(135deg, #1f1f1f, #141414);
+      background: linear-gradient(135deg, var(--card-bg), var(--sidebar-bg));
       border: 1px dashed var(--primary-color);
       color: var(--text-secondary);
       text-align: center;
@@ -277,9 +289,10 @@
       border-radius: 8px;
       overflow: hidden;
       position: relative;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
       transition: transform 0.2s;
       cursor: pointer;
+      border: 1px solid var(--border-color);
     }
 
     .show-card:hover {
@@ -333,7 +346,7 @@
     .show-title {
       font-size: 14px;
       font-weight: 600;
-      color: #fff;
+      color: var(--text-color);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -347,7 +360,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background-color: rgba(0,0,0,0.85);
+      background-color: rgba(0,0,0,0.8);
       z-index: 300;
       justify-content: center;
       align-items: center;
@@ -360,11 +373,12 @@
 
     .modal-content {
       background-color: var(--card-bg);
+      color: var(--text-color);
       border-radius: 10px;
       max-width: 650px;
       width: 100%;
       padding: 20px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.7);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
       max-height: 90vh;
       overflow-y: auto;
       border: 1px solid var(--border-color);
@@ -382,7 +396,7 @@
     .close-btn {
       background: none;
       border: none;
-      color: #fff;
+      color: var(--text-color);
       font-size: 22px;
       cursor: pointer;
     }
@@ -426,7 +440,7 @@
     }
 
     .tab-btn {
-      background: #111;
+      background: var(--sidebar-bg);
       border: 1px solid var(--border-color);
       color: var(--text-secondary);
       padding: 8px 14px;
@@ -467,8 +481,8 @@
       padding: 10px 12px;
       border-radius: 6px;
       border: 1px solid var(--border-color);
-      background-color: #121212;
-      color: #fff;
+      background-color: var(--sidebar-bg);
+      color: var(--text-color);
       font-size: 14px;
       outline: none;
     }
@@ -510,7 +524,7 @@
 
     /* Users & Ban List Styling */
     .user-card {
-      background-color: #121212;
+      background-color: var(--sidebar-bg);
       border: 1px solid var(--border-color);
       padding: 12px;
       border-radius: 6px;
@@ -530,6 +544,7 @@
     .user-name {
       font-size: 14px;
       font-weight: bold;
+      color: var(--text-color);
     }
 
     .user-email {
@@ -578,8 +593,8 @@
     }
 
     .quality-tag {
-      background-color: #2a2a2a;
-      color: #fff;
+      background-color: var(--sidebar-bg);
+      color: var(--text-color);
       padding: 4px 8px;
       border-radius: 4px;
       font-size: 12px;
@@ -607,7 +622,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      background-color: #121212;
+      background-color: var(--sidebar-bg);
       padding: 10px;
       border-radius: 6px;
       margin-bottom: 10px;
@@ -621,6 +636,7 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      color: var(--text-color);
     }
 
     .admin-actions { display: flex; gap: 8px; }
@@ -648,7 +664,7 @@
     }
 
     .server-btn {
-      background: #1f1f1f;
+      background: var(--sidebar-bg);
       border: 1px solid var(--border-color);
       color: var(--text-color);
       padding: 8px 14px;
@@ -661,11 +677,12 @@
     .server-btn.active, .server-btn:hover {
       background: var(--primary-color);
       border-color: var(--primary-color);
+      color: #fff;
     }
 
     /* Player Tools Bar (Subtitles & Enhance Controls) */
     .player-tools-bar {
-      background: #141414;
+      background: var(--sidebar-bg);
       border: 1px solid var(--border-color);
       border-radius: 8px;
       padding: 12px;
@@ -692,8 +709,8 @@
     }
 
     .tool-group select, .tool-group input[type="range"] {
-      background: #222;
-      color: #fff;
+      background: var(--card-bg);
+      color: var(--text-color);
       border: 1px solid var(--border-color);
       padding: 5px 8px;
       border-radius: 4px;
@@ -706,6 +723,7 @@
       align-items: center;
       gap: 6px;
       font-size: 12px;
+      color: var(--text-secondary);
     }
 
     .slider-container input {
@@ -727,7 +745,7 @@
     }
 
     .comment-item {
-      background: #121212;
+      background: var(--sidebar-bg);
       border: 1px solid var(--border-color);
       padding: 10px 12px;
       border-radius: 6px;
@@ -741,6 +759,47 @@
       color: var(--text-secondary);
       font-size: 11px;
       margin-bottom: 4px;
+    }
+
+    /* Extra Action Buttons inside Player Modal */
+    .extra-player-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 12px;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+
+    .action-badge-btn {
+      background: var(--sidebar-bg);
+      border: 1px solid var(--border-color);
+      color: var(--text-color);
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: 0.2s;
+    }
+
+    .action-badge-btn:hover {
+      border-color: var(--primary-color);
+      color: var(--primary-color);
+    }
+
+    .star-rating {
+      display: flex;
+      gap: 4px;
+      cursor: pointer;
+      font-size: 18px;
+      color: #ccc;
+    }
+
+    .star-rating .star.rated {
+      color: #f1c40f;
     }
   </style>
 </head>
@@ -762,6 +821,7 @@
   <nav class="navbar">
     <a href="#" class="brand" onclick="filterByCategory('all')">mrstoud</a>
     <div class="nav-actions">
+      <button class="icon-btn" id="themeToggleBtn" title="تبديل المظهر (ليلي/نهاري)"><i class="fas fa-moon" id="themeIcon"></i></button>
       <button class="icon-btn" id="menuToggleBtn" title="القائمة الجانبية"><i class="fas fa-bars"></i></button>
     </div>
   </nav>
@@ -802,6 +862,17 @@
         </a>
       </li>
       <li>
+        <a href="#" onclick="filterByCategory('favorites', event)">
+          <div class="sidebar-menu-left"><i class="fas fa-heart" style="color:var(--primary-color);"></i> المفضلة</div>
+          <span class="badge-count" id="countFavorites">0</span>
+        </a>
+      </li>
+      <li>
+        <a href="#" onclick="filterByCategory('history', event)">
+          <div class="sidebar-menu-left"><i class="fas fa-history"></i> سجل المشاهدة</div>
+        </a>
+      </li>
+      <li>
         <a href="#" id="privacyBtn">
           <div class="sidebar-menu-left"><i class="fas fa-user-lock"></i> سياسة الخصوصية</div>
         </a>
@@ -828,7 +899,7 @@
   <div class="modal" id="welcomeModal">
     <div class="modal-content" style="text-align: center; max-width: 450px;">
       <i class="fas fa-film" style="font-size: 50px; color: var(--primary-color); margin-bottom: 15px;"></i>
-      <h2 style="margin-bottom: 10px; color: #fff;">مرحباً بك في منصة mrstoud!</h2>
+      <h2 style="margin-bottom: 10px; color: var(--text-color);">مرحباً بك في منصة mrstoud!</h2>
       <p style="color: var(--text-secondary); font-size: 14px; line-height: 1.6; margin-bottom: 20px;">
         يسعدنا انضمامك إلينا. يمكنك الآن مشاهدة أحدث الأفلام والمسلسلات عالية الجودة بكل أمان وسهولة. نتمنى لك تجربة ممتعة!
       </p>
@@ -843,10 +914,10 @@
         <h3><i class="fas fa-user-lock"></i> سياسة الخصوصية</h3>
         <button class="close-btn closeModal">&times;</button>
       </div>
-      <div style="font-size: 13px; color: #ccc; line-height: 1.7; display: flex; flex-direction: column; gap: 12px;">
+      <div style="font-size: 13px; color: var(--text-secondary); line-height: 1.7; display: flex; flex-direction: column; gap: 12px;">
         <p>مرحباً بك في منصة <strong>mrstoud</strong>. نحن نولي أهمية قصوى لخصوصية مستخدمينا وأمان بياناتهم الشخصية.</p>
         <h4 style="color: var(--primary-color); margin-top: 5px;">1. جمع البيانات</h4>
-        <p>قد نقوم بجمع بعض البيانات غير الشخصية مثل نوع المتصفح، عنوان IP، والتعليقات التي توضع على المحتوى لغرض تحسين الأداء وتجربة المستخدم.</p>
+        <p>قد نقوم بجمع بعض البيانات غير الشخصية مثل نوع المتصفح، عنوان IP، والتعليقات والتقييمات والمفضلة لغرض تحسين الأداء وتجربة المستخدم.</p>
         <h4 style="color: var(--primary-color); margin-top: 5px;">2. حماية البيانات وأمانها</h4>
         <p>نحن نستخدم أنظمة جدار حماية (WAF) متطورة لرصد أي هجمات أو محاولات اختراق وضمان حماية المستخدمين والسيرفرات من أي استغلال خبيث.</p>
         <h4 style="color: var(--primary-color); margin-top: 5px;">3. الإعلانات وملفات الكوكيز (Cookies)</h4>
@@ -927,8 +998,8 @@
             <input type="url" id="showImage" placeholder="https://example.com/image.jpg">
           </div>
 
-          <div class="form-group" style="background: #181818; padding: 12px; border-radius: 8px; border: 1px dashed var(--primary-color);">
-            <label for="showVideoFile" style="color: #fff; font-weight: bold;"><i class="fas fa-file-video"></i> اختيار فيديو من الهاتف:</label>
+          <div class="form-group" style="background: var(--sidebar-bg); padding: 12px; border-radius: 8px; border: 1px dashed var(--primary-color);">
+            <label for="showVideoFile" style="color: var(--text-color); font-weight: bold;"><i class="fas fa-file-video"></i> اختيار فيديو من الهاتف:</label>
             <input type="file" id="showVideoFile" accept="video/*" style="padding: 6px; cursor: pointer;">
           </div>
 
@@ -1009,8 +1080,30 @@
       <!-- Server Selector Section -->
       <div id="serverSelectorContainer" class="server-btn-group"></div>
 
+      <!-- Extra Action Bar (Favorites, Rating & Share) -->
+      <div class="extra-player-actions">
+        <button class="action-badge-btn" id="favoriteToggleBtn" onclick="toggleCurrentFavorite()">
+          <i class="far fa-heart" id="favoriteIcon"></i> <span id="favoriteBtnText">أضف للمفضلة</span>
+        </button>
+
+        <button class="action-badge-btn" onclick="shareCurrentShow()">
+          <i class="fas fa-share-alt"></i> مشاركة
+        </button>
+
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="font-size: 12px; color: var(--text-secondary);">تقييمك:</span>
+          <div class="star-rating" id="starRatingContainer">
+            <i class="fas fa-star star" onclick="rateShow(1)"></i>
+            <i class="fas fa-star star" onclick="rateShow(2)"></i>
+            <i class="fas fa-star star" onclick="rateShow(3)"></i>
+            <i class="fas fa-star star" onclick="rateShow(4)"></i>
+            <i class="fas fa-star star" onclick="rateShow(5)"></i>
+          </div>
+        </div>
+      </div>
+
       <!-- Interactive Player Tools (Subtitles, Quality & Audio Booster) -->
-      <div class="player-tools-bar">
+      <div class="player-tools-bar" style="margin-top: 12px;">
         <div class="tool-row">
           <div class="tool-group">
             <i class="fas fa-closed-captioning" style="color:var(--primary-color);"></i>
@@ -1090,7 +1183,6 @@
        ========================================================= */
 
     function checkGlobalBanStatus() {
-      // إذا كان المالك موثقاً نهائياً، امنع تفعيل الحظر تماماً
       if (localStorage.getItem('mrstoud_verified_owner') === 'true') {
         return;
       }
@@ -1101,7 +1193,6 @@
     }
 
     function triggerAutoHackerBan(reason) {
-      // استثناء المدير المالك الموثق نهائياً من أي حظر
       if (localStorage.getItem('mrstoud_verified_owner') === 'true') {
         return;
       }
@@ -1216,15 +1307,37 @@
     let shows = JSON.parse(localStorage.getItem('mrstoud_shows')) || defaultShows;
     let users = JSON.parse(localStorage.getItem('mrstoud_users')) || defaultUsers;
     let commentsData = JSON.parse(localStorage.getItem('mrstoud_comments')) || {};
+    let favoritesData = JSON.parse(localStorage.getItem('mrstoud_favorites')) || [];
+    let historyData = JSON.parse(localStorage.getItem('mrstoud_history')) || [];
+    let ratingsData = JSON.parse(localStorage.getItem('mrstoud_ratings')) || {};
+
     let currentShowId = null;
     let currentCategory = 'all';
     let isAdminLoggedIn = false;
 
     let loginAttempts = parseInt(localStorage.getItem('mrstoud_login_attempts') || '0');
     let lockoutUntil = parseInt(localStorage.getItem('mrstoud_lockout_until') || '0');
-    
-    // عداد الإدخال الناجح لكلمة المرور للمالك
     let ownerCorrectStreak = parseInt(localStorage.getItem('mrstoud_owner_streak') || '0');
+
+    // Theme Setup
+    const currentTheme = localStorage.getItem('mrstoud_theme') || 'dark';
+    if (currentTheme === 'light') {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeIcon').className = 'fas fa-sun';
+    }
+
+    document.getElementById('themeToggleBtn').addEventListener('click', () => {
+      const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+      if (isLight) {
+        document.documentElement.removeAttribute('data-theme');
+        localStorage.setItem('mrstoud_theme', 'dark');
+        document.getElementById('themeIcon').className = 'fas fa-moon';
+      } else {
+        document.documentElement.setAttribute('data-theme', 'light');
+        localStorage.setItem('mrstoud_theme', 'light');
+        document.getElementById('themeIcon').className = 'fas fa-sun';
+      }
+    });
 
     // DOM Elements
     const showsGrid = document.getElementById('showsGrid');
@@ -1238,6 +1351,7 @@
     const countAll = document.getElementById('countAll');
     const countSeries = document.getElementById('countSeries');
     const countMovies = document.getElementById('countMovies');
+    const countFavorites = document.getElementById('countFavorites');
 
     const adminBtn = document.getElementById('adminBtn');
     const privacyBtn = document.getElementById('privacyBtn');
@@ -1266,7 +1380,6 @@
     const commentForm = document.getElementById('commentForm');
     const commentsList = document.getElementById('commentsList');
 
-    // Elements for Video Adjustments
     const brightnessSlider = document.getElementById('brightnessSlider');
     const contrastSlider = document.getElementById('contrastSlider');
     const volumeBoostSlider = document.getElementById('volumeBoostSlider');
@@ -1274,7 +1387,6 @@
     const subtitleSelect = document.getElementById('subtitleSelect');
     const qualityBoostSelect = document.getElementById('qualityBoostSelect');
 
-    // Audio & Video Enhance Functions
     window.applyVideoFilters = function() {
       const b = brightnessSlider.value;
       const c = contrastSlider.value;
@@ -1324,7 +1436,6 @@
       qualityBoostSelect.value = 'standard';
     }
 
-    // First visit welcome check
     function checkFirstVisit() {
       if (!localStorage.getItem('mrstoud_visited_before')) {
         welcomeModal.classList.add('active');
@@ -1347,10 +1458,10 @@
       countAll.textContent = shows.length;
       countSeries.textContent = seriesCount;
       countMovies.textContent = moviesCount;
+      countFavorites.textContent = favoritesData.length;
     }
 
     function checkLockoutStatus() {
-      // إذا كان المالك موثقاً نهائياً، لا يوجد قفل أبداً
       if (localStorage.getItem('mrstoud_verified_owner') === 'true') {
         return false;
       }
@@ -1381,6 +1492,10 @@
         filtered = filtered.filter(show => show.category === 'series');
       } else if (currentCategory === 'movie') {
         filtered = filtered.filter(show => show.category === 'movie');
+      } else if (currentCategory === 'favorites') {
+        filtered = shows.filter(show => favoritesData.includes(show.id));
+      } else if (currentCategory === 'history') {
+        filtered = shows.filter(show => historyData.includes(show.id));
       }
 
       if (cleanFilter) {
@@ -1388,7 +1503,7 @@
       }
 
       if (filtered.length === 0) {
-        showsGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #777; padding: 30px;">لا توجد أية نتائج مطابقة لهذا القسم أو البحث</p>';
+        showsGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--text-secondary); padding: 30px;">لا توجد أية نتائج مطابقة لهذا القسم أو البحث</p>';
         return;
       }
 
@@ -1422,6 +1537,10 @@
         sectionTitle.innerHTML = '<i class="fas fa-tv"></i> قائمة المسلسلات';
       } else if (category === 'movie') {
         sectionTitle.innerHTML = '<i class="fas fa-film"></i> قائمة الأفلام';
+      } else if (category === 'favorites') {
+        sectionTitle.innerHTML = '<i class="fas fa-heart" style="color:var(--primary-color);"></i> قائمة المفضلة';
+      } else if (category === 'history') {
+        sectionTitle.innerHTML = '<i class="fas fa-history"></i> سجل المشاهدة (Continue Watching)';
       } else {
         sectionTitle.innerHTML = '<i class="fas fa-play-circle"></i> جميع الأعمال';
       }
@@ -1487,7 +1606,7 @@
       });
 
       if (bannedCount === 0) {
-        bannedUsersContainer.innerHTML = '<p style="color:#777; font-size:13px; text-align:center;">لا يوجد مستخدمين محظورين حالياً</p>';
+        bannedUsersContainer.innerHTML = '<p style="color:var(--text-secondary); font-size:13px; text-align:center;">لا يوجد مستخدمين محظورين حالياً</p>';
       }
     }
 
@@ -1539,7 +1658,6 @@
       renderUsersAndBans();
     }
 
-    /* Multi-Server & Video Stream Logic with Subtitles */
     function playVideoServer(url, isLocal = false, localObj = null) {
       if (isLocal && localObj) {
         const localBlobUrl = URL.createObjectURL(localObj);
@@ -1555,7 +1673,7 @@
         const safeUrl = sanitizeInput(url);
         videoPlayerBox.innerHTML = `<iframe id="videoIframe" src="${safeUrl}" allowfullscreen></iframe>`;
       } else {
-        videoPlayerBox.innerHTML = `<div style="padding:20px; text-align:center; color:#aaa;">لا يوجد فيديو متاح في هذا السيرفر</div>`;
+        videoPlayerBox.innerHTML = `<div style="padding:20px; text-align:center; color:var(--text-secondary);">لا يوجد فيديو متاح في هذا السيرفر</div>`;
       }
       applyVideoFilters();
     }
@@ -1592,13 +1710,62 @@
       }
     }
 
-    /* Comments Handling */
+    // New Favorite & History & Rating Functions
+    window.toggleCurrentFavorite = function() {
+      if (!currentShowId) return;
+      const index = favoritesData.indexOf(currentShowId);
+      if (index > -1) {
+        favoritesData.splice(index, 1);
+        document.getElementById('favoriteIcon').className = 'far fa-heart';
+        document.getElementById('favoriteBtnText').textContent = 'أضف للمفضلة';
+      } else {
+        favoritesData.push(currentShowId);
+        document.getElementById('favoriteIcon').className = 'fas fa-heart';
+        document.getElementById('favoriteIcon').style.color = 'var(--primary-color)';
+        document.getElementById('favoriteBtnText').textContent = 'تم الإضافة للمفضلة';
+      }
+      localStorage.setItem('mrstoud_favorites', JSON.stringify(favoritesData));
+      updateCounters();
+    };
+
+    window.shareCurrentShow = function() {
+      if (navigator.share) {
+        navigator.share({
+          title: playerTitle.textContent,
+          text: 'شاهد هذا العمل الرائع على منصة mrstoud',
+          url: window.location.href,
+        }).catch(() => {});
+      } else {
+        navigator.clipboard.writeText(window.location.href);
+        alert('تم نسخ رابط العمل بنجاح!');
+      }
+    };
+
+    window.rateShow = function(stars) {
+      if (!currentShowId) return;
+      ratingsData[currentShowId] = stars;
+      localStorage.setItem('mrstoud_ratings', JSON.stringify(ratingsData));
+      updateStarDisplay(stars);
+      alert(`شكراً لتقييمك! تم حفظ تقييمك (${stars} نجوم) بنجاح.`);
+    };
+
+    function updateStarDisplay(stars) {
+      const starsEls = document.querySelectorAll('#starRatingContainer .star');
+      starsEls.forEach((st, idx) => {
+        if (idx < stars) {
+          st.classList.add('rated');
+        } else {
+          st.classList.remove('rated');
+        }
+      });
+    }
+
     function renderComments(showId) {
       commentsList.innerHTML = '';
       const list = commentsData[showId] || [];
 
       if (list.length === 0) {
-        commentsList.innerHTML = '<p style="color:#777; font-size:12px; text-align:center;">لا توجد تعليقات بعد. كن أول من يعلق!</p>';
+        commentsList.innerHTML = '<p style="color:var(--text-secondary); font-size:12px; text-align:center;">لا توجد تعليقات بعد. كن أول من يعلق!</p>';
         return;
       }
 
@@ -1650,6 +1817,28 @@
       
       resetVideoTools();
       renderServerButtons(show);
+
+      // Check favorite state for UI
+      if (favoritesData.includes(show.id)) {
+        document.getElementById('favoriteIcon').className = 'fas fa-heart';
+        document.getElementById('favoriteIcon').style.color = 'var(--primary-color)';
+        document.getElementById('favoriteBtnText').textContent = 'تم الإضافة للمفضلة';
+      } else {
+        document.getElementById('favoriteIcon').className = 'far fa-heart';
+        document.getElementById('favoriteIcon').style.color = '';
+        document.getElementById('favoriteBtnText').textContent = 'أضف للمفضلة';
+      }
+
+      // Check user rating state
+      const currentRating = ratingsData[show.id] || 0;
+      updateStarDisplay(currentRating);
+
+      // Add to History
+      if (!historyData.includes(show.id)) {
+        historyData.unshift(show.id);
+        if (historyData.length > 20) historyData.pop();
+        localStorage.setItem('mrstoud_history', JSON.stringify(historyData));
+      }
 
       if (show.isVideoLocal && show.videoObject) {
         playVideoServer(null, true, show.videoObject);
@@ -1769,7 +1958,6 @@
         loginAttempts = 0;
         localStorage.setItem('mrstoud_login_attempts', '0');
         
-        // زيادة عداد إدخال الكود الصحيح للمالك
         if (localStorage.getItem('mrstoud_verified_owner') !== 'true') {
           ownerCorrectStreak++;
           localStorage.setItem('mrstoud_owner_streak', ownerCorrectStreak.toString());
@@ -1787,7 +1975,6 @@
         passwordInput.value = '';
         lockoutTimer.innerHTML = '';
       } else {
-        // إذا كتب كلمة المرور خطأ، يتم تصفير عداد الـ 5 مرات المتتالية للتوثيق
         ownerCorrectStreak = 0;
         localStorage.setItem('mrstoud_owner_streak', '0');
 
