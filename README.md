@@ -349,22 +349,6 @@
 
     .show-info { padding: 12px; }
     .show-title { font-size: 16px; font-weight: bold; margin-bottom: 5px; }
-    
-    /* Delete button for admin on show card */
-    .admin-delete-card-btn {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      background: rgba(231, 76, 60, 0.9);
-      color: white;
-      border: none;
-      border-radius: 4px;
-      padding: 5px 8px;
-      font-size: 12px;
-      cursor: pointer;
-      display: none;
-      z-index: 10;
-    }
 
     /* Similar Shows Component */
     .similar-shows-box {
@@ -426,18 +410,17 @@
       font-size: 12px;
     }
 
-    /* Privacy Policy Section (Footer) */
-    .privacy-section {
+    /* Privacy Policy Modal Window */
+    .privacy-modal-content {
       background-color: var(--card-bg);
+      border-radius: 10px;
+      max-width: 650px;
+      width: 100%;
       padding: 25px;
-      border-radius: 8px;
-      margin-top: 60px;
       border: 1px solid var(--border-color);
       line-height: 1.6;
-    }
-
-    .privacy-section h3 {
-      color: var(--primary-color);
+      max-height: 85vh;
+      overflow-y: auto;
     }
   </style>
 </head>
@@ -490,7 +473,7 @@
 
     <ul class="sidebar-menu">
       <li><a href="#gallery"><i class="fas fa-film"></i> الأفلام والمسلسلات</a></li>
-      <li><a href="#privacy"><i class="fas fa-user-lock"></i> سياسة الخصوصية</a></li>
+      <li><a href="#" id="privacySidebarBtn"><i class="fas fa-user-lock"></i> سياسة الخصوصية</a></li>
       <hr style="border-color: var(--border-color); margin: 15px 0;">
       <li><button id="adminBtn"><i class="fas fa-user-shield"></i> لوحة التحكم (للمدير)</button></li>
     </ul>
@@ -500,12 +483,17 @@
   <main class="container" id="userViewSection">
     <h2 style="margin-bottom: 15px;"><i class="fas fa-play-circle"></i> قائمة الأفلام والمسلسلات</h2>
     <div class="shows-grid" id="showsGrid">
-      <!-- Displays dynamic items, delete button for admin, similar shows, and comment section -->
+      <!-- Displays dynamic items, similar shows, and comment section -->
     </div>
+  </main>
 
-    <!-- Privacy Policy Section (At the Footer of the Site) -->
-    <section id="privacy" class="privacy-section">
-      <h3 style="margin-bottom: 10px;"><i class="fas fa-shield-alt"></i> سياسة الخصوصية</h3>
+  <!-- Privacy Policy Modal (From Sidebar) -->
+  <div class="modal" id="privacyModal">
+    <div class="privacy-modal-content">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+        <h3 style="color: var(--primary-color);"><i class="fas fa-shield-alt"></i> سياسة الخصوصية</h3>
+        <button class="close-btn closeModal">&times;</button>
+      </div>
       <p>مرحباً بك في منصتنا. نحن نحترم خصوصيتك ونلتزم بحماية البيانات الشخصية التي تشاركها معنا:</p>
       <ul style="margin-right: 20px; margin-top: 10px; color: #ccc;">
         <li><strong>جمع البيانات:</strong> نقوم بجمع معلومات بسيطة تهدف إلى تحسين تجربة المشاهدة والتصفح.</li>
@@ -513,8 +501,8 @@
         <li><strong>حماية المحتوى:</strong> جميع الفيديوهات والمحتويات المعروضة محميّة وتخضع لمعايير الاستخدام العادل والملكية الفكرية.</li>
         <li><strong>مشاركة البيانات:</strong> لا نقوم ببيع أو مشاركة بيانات المستخدمين مع أي أطراف خارجية.</li>
       </ul>
-    </section>
-  </main>
+    </div>
+  </div>
 
   <!-- Master Admin Control Panel Modal (Admin Mode View) -->
   <div class="modal" id="adminPanelModal">
@@ -570,7 +558,7 @@
         </form>
       </div>
 
-      <!-- Tab 2: Manage Shows & Servers -->
+      <!-- Tab 2: Manage Shows & Servers (Delete button located here) -->
       <div class="tab-content" id="manageShowsTab">
         <div id="showsListContainer"></div>
       </div>
@@ -715,6 +703,14 @@
       overlay.classList.remove('active');
     });
 
+    // Privacy Policy Sidebar Trigger
+    document.getElementById('privacySidebarBtn').addEventListener('click', (e) => {
+      e.preventDefault();
+      sidebar.classList.remove('open');
+      overlay.classList.remove('active');
+      document.getElementById('privacyModal').classList.add('active');
+    });
+
     document.getElementById('adminBtn').addEventListener('click', () => {
       sidebar.classList.remove('open');
       overlay.classList.remove('active');
@@ -730,9 +726,11 @@
       btn.addEventListener('click', () => {
         document.getElementById('loginModal').classList.remove('active');
         document.getElementById('adminPanelModal').classList.remove('active');
+        document.getElementById('privacyModal').classList.remove('active');
       });
     });
 
+    // Updated Admin Login Password Check
     document.getElementById('loginForm').addEventListener('submit', (e) => {
       e.preventDefault();
       if (document.getElementById('adminPassword').value === 'marwanhacker99') {
@@ -818,12 +816,11 @@
       renderShowsGrid();
     });
 
-    // Render User Shows Grid with Comments, Similar Shows, and Admin Delete Button
+    // Render User Shows Grid with Comments and Similar Shows (No delete button on cards)
     function renderShowsGrid() {
       const grid = document.getElementById('showsGrid');
       grid.innerHTML = showsData.length ? '' : '<p style="color:#aaa;">لا توجد أفلام أو مسلسلات مضافة حالياً.</p>';
       
-      // أمثلة مقترحة للمسلسلات والأفلام المشابهة
       const similarExamples = [
         '<span class="similar-item">صراع الألعاب</span>',
         '<span class="similar-item">الهروب الكبير</span>',
@@ -840,14 +837,8 @@
           <div class="comment-item"><strong>${c.user}:</strong> ${c.text}</div>
         `).join('');
 
-        // زر المسح الخاص بالمدير فقط فوق البطاقة
-        let adminDeleteBtnHtml = isMasterAdmin() 
-          ? `<button class="admin-delete-card-btn" style="display:block;" onclick="deleteShow(${item.id})"><i class="fas fa-trash-alt"></i> حذف</button>` 
-          : '';
-
         grid.innerHTML += `
           <div class="show-card">
-            ${adminDeleteBtnHtml}
             ${mediaHtml}
             <div class="show-info">
               <span style="background:var(--primary-color); padding:2px 6px; border-radius:4px; font-size:11px;">${item.type || 'عمل'}</span>
@@ -897,7 +888,7 @@
       }
     }
 
-    // Admin Shows List Rendering
+    // Admin Shows List Rendering (With Delete button exclusively here)
     function renderShowsListAdmin() {
       const container = document.getElementById('showsListContainer');
       container.innerHTML = showsData.length ? '' : '<p style="color:#aaa;">لا توجد أعمال لإدارتها.</p>';
@@ -909,7 +900,7 @@
               <strong>${item.title} (${item.type || 'عمل'})</strong>
               <div style="font-size:11px; color:#aaa;">السيرفرات: ${item.servers.length ? item.servers.join(', ') : 'مباشر'}</div>
             </div>
-            <button class="action-btn-small btn-danger" onclick="deleteShow(${item.id})">حذف</button>
+            <button class="action-btn-small btn-danger" onclick="deleteShow(${item.id})"><i class="fas fa-trash-alt"></i> حذف</button>
           </div>
         `;
       });
