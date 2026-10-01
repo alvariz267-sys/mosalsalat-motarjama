@@ -337,6 +337,7 @@
       border-radius: 8px;
       overflow: hidden;
       border: 1px solid var(--border-color);
+      position: relative;
     }
 
     .show-card video, .show-card img {
@@ -349,6 +350,41 @@
     .show-info { padding: 12px; }
     .show-title { font-size: 16px; font-weight: bold; margin-bottom: 5px; }
     
+    /* Delete button for admin on show card */
+    .admin-delete-card-btn {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: rgba(231, 76, 60, 0.9);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 5px 8px;
+      font-size: 12px;
+      cursor: pointer;
+      display: none;
+      z-index: 10;
+    }
+
+    /* Similar Shows Component */
+    .similar-shows-box {
+      margin-top: 10px;
+      background: #151515;
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px dashed var(--border-color);
+    }
+
+    .similar-item {
+      display: inline-block;
+      font-size: 11px;
+      background: #222;
+      padding: 3px 6px;
+      border-radius: 4px;
+      margin: 2px;
+      color: #ddd;
+    }
+
     /* Comment Section for User View */
     .comments-box {
       margin-top: 10px;
@@ -390,12 +426,12 @@
       font-size: 12px;
     }
 
-    /* Privacy Policy Section */
+    /* Privacy Policy Section (Footer) */
     .privacy-section {
       background-color: var(--card-bg);
       padding: 25px;
       border-radius: 8px;
-      margin-top: 40px;
+      margin-top: 60px;
       border: 1px solid var(--border-color);
       line-height: 1.6;
     }
@@ -436,7 +472,7 @@
     <div class="nav-actions">
       <!-- Admin Mode Switcher Button -->
       <button class="btn-switch-mode" id="toggleAdminModeBtn" onclick="toggleAdminUserMode()">
-        <i class="fas fa-exchange-alt"></i> <span id="modeBtnText">التحول للوحة التحكم</span>
+        <i class="fas fa-exchange-alt"></i> <span id="modeBtnText">التحول لوحة التحكم</span>
       </button>
 
       <button class="icon-btn" id="menuToggleBtn"><i class="fas fa-bars"></i></button>
@@ -464,10 +500,10 @@
   <main class="container" id="userViewSection">
     <h2 style="margin-bottom: 15px;"><i class="fas fa-play-circle"></i> قائمة الأفلام والمسلسلات</h2>
     <div class="shows-grid" id="showsGrid">
-      <!-- Displays dynamic items and comment section -->
+      <!-- Displays dynamic items, delete button for admin, similar shows, and comment section -->
     </div>
 
-    <!-- Privacy Policy Section -->
+    <!-- Privacy Policy Section (At the Footer of the Site) -->
     <section id="privacy" class="privacy-section">
       <h3 style="margin-bottom: 10px;"><i class="fas fa-shield-alt"></i> سياسة الخصوصية</h3>
       <p>مرحباً بك في منصتنا. نحن نحترم خصوصيتك ونلتزم بحماية البيانات الشخصية التي تشاركها معنا:</p>
@@ -727,7 +763,7 @@
         openAdminPanel();
       } else {
         activeMode = 'user';
-        document.getElementById('modeBtnText').innerText = 'التحول للوحة التحكم';
+        document.getElementById('modeBtnText').innerText = 'التحول لوحة التحكم';
         document.getElementById('adminPanelModal').classList.remove('active');
       }
     }
@@ -782,11 +818,19 @@
       renderShowsGrid();
     });
 
-    // Render User Shows Grid with Comments Section
+    // Render User Shows Grid with Comments, Similar Shows, and Admin Delete Button
     function renderShowsGrid() {
       const grid = document.getElementById('showsGrid');
       grid.innerHTML = showsData.length ? '' : '<p style="color:#aaa;">لا توجد أفلام أو مسلسلات مضافة حالياً.</p>';
       
+      // أمثلة مقترحة للمسلسلات والأفلام المشابهة
+      const similarExamples = [
+        '<span class="similar-item">صراع الألعاب</span>',
+        '<span class="similar-item">الهروب الكبير</span>',
+        '<span class="similar-item">عالم الظلال</span>',
+        '<span class="similar-item">السهم الذهبي</span>'
+      ].join(' ');
+
       showsData.forEach(item => {
         let mediaHtml = item.videoUrl 
           ? `<video controls src="${item.videoUrl}"></video>` 
@@ -796,14 +840,26 @@
           <div class="comment-item"><strong>${c.user}:</strong> ${c.text}</div>
         `).join('');
 
+        // زر المسح الخاص بالمدير فقط فوق البطاقة
+        let adminDeleteBtnHtml = isMasterAdmin() 
+          ? `<button class="admin-delete-card-btn" style="display:block;" onclick="deleteShow(${item.id})"><i class="fas fa-trash-alt"></i> حذف</button>` 
+          : '';
+
         grid.innerHTML += `
           <div class="show-card">
+            ${adminDeleteBtnHtml}
             ${mediaHtml}
             <div class="show-info">
               <span style="background:var(--primary-color); padding:2px 6px; border-radius:4px; font-size:11px;">${item.type || 'عمل'}</span>
               <div class="show-title" style="margin-top:5px;">${item.title}</div>
               <p style="font-size:12px; color:#aaa; margin-bottom:8px;">${item.description || 'لا يوجد وصف.'}</p>
               
+              <!-- أمثلة المسلسلات والأفلام المشابهة -->
+              <div class="similar-shows-box">
+                <small style="color:#2980b9; display:block; margin-bottom:3px;"><i class="fas fa-film"></i> أعمال مشابهة مقترحة:</small>
+                ${similarExamples}
+              </div>
+
               <!-- Comments Area -->
               <div class="comments-box">
                 <small style="color:#2980b9;"><i class="fas fa-comments"></i> التعليقات:</small>
@@ -860,7 +916,7 @@
     }
 
     function deleteShow(id) {
-      if (confirm('هل أنت تأكد من حذف هذا العمل؟')) {
+      if (confirm('هل أنت متأكد من حذف هذا العمل أو الفيديو نهائياً؟')) {
         showsData = showsData.filter(s => s.id !== id);
         localStorage.setItem('mrstoud_shows', JSON.stringify(showsData));
         renderShowsListAdmin();
