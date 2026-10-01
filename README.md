@@ -44,6 +44,32 @@
       transition: background-color 0.3s, color 0.3s;
     }
 
+    /* Floating Welcome Banner (إضافة جديدة) */
+    .welcome-banner-top {
+      background: linear-gradient(135deg, var(--primary-color), #ff4757);
+      color: #fff;
+      padding: 10px 20px;
+      text-align: center;
+      font-size: 13px;
+      font-weight: bold;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      position: relative;
+      z-index: 101;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+    .welcome-banner-top button {
+      background: rgba(255,255,255,0.2);
+      border: none;
+      color: #fff;
+      padding: 3px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 11px;
+    }
+
     /* Blocked Hacker Screen */
     #hackerBlockedScreen {
       display: none;
@@ -992,6 +1018,12 @@
 </head>
 <body>
 
+  <!-- رسالة الترحيب العلوية (ميزة جديدة) -->
+  <div class="welcome-banner-top" id="topWelcomeBanner">
+    <span>🎬 أهلاً بك في <strong>mrstoud</strong>! وجهتك الأولى لمشاهدة أحدث الأفلام والمسلسلات بجودة عالية وأمان تام.</span>
+    <button onclick="closeTopWelcome()">إخفاء</button>
+  </div>
+
   <!-- Toast Notification System -->
   <div class="toast-notification" id="toastNotification">
     <i class="fas fa-check-circle" style="color: #27ae60; font-size: 18px;"></i>
@@ -1370,6 +1402,15 @@
           <i class="far fa-clock" id="watchlistIcon"></i> <span id="watchlistBtnText">المشاهدة لاحقاً</span>
         </button>
 
+        <!-- أزرار إضافية جديدة مفيدة داخل المشغل -->
+        <button class="action-badge-btn" onclick="toggleFullscreenPlayer()" title="ملء الشاشة">
+          <i class="fas fa-expand"></i> تكبير
+        </button>
+
+        <button class="action-badge-btn" onclick="shareWhatsApp()" title="مشاركة عبر واتساب" style="color:#27ae60;">
+          <i class="fab fa-whatsapp"></i> واتساب
+        </button>
+
         <button class="action-badge-btn" onclick="shareCurrentShow()">
           <i class="fas fa-share-alt"></i> مشاركة
         </button>
@@ -1653,6 +1694,33 @@
     let loginAttempts = parseInt(localStorage.getItem('mrstoud_login_attempts') || '0');
     let lockoutUntil = parseInt(localStorage.getItem('mrstoud_lockout_until') || '0');
     let ownerCorrectStreak = parseInt(localStorage.getItem('mrstoud_owner_streak') || '0');
+
+    // إخفاء أو إظهار شريط الترحيب العلوي بناءً على تفضيل المستخدم
+    window.closeTopWelcome = function() {
+      document.getElementById('topWelcomeBanner').style.display = 'none';
+      localStorage.setItem('mrstoud_top_welcome_closed', 'true');
+    };
+    if (localStorage.getItem('mrstoud_top_welcome_closed') === 'true') {
+      document.getElementById('topWelcomeBanner').style.display = 'none';
+    }
+
+    // ميزات إضافية جديدة للمشغل
+    window.toggleFullscreenPlayer = function() {
+      const container = document.getElementById('videoPlayerBox');
+      if (!document.fullscreenElement) {
+        if (container.requestFullscreen) container.requestFullscreen();
+        showToast('تم التكبير لملء الشاشة.');
+      } else {
+        if (document.exitFullscreen) document.exitFullscreen();
+      }
+    };
+
+    window.shareWhatsApp = function() {
+      const title = playerTitle.textContent;
+      const url = window.location.href;
+      const waText = encodeURIComponent(`شاهد معنا ${title} عبر منصة mrstoud الرائعة: ${url}`);
+      window.open(`https://api.whatsapp.com/send?text=${waText}`, '_blank');
+    };
 
     // Theme Setup
     const currentTheme = localStorage.getItem('mrstoud_theme') || 'dark';
