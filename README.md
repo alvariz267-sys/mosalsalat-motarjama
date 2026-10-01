@@ -639,7 +639,7 @@
     .btn-ban { background-color: #e67e22; }
     .btn-unban { background-color: #27ae60; }
 
-    /* New Elements CSS: Server Selector & Comments */
+    /* Multi-Server & Features CSS */
     .server-btn-group {
       display: flex;
       gap: 8px;
@@ -661,6 +661,56 @@
     .server-btn.active, .server-btn:hover {
       background: var(--primary-color);
       border-color: var(--primary-color);
+    }
+
+    /* Player Tools Bar (Subtitles & Enhance Controls) */
+    .player-tools-bar {
+      background: #141414;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .tool-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .tool-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .tool-group select, .tool-group input[type="range"] {
+      background: #222;
+      color: #fff;
+      border: 1px solid var(--border-color);
+      padding: 5px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      outline: none;
+    }
+
+    .slider-container {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+    }
+
+    .slider-container input {
+      width: 90px;
+      accent-color: var(--primary-color);
     }
 
     .comments-section {
@@ -950,7 +1000,7 @@
 
   <!-- Player Modal -->
   <div class="modal" id="playerModal">
-    <div class="modal-content" style="max-width: 700px;">
+    <div class="modal-content" style="max-width: 750px;">
       <div class="modal-header">
         <h3 id="playerTitle">عرض الفيديو</h3>
         <button class="close-btn closeModal">&times;</button>
@@ -959,7 +1009,55 @@
       <!-- Server Selector Section -->
       <div id="serverSelectorContainer" class="server-btn-group"></div>
 
+      <!-- Interactive Player Tools (Subtitles, Quality & Audio Booster) -->
+      <div class="player-tools-bar">
+        <div class="tool-row">
+          <div class="tool-group">
+            <i class="fas fa-closed-captioning" style="color:var(--primary-color);"></i>
+            <label>الترجمة الآلية:</label>
+            <select id="subtitleSelect" onchange="applySubtitleLanguage(this.value)">
+              <option value="ar">العربية (تلقائي)</option>
+              <option value="en">الإنجليزية (English)</option>
+              <option value="fr">الفرنسية (Français)</option>
+              <option value="off">إيقاف الترجمة</option>
+            </select>
+          </div>
+
+          <div class="tool-group">
+            <i class="fas fa-sliders-h" style="color:var(--primary-color);"></i>
+            <label>نمط الجودة:</label>
+            <select id="qualityBoostSelect" onchange="applyQualityBoost(this.value)">
+              <option value="standard">1080p قياسي</option>
+              <option value="vivid">4K AI محصّن (ألوان مشبعة)</option>
+              <option value="sharp">Ultra Sharp (وضوح حدة)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="tool-row">
+          <div class="slider-container">
+            <i class="fas fa-volume-up" style="color:#27ae60;"></i>
+            <span>مضخم الصوت (Boost):</span>
+            <input type="range" id="volumeBoostSlider" min="100" max="200" value="100" oninput="applyVolumeBoost(this.value)">
+            <span id="volumeVal">100%</span>
+          </div>
+
+          <div class="slider-container">
+            <i class="fas fa-sun" style="color:#f39c12;"></i>
+            <span>السطوع:</span>
+            <input type="range" id="brightnessSlider" min="80" max="150" value="100" oninput="applyVideoFilters()">
+          </div>
+
+          <div class="slider-container">
+            <i class="fas fa-adjust" style="color:#3498db;"></i>
+            <span>التباين:</span>
+            <input type="range" id="contrastSlider" min="80" max="150" value="100" oninput="applyVideoFilters()">
+          </div>
+        </div>
+      </div>
+
       <div class="video-container" id="videoPlayerBox"></div>
+
       <div class="video-details">
         <div class="quality-tags">
           <span style="font-size: 13px; color: var(--text-secondary);">الجودة المتاحة:</span>
@@ -1155,6 +1253,64 @@
     const commentForm = document.getElementById('commentForm');
     const commentsList = document.getElementById('commentsList');
 
+    // Elements for Video Adjustments
+    const brightnessSlider = document.getElementById('brightnessSlider');
+    const contrastSlider = document.getElementById('contrastSlider');
+    const volumeBoostSlider = document.getElementById('volumeBoostSlider');
+    const volumeVal = document.getElementById('volumeVal');
+    const subtitleSelect = document.getElementById('subtitleSelect');
+    const qualityBoostSelect = document.getElementById('qualityBoostSelect');
+
+    // Audio & Video Enhance Functions
+    window.applyVideoFilters = function() {
+      const b = brightnessSlider.value;
+      const c = contrastSlider.value;
+      const target = videoPlayerBox.querySelector('iframe') || videoPlayerBox.querySelector('video');
+      if (target) {
+        target.style.filter = `brightness(${b}%) contrast(${c}%)`;
+      }
+    };
+
+    window.applyVolumeBoost = function(val) {
+      volumeVal.textContent = `${val}%`;
+      const videoEl = videoPlayerBox.querySelector('video');
+      if (videoEl) {
+        videoEl.volume = Math.min(val / 100, 1.0);
+      }
+    };
+
+    window.applySubtitleLanguage = function(lang) {
+      const videoEl = videoPlayerBox.querySelector('video');
+      if (videoEl && videoEl.textTracks && videoEl.textTracks.length > 0) {
+        for (let i = 0; i < videoEl.textTracks.length; i++) {
+          videoEl.textTracks[i].mode = (videoEl.textTracks[i].language === lang) ? 'showing' : 'disabled';
+        }
+      }
+    };
+
+    window.applyQualityBoost = function(type) {
+      if (type === 'vivid') {
+        brightnessSlider.value = 110;
+        contrastSlider.value = 125;
+      } else if (type === 'sharp') {
+        brightnessSlider.value = 105;
+        contrastSlider.value = 115;
+      } else {
+        brightnessSlider.value = 100;
+        contrastSlider.value = 100;
+      }
+      applyVideoFilters();
+    };
+
+    function resetVideoTools() {
+      brightnessSlider.value = 100;
+      contrastSlider.value = 100;
+      volumeBoostSlider.value = 100;
+      volumeVal.textContent = '100%';
+      subtitleSelect.value = 'ar';
+      qualityBoostSelect.value = 'standard';
+    }
+
     // First visit welcome check
     function checkFirstVisit() {
       if (!localStorage.getItem('mrstoud_visited_before')) {
@@ -1203,14 +1359,12 @@
 
       let filtered = shows;
 
-      // Filter by Category
       if (currentCategory === 'series') {
         filtered = filtered.filter(show => show.category === 'series');
       } else if (currentCategory === 'movie') {
         filtered = filtered.filter(show => show.category === 'movie');
       }
 
-      // Filter by Search Text
       if (cleanFilter) {
         filtered = filtered.filter(show => show.title.toLowerCase().includes(cleanFilter));
       }
@@ -1241,13 +1395,11 @@
     window.filterByCategory = function(category, event = null) {
       currentCategory = category;
       
-      // Update sidebar active link styling
       document.querySelectorAll('.sidebar-menu a').forEach(a => a.classList.remove('active-link'));
       if (event && event.currentTarget) {
         event.currentTarget.classList.add('active-link');
       }
 
-      // Update Header Title
       if (category === 'series') {
         sectionTitle.innerHTML = '<i class="fas fa-tv"></i> قائمة المسلسلات';
       } else if (category === 'movie') {
@@ -1369,17 +1521,25 @@
       renderUsersAndBans();
     }
 
-    /* Multi-Server & Video Stream Logic */
+    /* Multi-Server & Video Stream Logic with Subtitles */
     function playVideoServer(url, isLocal = false, localObj = null) {
       if (isLocal && localObj) {
         const localBlobUrl = URL.createObjectURL(localObj);
-        videoPlayerBox.innerHTML = `<video controls autoplay style="width:100%; height:100%;"><source src="${localBlobUrl}" type="${localObj.type}">متصفحك لا يدعم تشغيل هذا الفيديو</video>`;
+        videoPlayerBox.innerHTML = `
+          <video controls autoplay style="width:100%; height:100%;">
+            <source src="${localBlobUrl}" type="${localObj.type}">
+            <track kind="subtitles" srclang="ar" label="العربية" default>
+            <track kind="subtitles" srclang="en" label="English">
+            <track kind="subtitles" srclang="fr" label="Français">
+            متصفحك لا يدعم تشغيل هذا الفيديو
+          </video>`;
       } else if (url) {
         const safeUrl = sanitizeInput(url);
         videoPlayerBox.innerHTML = `<iframe id="videoIframe" src="${safeUrl}" allowfullscreen></iframe>`;
       } else {
         videoPlayerBox.innerHTML = `<div style="padding:20px; text-align:center; color:#aaa;">لا يوجد فيديو متاح في هذا السيرفر</div>`;
       }
+      applyVideoFilters();
     }
 
     function renderServerButtons(show) {
@@ -1470,6 +1630,7 @@
       playerTitle.textContent = show.title;
       playerQuality.textContent = show.quality || 'عالية';
       
+      resetVideoTools();
       renderServerButtons(show);
 
       if (show.isVideoLocal && show.videoObject) {
