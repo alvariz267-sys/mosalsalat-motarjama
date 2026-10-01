@@ -194,6 +194,8 @@
     .sidebar-search-box {
       margin-bottom: 15px;
       position: relative;
+      display: flex;
+      gap: 6px;
     }
 
     .sidebar-search-input {
@@ -287,7 +289,7 @@
       margin-bottom: 15px;
       display: flex;
       align-items: center;
-      gap: 10px;
+      justify-content: space-between;
       color: var(--text-color);
       border-right: 4px solid var(--primary-color);
       padding-right: 10px;
@@ -842,7 +844,7 @@
       color: #f1c40f;
     }
 
-    /* === تنسيقات الإضافات الـ 7 الجديدة === */
+    /* === تنسيقات الإضافات السابقة === */
     .filters-bar {
       display: flex;
       gap: 10px;
@@ -900,9 +902,53 @@
       background: #27ae60;
       transition: width 0.3s;
     }
+
+    /* === تنسيقات الـ 7 ميزات الجديدة كلياً === */
+    .toast-notification {
+      position: fixed;
+      bottom: 25px;
+      left: 25px;
+      background: #1f1f1f;
+      color: #fff;
+      border: 1px solid var(--primary-color);
+      padding: 12px 20px;
+      border-radius: 8px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .toast-notification.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    .accent-picker {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+    .color-dot {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 2px solid transparent;
+    }
+    .color-dot.active { border-color: #fff; }
   </style>
 </head>
 <body>
+
+  <!-- Toast Notification System (الميزة 7) -->
+  <div class="toast-notification" id="toastNotification">
+    <i class="fas fa-check-circle" style="color: #27ae60; font-size: 18px;"></i>
+    <span id="toastMessage">تم بنجاح!</span>
+  </div>
 
   <!-- Hacker Blocked Overlay Screen -->
   <div id="hackerBlockedScreen">
@@ -920,7 +966,13 @@
   <nav class="navbar">
     <a href="#" class="brand" onclick="filterByCategory('all')">mrstoud</a>
     <div class="nav-actions">
-      <!-- 1. زر وضع السينما الجديد -->
+      <!-- 6. ميزة اختيار اللون الرئيسي للموقع -->
+      <div class="accent-picker" title="اختر لون المنصة">
+        <div class="color-dot active" style="background:#e50914;" onclick="changeAccentColor('#e50914')"></div>
+        <div class="color-dot" style="background:#3498db;" onclick="changeAccentColor('#3498db')"></div>
+        <div class="color-dot" style="background:#27ae60;" onclick="changeAccentColor('#27ae60')"></div>
+        <div class="color-dot" style="background:#9b59b6;" onclick="changeAccentColor('#9b59b6')"></div>
+      </div>
       <button class="icon-btn" id="cinemaModeBtn" title="وضع السينما المظلم"><i class="fas fa-theater-masks"></i></button>
       <button class="icon-btn" id="themeToggleBtn" title="تبديل المظهر (ليلي/نهاري)"><i class="fas fa-moon" id="themeIcon"></i></button>
       <button class="icon-btn" id="menuToggleBtn" title="القائمة الجانبية"><i class="fas fa-bars"></i></button>
@@ -945,9 +997,10 @@
       <button class="close-btn" id="closeSidebarBtn">&times;</button>
     </div>
 
-    <!-- Sidebar Search Box -->
+    <!-- Sidebar Search Box + ميزة البحث الصوتي (الميزة 1) -->
     <div class="sidebar-search-box">
       <input type="text" class="sidebar-search-input" id="sidebarSearchInput" placeholder="بحث عن فيلم أو مسلسل...">
+      <button class="icon-btn" id="voiceSearchBtn" onclick="startVoiceSearch()" title="بحث صوتي ذكي" style="font-size:16px; padding:6px;"><i class="fas fa-microphone"></i></button>
       <i class="fas fa-search sidebar-search-icon"></i>
     </div>
 
@@ -981,11 +1034,16 @@
           <div class="sidebar-menu-left"><i class="fas fa-history"></i> سجل المشاهدة</div>
         </a>
       </li>
-      <!-- 2. رابط قائمة الانتظار والمشاهدة لاحقاً -->
       <li>
         <a href="#" onclick="filterByCategory('watchlist', event)">
           <div class="sidebar-menu-left"><i class="fas fa-clock"></i> المشاهدة لاحقاً</div>
           <span class="badge-count" id="countWatchlist">0</span>
+        </a>
+      </li>
+      <!-- ميزة إحصائيات المشاهدة الشخصية (الميزة 4) -->
+      <li>
+        <a href="#" onclick="openAnalyticsModal()">
+          <div class="sidebar-menu-left"><i class="fas fa-chart-pie" style="color:#f39c12;"></i> إحصائيات المشاهدة</div>
         </a>
       </li>
       <li>
@@ -1004,7 +1062,6 @@
       <p>📢 مساحة إعلانية - ضع كود الإعلان الخاص بك هنا (AdSense / Native Ads)</p>
     </div>
 
-    <!-- 3. شريط تصنيفات سريعة إضافي (Genres Filter) -->
     <div class="filters-bar" id="genresFilterBar">
       <div class="filter-chip active" onclick="filterByGenre('all', this)">الكل</div>
       <div class="filter-chip" onclick="filterByGenre('action', this)">أكشن ومغامرة</div>
@@ -1014,7 +1071,9 @@
     </div>
 
     <div class="section-title" id="sectionTitle">
-      <i class="fas fa-play-circle"></i> جميع الأعمال
+      <span><i class="fas fa-play-circle"></i> جميع الأعمال</span>
+      <!-- ميزة زر "تشغيل عشوائي" (الميزة 2) -->
+      <button onclick="playRandomShow()" class="action-badge-btn" style="padding: 5px 10px; font-size: 12px;"><i class="fas fa-dice"></i> اقتراح عشوائي</button>
     </div>
 
     <div class="shows-grid" id="showsGrid"></div>
@@ -1051,6 +1110,31 @@
         <p>يتحمل المستخدم المسؤولية كاملة عن أي تعليق يتم نشره عبر المنصة، ويُمنع استخدام ألفاظ خرسانية أو محاولات إغراق، وتخضع المدخلات لفحص أمني آلي.</p>
       </div>
       <button class="btn closeModal" style="margin-top: 20px;">إغلاق</button>
+    </div>
+  </div>
+
+  <!-- Analytics Modal (الميزة 4) -->
+  <div class="modal" id="analyticsModal">
+    <div class="modal-content" style="max-width: 450px; text-align: center;">
+      <div class="modal-header">
+        <h3><i class="fas fa-chart-pie"></i> إحصائيات المشاهدة الخاصة بك</h3>
+        <button class="close-btn closeModal">&times;</button>
+      </div>
+      <div style="padding: 15px; display: flex; flex-direction: column; gap: 12px; font-size: 14px; text-align: right;">
+        <div style="background:var(--sidebar-bg); padding:10px; border-radius:6px; display:flex; justify-content:space-between;">
+          <span>إجمالي الأعمال المشاهدة:</span>
+          <strong id="statTotalWatched">0</strong>
+        </div>
+        <div style="background:var(--sidebar-bg); padding:10px; border-radius:6px; display:flex; justify-content:space-between;">
+          <span>الأفلام في المفضلة:</span>
+          <strong id="statTotalFavorites">0</strong>
+        </div>
+        <div style="background:var(--sidebar-bg); padding:10px; border-radius:6px; display:flex; justify-content:space-between;">
+          <span>قائمة المشاهدة لاحقاً:</span>
+          <strong id="statTotalWatchlist">0</strong>
+        </div>
+      </div>
+      <button class="btn closeModal" style="margin-top: 10px;">حسناً</button>
     </div>
   </div>
 
@@ -1108,7 +1192,6 @@
             </select>
           </div>
 
-          <!-- 4. حقل اختيار تصنيف فرعي للعمل عند الإضافة -->
           <div class="form-group">
             <label for="showGenre">التصنيف الفرعي:</label>
             <select id="showGenre">
@@ -1222,7 +1305,6 @@
           <i class="far fa-heart" id="favoriteIcon"></i> <span id="favoriteBtnText">أضف للمفضلة</span>
         </button>
 
-        <!-- 5. زر الإضافة لقائمة "المشاهدة لاحقاً" الجديد -->
         <button class="action-badge-btn" id="watchlistToggleBtn" onclick="toggleCurrentWatchlist()">
           <i class="far fa-clock" id="watchlistIcon"></i> <span id="watchlistBtnText">المشاهدة لاحقاً</span>
         </button>
@@ -1267,7 +1349,6 @@
             </select>
           </div>
 
-          <!-- 6. أزرار التحكم بسرعة التشغيل الجديدة (Playback Speed) -->
           <div class="tool-group">
             <i class="fas fa-bolt" style="color:#f39c12;"></i>
             <label>السرعة:</label>
@@ -1297,6 +1378,26 @@
             <input type="range" id="contrastSlider" min="80" max="150" value="100" oninput="applyVideoFilters()">
           </div>
         </div>
+
+        <!-- أداة مؤقت النوم التلقائي وإيقاف التشغيل (الميزة 5) & التشغيل التلقائي (الميزة 3) -->
+        <div class="tool-row" style="border-top: 1px dashed var(--border-color); padding-top: 10px;">
+          <div class="tool-group">
+            <i class="fas fa-bed" style="color:#9b59b6;"></i>
+            <label>مؤقت النوم:</label>
+            <select id="sleepTimerSelect" onchange="setSleepTimer(this.value)">
+              <option value="0">إيقاف المؤقت</option>
+              <option value="15">بعد 15 دقيقة</option>
+              <option value="30">بعد 30 دقيقة</option>
+              <option value="60">بعد 60 دقيقة</option>
+            </select>
+          </div>
+
+          <div class="tool-group">
+            <i class="fas fa-redo" style="color:#2ecc71;"></i>
+            <label>تشغيل تلقائي للعمل التالي:</label>
+            <input type="checkbox" id="autoplayNextCheck" checked style="cursor: pointer; width: 16px; height: 16px;">
+          </div>
+        </div>
       </div>
 
       <div class="video-container" id="videoPlayerBox"></div>
@@ -1308,7 +1409,6 @@
         </div>
         <div id="downloadContainer"></div>
         
-        <!-- 7. شريط محاكاة تقدم التحميل الذكي الجديد (Smart Download Progress) -->
         <div class="download-progress-container" id="downloadProgressBox">
           <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--text-secondary);">
             <span id="downloadStatusText">جاري تحضير ملف التحميل...</span>
@@ -1471,14 +1571,15 @@
     let users = JSON.parse(localStorage.getItem('mrstoud_users')) || defaultUsers;
     let commentsData = JSON.parse(localStorage.getItem('mrstoud_comments')) || {};
     let favoritesData = JSON.parse(localStorage.getItem('mrstoud_favorites')) || [];
-    let watchlistData = JSON.parse(localStorage.getItem('mrstoud_watchlist')) || []; // بيانات قائمة المشاهدة لاحقاً
+    let watchlistData = JSON.parse(localStorage.getItem('mrstoud_watchlist')) || [];
     let historyData = JSON.parse(localStorage.getItem('mrstoud_history')) || [];
     let ratingsData = JSON.parse(localStorage.getItem('mrstoud_ratings')) || {};
 
     let currentShowId = null;
     let currentCategory = 'all';
-    let currentGenre = 'all'; // فلتر التصنيف الفرعي النشط
+    let currentGenre = 'all';
     let isAdminLoggedIn = false;
+    let sleepTimerTimeout = null;
 
     let loginAttempts = parseInt(localStorage.getItem('mrstoud_login_attempts') || '0');
     let lockoutUntil = parseInt(localStorage.getItem('mrstoud_lockout_until') || '0');
@@ -1490,6 +1591,19 @@
       document.documentElement.setAttribute('data-theme', 'light');
       document.getElementById('themeIcon').className = 'fas fa-sun';
     }
+
+    // تفعيل وتطبيق اللون المخصص المحفوظ للمنصة (الميزة 6)
+    const savedAccentColor = localStorage.getItem('mrstoud_accent_color');
+    if (savedAccentColor) {
+      document.documentElement.style.setProperty('--primary-color', savedAccentColor);
+    }
+    window.changeAccentColor = function(color) {
+      document.documentElement.style.setProperty('--primary-color', color);
+      localStorage.setItem('mrstoud_accent_color', color);
+      document.querySelectorAll('.color-dot').forEach(dot => dot.classList.remove('active'));
+      event.target.classList.add('active');
+      showToast('تم تغيير لون المنصة بنجاح!');
+    };
 
     document.getElementById('themeToggleBtn').addEventListener('click', () => {
       const isLight = document.documentElement.getAttribute('data-theme') === 'light';
@@ -1504,7 +1618,6 @@
       }
     });
 
-    // --- الوظيفة الإضافية 1: تفعيل وضع السينما المظلم ---
     const cinemaModeBtn = document.getElementById('cinemaModeBtn');
     let isCinemaMode = false;
     cinemaModeBtn.addEventListener('click', () => {
@@ -1512,12 +1625,78 @@
       if (isCinemaMode) {
         document.body.classList.add('cinema-mode');
         cinemaModeBtn.style.color = 'var(--primary-color)';
-        alert('تم تفعيل وضع السينما المظلم للمشاهدة المركزة!');
+        showToast('تم تفعيل وضع السينما المظلم!');
       } else {
         document.body.classList.remove('cinema-mode');
         cinemaModeBtn.style.color = '';
+        showToast('تم إيقاف وضع السينما.');
       }
     });
+
+    // --- نظام الإشعارات العائمة التفاعلية (الميزة 7) ---
+    window.showToast = function(msg) {
+      const toast = document.getElementById('toastNotification');
+      document.getElementById('toastMessage').textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3000);
+    };
+
+    // --- ميزة البحث الصوتي الذكي (الميزة 1) ---
+    window.startVoiceSearch = function() {
+      if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+        alert('عذراً، متصفحك لا يدعم ميزة البحث الصوتي.');
+        return;
+      }
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'ar-SA';
+      showToast('جاري الاستماع... تحدث الآن');
+      recognition.onresult = (event) => {
+        const speechToText = event.results[0][0].transcript;
+        sidebarSearchInput.value = speechToText;
+        renderShows(speechToText);
+        showToast('تم البحث عن: ' + speechToText);
+      };
+      recognition.start();
+    };
+
+    // --- ميزة زر "تشغيل عشوائي" (الميزة 2) ---
+    window.playRandomShow = function() {
+      if (shows.length === 0) {
+        showToast('لا توجد أعمال متاحة حالياً.');
+        return;
+      }
+      const randomIndex = Math.floor(Math.random() * shows.length);
+      openPlayer(shows[randomIndex]);
+      showToast('تم اختيار عمل عشوائي لك!');
+    };
+
+    // --- ميزة إحصائيات المشاهدة (الميزة 4) ---
+    window.openAnalyticsModal = function() {
+      toggleSidebar();
+      document.getElementById('statTotalWatched').textContent = historyData.length;
+      document.getElementById('statTotalFavorites').textContent = favoritesData.length;
+      document.getElementById('statTotalWatchlist').textContent = watchlistData.length;
+      document.getElementById('analyticsModal').classList.add('active');
+    };
+
+    // --- ميزة مؤقت النوم (الميزة 5) ---
+    window.setSleepTimer = function(minutes) {
+      if (sleepTimerTimeout) clearTimeout(sleepTimerTimeout);
+      const mins = parseInt(minutes);
+      if (mins > 0) {
+        showToast(`تم ضبط مؤقت النوم بعد ${mins} دقيقة.`);
+        sleepTimerTimeout = setTimeout(() => {
+          document.getElementById('playerModal').classList.remove('active');
+          videoPlayerBox.innerHTML = '';
+          showToast('انتهى وقـت المشاهدة، تم إيقاف التشغيل تلقائياً.');
+        }, mins * 60 * 1000);
+      } else {
+        showToast('تم إلغاء مؤقت النوم.');
+      }
+    };
 
     // DOM Elements
     const showsGrid = document.getElementById('showsGrid');
@@ -1532,7 +1711,7 @@
     const countSeries = document.getElementById('countSeries');
     const countMovies = document.getElementById('countMovies');
     const countFavorites = document.getElementById('countFavorites');
-    const countWatchlist = document.getElementById('countWatchlist'); // عداد قائمة المشاهدة لاحقاً
+    const countWatchlist = document.getElementById('countWatchlist');
 
     const adminBtn = document.getElementById('adminBtn');
     const privacyBtn = document.getElementById('privacyBtn');
@@ -1541,6 +1720,7 @@
     const playerModal = document.getElementById('playerModal');
     const welcomeModal = document.getElementById('welcomeModal');
     const privacyModal = document.getElementById('privacyModal');
+    const analyticsModal = document.getElementById('analyticsModal');
     const loginForm = document.getElementById('loginForm');
     const saveShowForm = document.getElementById('saveShowForm');
     const adminShowsList = document.getElementById('adminShowsList');
@@ -1608,14 +1788,13 @@
       applyVideoFilters();
     };
 
-    // --- الوظيفة الإضافية 6: تغيير سرعة التشغيل للفيديو المحلي ---
     window.changePlaybackSpeed = function(speed) {
       const videoEl = videoPlayerBox.querySelector('video');
       if (videoEl) {
         videoEl.playbackRate = speed;
-        alert(`تم تغيير سرعة التشغيل إلى ${speed}x`);
+        showToast(`تم تغيير سرعة التشغيل إلى ${speed}x`);
       } else {
-        alert('ميزة تغيير السرعة متاحة للفيديوهات المحلية المباشرة حالياً.');
+        showToast('ميزة تغيير السرعة متاحة للفيديوهات المحلية المباشرة.');
       }
     };
 
@@ -1626,6 +1805,7 @@
       volumeVal.textContent = '100%';
       subtitleSelect.value = 'ar';
       qualityBoostSelect.value = 'standard';
+      document.getElementById('sleepTimerSelect').value = '0';
     }
 
     function checkFirstVisit() {
@@ -1693,7 +1873,6 @@
         filtered = shows.filter(show => watchlistData.includes(show.id));
       }
 
-      // فلترة التصنيف الفرعي (الـ Genre)
       if (currentGenre !== 'all') {
         filtered = filtered.filter(show => show.genre === currentGenre);
       }
@@ -1733,24 +1912,24 @@
         event.currentTarget.classList.add('active-link');
       }
 
+      const titleSpan = sectionTitle.querySelector('span') || sectionTitle;
       if (category === 'series') {
-        sectionTitle.innerHTML = '<i class="fas fa-tv"></i> قائمة المسلسلات';
+        titleSpan.innerHTML = '<i class="fas fa-tv"></i> قائمة المسلسلات';
       } else if (category === 'movie') {
-        sectionTitle.innerHTML = '<i class="fas fa-film"></i> قائمة الأفلام';
+        titleSpan.innerHTML = '<i class="fas fa-film"></i> قائمة الأفلام';
       } else if (category === 'favorites') {
-        sectionTitle.innerHTML = '<i class="fas fa-heart" style="color:var(--primary-color);"></i> قائمة المفضلة';
+        titleSpan.innerHTML = '<i class="fas fa-heart" style="color:var(--primary-color);"></i> قائمة المفضلة';
       } else if (category === 'history') {
-        sectionTitle.innerHTML = '<i class="fas fa-history"></i> سجل المشاهدة (Continue Watching)';
+        titleSpan.innerHTML = '<i class="fas fa-history"></i> سجل المشاهدة (Continue Watching)';
       } else if (category === 'watchlist') {
-        sectionTitle.innerHTML = '<i class="fas fa-clock"></i> قائمة المشاهدة لاحقاً';
+        titleSpan.innerHTML = '<i class="fas fa-clock"></i> قائمة المشاهدة لاحقاً';
       } else {
-        sectionTitle.innerHTML = '<i class="fas fa-play-circle"></i> جميع الأعمال';
+        titleSpan.innerHTML = '<i class="fas fa-play-circle"></i> جميع الأعمال';
       }
 
       renderShows(sidebarSearchInput.value);
     };
 
-    // --- الوظيفة الإضافية 3: تفعيل فلاتر الأقسام الفرعية (Genres) ---
     window.filterByGenre = function(genre, element) {
       currentGenre = genre;
       document.querySelectorAll('.filter-chip').forEach(chip => chip.classList.remove('active'));
@@ -1842,7 +2021,7 @@
         });
       }
       saveUserData();
-      alert(`تم حظر المستخدم (${email}) بنجاح!`);
+      showToast(`تم حظر المستخدم (${email}) بنجاح!`);
     }
 
     window.unbanUser = function(email) {
@@ -1851,7 +2030,7 @@
         user.status = 'active';
         delete user.banReason;
         saveUserData();
-        alert(`تم فك الحظر عن المستخدم (${email}) بنجاح!`);
+        showToast(`تم فك الحظر عن المستخدم (${email}) بنجاح!`);
       }
     };
 
@@ -1872,13 +2051,21 @@
       if (isLocal && localObj) {
         const localBlobUrl = URL.createObjectURL(localObj);
         videoPlayerBox.innerHTML = `
-          <video controls autoplay style="width:100%; height:100%;">
+          <video controls autoplay style="width:100%; height:100%;" id="activeVideoElement">
             <source src="${localBlobUrl}" type="${localObj.type}">
             <track kind="subtitles" srclang="ar" label="العربية" default>
             <track kind="subtitles" srclang="en" label="English">
             <track kind="subtitles" srclang="fr" label="Français">
             متصفحك لا يدعم تشغيل هذا الفيديو
           </video>`;
+        
+        // تفعيل ميزة التشغيل التلقائي للعمل التالي عند انتهاء الفيديو المحلي (الميزة 3)
+        const vidEl = document.getElementById('activeVideoElement');
+        vidEl.onended = () => {
+          if (document.getElementById('autoplayNextCheck').checked) {
+            playNextShow();
+          }
+        };
       } else if (url && url.trim() !== '') {
         const safeUrl = sanitizeInput(url);
         videoPlayerBox.innerHTML = `<iframe id="videoIframe" src="${safeUrl}" allowfullscreen></iframe>`;
@@ -1886,6 +2073,17 @@
         videoPlayerBox.innerHTML = `<div style="padding:40px; text-align:center; color:var(--primary-color);"><i class="fas fa-exclamation-circle" style="font-size:30px; margin-bottom:10px;"></i><br>عذراً، لا يوجد فيديو أو رابط تشغيل صالح متاح في هذا السيرفر</div>`;
       }
       applyVideoFilters();
+    }
+
+    // الانتقال للعمل التالي تلقائياً (الميزة 3)
+    function playNextShow() {
+      const currentIndex = shows.findIndex(s => s.id === currentShowId);
+      if (currentIndex !== -1 && currentIndex + 1 < shows.length) {
+        showToast('جاري تشغيل العمل التالي تلقائياً...');
+        openPlayer(shows[currentIndex + 1]);
+      } else {
+        showToast('هذا هو آخر عمل في القائمة.');
+      }
     }
 
     function renderServerButtons(show) {
@@ -1917,7 +2115,6 @@
           };
           serverSelectorContainer.appendChild(btn);
         });
-        // تشغيل السيرفر الأول تلقائياً عند فتح المشغل
         servers[0].action();
       } else {
         videoPlayerBox.innerHTML = `<div style="padding:40px; text-align:center; color:var(--primary-color);"><i class="fas fa-exclamation-triangle" style="font-size:30px; margin-bottom:10px;"></i><br>تنبيه: لا توجد أي روابط أو فيديوهات مضافة لهذا العمل بعد!</div>`;
@@ -1931,17 +2128,18 @@
         favoritesData.splice(index, 1);
         document.getElementById('favoriteIcon').className = 'far fa-heart';
         document.getElementById('favoriteBtnText').textContent = 'أضف للمفضلة';
+        showToast('تمت الإزالة من المفضلة.');
       } else {
         favoritesData.push(currentShowId);
         document.getElementById('favoriteIcon').className = 'fas fa-heart';
         document.getElementById('favoriteIcon').style.color = 'var(--primary-color)';
         document.getElementById('favoriteBtnText').textContent = 'تم الإضافة للمفضلة';
+        showToast('تمت الإضافة إلى المفضلة بنجاح!');
       }
       localStorage.setItem('mrstoud_favorites', JSON.stringify(favoritesData));
       updateCounters();
     };
 
-    // --- الوظيفة الإضافية 5: إدارة قائمة "المشاهدة لاحقاً" (Watchlist) ---
     window.toggleCurrentWatchlist = function() {
       if (!currentShowId) return;
       const index = watchlistData.indexOf(currentShowId);
@@ -1949,11 +2147,13 @@
         watchlistData.splice(index, 1);
         document.getElementById('watchlistIcon').className = 'far fa-clock';
         document.getElementById('watchlistBtnText').textContent = 'المشاهدة لاحقاً';
+        showToast('تمت الإزالة من المشاهدة لاحقاً.');
       } else {
         watchlistData.push(currentShowId);
         document.getElementById('watchlistIcon').className = 'fas fa-clock';
         document.getElementById('watchlistIcon').style.color = 'var(--primary-color)';
         document.getElementById('watchlistBtnText').textContent = 'في قائمة المشاهدة';
+        showToast('تمت الإضافة إلى المشاهدة لاحقاً!');
       }
       localStorage.setItem('mrstoud_watchlist', JSON.stringify(watchlistData));
       updateCounters();
@@ -1968,7 +2168,7 @@
         }).catch(() => {});
       } else {
         navigator.clipboard.writeText(window.location.href);
-        alert('تم نسخ رابط العمل بنجاح!');
+        showToast('تم نسخ رابط العمل بنجاح!');
       }
     };
 
@@ -1977,7 +2177,7 @@
       ratingsData[currentShowId] = stars;
       localStorage.setItem('mrstoud_ratings', JSON.stringify(ratingsData));
       updateStarDisplay(stars);
-      alert(`شكراً لتقييمك! تم حفظ تقييمك (${stars} نجوم) بنجاح.`);
+      showToast(`شكراً لتقييمك! (${stars} نجوم).`);
     };
 
     function updateStarDisplay(stars) {
@@ -2038,13 +2238,13 @@
 
         renderComments(currentShowId);
         textInput.value = '';
+        showToast('تم نشر تعليقك بنجاح.');
       }
     });
 
-    // --- الوظيفة الإضافية 7: شريط تقدم التحميل التفاعلي عند النقر على تحميل الفيديو ---
     function triggerSmartDownloadProgress(downloadUrl) {
       if (!downloadUrl || downloadUrl.trim() === '') {
-        alert('عذراً، لا يوجد رابط تحميل مباشر متاح لهذا العمل.');
+        showToast('عذراً، لا يوجد رابط تحميل مباشر متاح.');
         return;
       }
       const progressBox = document.getElementById('downloadProgressBox');
@@ -2079,10 +2279,9 @@
       resetVideoTools();
       document.getElementById('downloadProgressBox').style.display = 'none';
 
-      // Check favorite state for UI
       if (favoritesData.includes(show.id)) {
         document.getElementById('favoriteIcon').className = 'fas fa-heart';
-        document.getElementById('favoriteIconstyle').color = 'var(--primary-color)';
+        document.getElementById('favoriteIcon').style.color = 'var(--primary-color)';
         document.getElementById('favoriteBtnText').textContent = 'تم الإضافة للمفضلة';
       } else {
         document.getElementById('favoriteIcon').className = 'far fa-heart';
@@ -2090,7 +2289,6 @@
         document.getElementById('favoriteBtnText').textContent = 'أضف للمفضلة';
       }
 
-      // Check Watchlist state for UI
       if (watchlistData.includes(show.id)) {
         document.getElementById('watchlistIcon').className = 'fas fa-clock';
         document.getElementById('watchlistIcon').style.color = 'var(--primary-color)';
@@ -2101,18 +2299,15 @@
         document.getElementById('watchlistBtnText').textContent = 'المشاهدة لاحقاً';
       }
 
-      // Check user rating state
       const currentRating = ratingsData[show.id] || 0;
       updateStarDisplay(currentRating);
 
-      // Add to History
       if (!historyData.includes(show.id)) {
         historyData.unshift(show.id);
         if (historyData.length > 20) historyData.pop();
         localStorage.setItem('mrstoud_history', JSON.stringify(historyData));
       }
 
-      // Render server selection & play valid video securely
       renderServerButtons(show);
       
       if (show.downloadUrl && show.downloadUrl.trim() !== '') {
@@ -2141,9 +2336,10 @@
     }
 
     window.deleteShow = function(id) {
-      if (confirm('هل أنت تأكد من حذف هذا الفيديو؟')) {
+      if (confirm('هل أنت متأكد من حذف هذا الفيديو؟')) {
         shows = shows.filter(item => item.id !== id);
         saveData();
+        showToast('تم حذف العمل بنجاح.');
       }
     };
 
@@ -2199,7 +2395,9 @@
         adminModal.classList.remove('active');
         playerModal.classList.remove('active');
         privacyModal.classList.remove('active');
+        analyticsModal.classList.remove('active');
         videoPlayerBox.innerHTML = '';
+        if (sleepTimerTimeout) clearTimeout(sleepTimerTimeout);
       });
     });
 
@@ -2235,7 +2433,7 @@
           
           if (ownerCorrectStreak >= 5) {
             localStorage.setItem('mrstoud_verified_owner', 'true');
-            alert('🎉 تم توثيقك رسمياً بأنك المدير المالك للمنصة! لن يتم حظرك نهائياً.');
+            showToast('🎉 تم توثيقك رسمياً بأنك المدير المالك للمنصة!');
           }
         }
 
@@ -2245,6 +2443,7 @@
         adminModal.classList.add('active');
         passwordInput.value = '';
         lockoutTimer.innerHTML = '';
+        showToast('مرحباً بك في لوحة الإدارة.');
       } else {
         ownerCorrectStreak = 0;
         localStorage.setItem('mrstoud_owner_streak', '0');
@@ -2258,10 +2457,10 @@
           localStorage.setItem('mrstoud_lockout_until', lockoutTime.toString());
           lockoutUntil = lockoutTime;
           checkLockoutStatus();
-          alert('⚠️️ أدخلت كلمة المرور خاطئة 3 مرات! تم قفل لوحة الدخول لمدة 24 ساعة لأسباب أمنية.');
+          alert('⚠ أدخلت كلمة المرور خاطئة 3 مرات! تم قفل لوحة الدخول لمدة 24 ساعة.');
         } else {
           const remaining = 3 - loginAttempts;
-          alert(`❌ كلمة المرور غير صحيحة! تبقّى لديك ${remaining} محاولة قبل الحظر لمدة 24 ساعة.`);
+          alert(`❌ كلمة المرور غير صحيحة! تبقّى لديك ${remaining} محاولة.`);
         }
       }
     });
@@ -2281,9 +2480,8 @@
       const downloadUrl = document.getElementById('showDownloadUrl').value.trim();
       const fileInput = showVideoFile.files[0];
 
-      // التأكد من إدخال وسيلة عرض مرئية صحيحة (صورة غلاف وفيديو/سيرفر صالح)
       if (!image && !fileInput && !videoUrl && !videoUrl2 && !videoUrl3) {
-        alert('⚠️ تنبيه: يرجى إدخال رابط صورة غلاف صحيحة وتوفير رابط فيديو أو سيرفر عرض واحد على الأقل قبل الحفظ!');
+        alert('⚠️ تنبيه: يرجى إدخال رابط صورة غلاف وتوفير رابط فيديو أو سيرفر عرض واحد على الأقل!');
         return;
       }
 
@@ -2308,7 +2506,7 @@
 
       saveData();
       resetAdminForm();
-      alert('تم إضافة العمل بنجاح وسيتوفر فوراً للعرض!');
+      showToast('تم حفظ وإضافة العمل بنجاح!');
     });
 
     renderShows();
