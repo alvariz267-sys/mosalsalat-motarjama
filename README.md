@@ -394,6 +394,15 @@
       text-overflow: ellipsis;
     }
 
+    .meta-sub-info {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+
     /* Modals */
     .modal {
       display: none;
@@ -722,6 +731,46 @@
       color: #fff;
     }
 
+    /* Episodes List Style */
+    .episodes-section {
+      background: var(--sidebar-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 15px;
+    }
+    .episodes-title {
+      font-size: 14px;
+      font-weight: bold;
+      color: var(--primary-color);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .episodes-grid {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      max-height: 120px;
+      overflow-y: auto;
+    }
+    .episode-chip {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      color: var(--text-color);
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .episode-chip.active, .episode-chip:hover {
+      background: var(--primary-color);
+      border-color: var(--primary-color);
+      color: #fff;
+    }
+
     /* Player Tools Bar (Subtitles & Enhance Controls) */
     .player-tools-bar {
       background: var(--sidebar-bg);
@@ -903,7 +952,6 @@
       transition: width 0.3s;
     }
 
-    /* === تنسيقات الـ 7 ميزات الجديدة كلياً === */
     .toast-notification {
       position: fixed;
       bottom: 25px;
@@ -944,7 +992,7 @@
 </head>
 <body>
 
-  <!-- Toast Notification System (الميزة 7) -->
+  <!-- Toast Notification System -->
   <div class="toast-notification" id="toastNotification">
     <i class="fas fa-check-circle" style="color: #27ae60; font-size: 18px;"></i>
     <span id="toastMessage">تم بنجاح!</span>
@@ -966,7 +1014,6 @@
   <nav class="navbar">
     <a href="#" class="brand" onclick="filterByCategory('all')">mrstoud</a>
     <div class="nav-actions">
-      <!-- 6. ميزة اختيار اللون الرئيسي للموقع -->
       <div class="accent-picker" title="اختر لون المنصة">
         <div class="color-dot active" style="background:#e50914;" onclick="changeAccentColor('#e50914')"></div>
         <div class="color-dot" style="background:#3498db;" onclick="changeAccentColor('#3498db')"></div>
@@ -997,7 +1044,7 @@
       <button class="close-btn" id="closeSidebarBtn">&times;</button>
     </div>
 
-    <!-- Sidebar Search Box + ميزة البحث الصوتي (الميزة 1) -->
+    <!-- Sidebar Search Box -->
     <div class="sidebar-search-box">
       <input type="text" class="sidebar-search-input" id="sidebarSearchInput" placeholder="بحث عن فيلم أو مسلسل...">
       <button class="icon-btn" id="voiceSearchBtn" onclick="startVoiceSearch()" title="بحث صوتي ذكي" style="font-size:16px; padding:6px;"><i class="fas fa-microphone"></i></button>
@@ -1040,7 +1087,6 @@
           <span class="badge-count" id="countWatchlist">0</span>
         </a>
       </li>
-      <!-- ميزة إحصائيات المشاهدة الشخصية (الميزة 4) -->
       <li>
         <a href="#" onclick="openAnalyticsModal()">
           <div class="sidebar-menu-left"><i class="fas fa-chart-pie" style="color:#f39c12;"></i> إحصائيات المشاهدة</div>
@@ -1072,14 +1118,13 @@
 
     <div class="section-title" id="sectionTitle">
       <span><i class="fas fa-play-circle"></i> جميع الأعمال</span>
-      <!-- ميزة زر "تشغيل عشوائي" (الميزة 2) -->
       <button onclick="playRandomShow()" class="action-badge-btn" style="padding: 5px 10px; font-size: 12px;"><i class="fas fa-dice"></i> اقتراح عشوائي</button>
     </div>
 
     <div class="shows-grid" id="showsGrid"></div>
   </main>
 
-  <!-- Welcome Modal for First-time Visitors -->
+  <!-- Welcome Modal -->
   <div class="modal" id="welcomeModal">
     <div class="modal-content" style="text-align: center; max-width: 450px;">
       <i class="fas fa-film" style="font-size: 50px; color: var(--primary-color); margin-bottom: 15px;"></i>
@@ -1113,7 +1158,7 @@
     </div>
   </div>
 
-  <!-- Analytics Modal (الميزة 4) -->
+  <!-- Analytics Modal -->
   <div class="modal" id="analyticsModal">
     <div class="modal-content" style="max-width: 450px; text-align: center;">
       <div class="modal-header">
@@ -1213,16 +1258,26 @@
           </div>
 
           <div class="form-group">
+            <label for="showYear">سنة الإصدار:</label>
+            <input type="text" id="showYear" placeholder="مثال: 2026" value="2026">
+          </div>
+
+          <div class="form-group">
+            <label for="showRating">التقييم (من 5 أو 10):</label>
+            <input type="text" id="showRating" placeholder="مثال: 4.8" value="4.8">
+          </div>
+
+          <div class="form-group">
             <label for="showImage">رابط صورة الغلاف (URL):</label>
             <input type="url" id="showImage" placeholder="https://example.com/image.jpg">
           </div>
 
+          <!-- قائمة الحلقات (معدلة لتدعم الحلقات المتعددة وتشغيلها مباشرة) -->
           <div class="form-group" style="background: var(--sidebar-bg); padding: 12px; border-radius: 8px; border: 1px dashed var(--primary-color);">
-            <label for="showVideoFile" style="color: var(--text-color); font-weight: bold;"><i class="fas fa-file-video"></i> اختيار فيديو من الهاتف:</label>
-            <input type="file" id="showVideoFile" accept="video/*" style="padding: 6px; cursor: pointer;">
+            <label for="showEpisodesInput" style="color: var(--text-color); font-weight: bold;"><i class="fas fa-list-ol"></i> قائمة الحلقات (روابط يوتيوب أو سيرفرات مفصولة بفاصلة أو سطر جديد):</label>
+            <textarea id="showEpisodesInput" rows="3" placeholder="الحلقة 1: https://www.youtube.com/embed/...&#10;الحلقة 2: https://www.youtube.com/embed/..."></textarea>
+            <small style="color:var(--text-secondary);">أدخل رابطاً لكل حلقة أو استخدم رابط السيرفر العام أدناه.</small>
           </div>
-
-          <div style="text-align: center; margin: 10px 0; color: var(--text-secondary); font-size: 12px;">— أو روابط السيرفرات الخارجية —</div>
 
           <div class="form-group">
             <label for="showVideoUrl">سيرفر المشغل الرئيسي (Server 1):</label>
@@ -1296,10 +1351,16 @@
         <button class="close-btn closeModal">&times;</button>
       </div>
 
+      <!-- Episodes Selector Bar -->
+      <div class="episodes-section" id="episodesSectionBox" style="display:none;">
+        <div class="episodes-title"><i class="fas fa-list"></i> قائمة الحلقات المتاحة</div>
+        <div class="episodes-grid" id="episodesGridContainer"></div>
+      </div>
+
       <!-- Server Selector Section -->
       <div id="serverSelectorContainer" class="server-btn-group"></div>
 
-      <!-- Extra Action Bar (Favorites, Rating & Share) -->
+      <!-- Extra Action Bar -->
       <div class="extra-player-actions">
         <button class="action-badge-btn" id="favoriteToggleBtn" onclick="toggleCurrentFavorite()">
           <i class="far fa-heart" id="favoriteIcon"></i> <span id="favoriteBtnText">أضف للمفضلة</span>
@@ -1325,7 +1386,7 @@
         </div>
       </div>
 
-      <!-- Interactive Player Tools (Subtitles, Quality & Audio Booster) -->
+      <!-- Interactive Player Tools -->
       <div class="player-tools-bar" style="margin-top: 12px;">
         <div class="tool-row">
           <div class="tool-group">
@@ -1379,7 +1440,6 @@
           </div>
         </div>
 
-        <!-- أداة مؤقت النوم التلقائي وإيقاف التشغيل (الميزة 5) & التشغيل التلقائي (الميزة 3) -->
         <div class="tool-row" style="border-top: 1px dashed var(--border-color); padding-top: 10px;">
           <div class="tool-group">
             <i class="fas fa-bed" style="color:#9b59b6;"></i>
@@ -1540,7 +1600,13 @@
         genre: "drama",
         title: "مسلسل في السابعة عشر",
         badge: "حلقة 1",
+        year: "2025",
+        rating: "4.9",
         image: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=400&q=80",
+        episodes: [
+          { name: "الحلقة 1", url: "https://www.youtube.com/embed/dQw4w9WgXcQ" },
+          { name: "الحلقة 2", url: "https://www.youtube.com/embed/dQw4w9WgXcQ" }
+        ],
         videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
         videoUrl2: "",
         videoUrl3: "",
@@ -1553,7 +1619,10 @@
         genre: "action",
         title: "فيلم الأكشن والمغامرة",
         badge: "2:15 ساعة",
+        year: "2026",
+        rating: "4.7",
         image: "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=400&q=80",
+        episodes: [],
         videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
         videoUrl2: "",
         videoUrl3: "",
@@ -1592,7 +1661,6 @@
       document.getElementById('themeIcon').className = 'fas fa-sun';
     }
 
-    // تفعيل وتطبيق اللون المخصص المحفوظ للمنصة (الميزة 6)
     const savedAccentColor = localStorage.getItem('mrstoud_accent_color');
     if (savedAccentColor) {
       document.documentElement.style.setProperty('--primary-color', savedAccentColor);
@@ -1633,7 +1701,6 @@
       }
     });
 
-    // --- نظام الإشعارات العائمة التفاعلية (الميزة 7) ---
     window.showToast = function(msg) {
       const toast = document.getElementById('toastNotification');
       document.getElementById('toastMessage').textContent = msg;
@@ -1643,7 +1710,6 @@
       }, 3000);
     };
 
-    // --- ميزة البحث الصوتي الذكي (الميزة 1) ---
     window.startVoiceSearch = function() {
       if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
         alert('عذراً، متصفحك لا يدعم ميزة البحث الصوتي.');
@@ -1662,7 +1728,6 @@
       recognition.start();
     };
 
-    // --- ميزة زر "تشغيل عشوائي" (الميزة 2) ---
     window.playRandomShow = function() {
       if (shows.length === 0) {
         showToast('لا توجد أعمال متاحة حالياً.');
@@ -1673,7 +1738,6 @@
       showToast('تم اختيار عمل عشوائي لك!');
     };
 
-    // --- ميزة إحصائيات المشاهدة (الميزة 4) ---
     window.openAnalyticsModal = function() {
       toggleSidebar();
       document.getElementById('statTotalWatched').textContent = historyData.length;
@@ -1682,7 +1746,6 @@
       document.getElementById('analyticsModal').classList.add('active');
     };
 
-    // --- ميزة مؤقت النوم (الميزة 5) ---
     window.setSleepTimer = function(minutes) {
       if (sleepTimerTimeout) clearTimeout(sleepTimerTimeout);
       const mins = parseInt(minutes);
@@ -1698,7 +1761,6 @@
       }
     };
 
-    // DOM Elements
     const showsGrid = document.getElementById('showsGrid');
     const menuToggleBtn = document.getElementById('menuToggleBtn');
     const closeSidebarBtn = document.getElementById('closeSidebarBtn');
@@ -1726,7 +1788,6 @@
     const adminShowsList = document.getElementById('adminShowsList');
     const closeModalBtns = document.querySelectorAll('.closeModal');
     const cancelEditBtn = document.getElementById('cancelEditBtn');
-    const showVideoFile = document.getElementById('showVideoFile');
     const loginSubmitBtn = document.getElementById('loginSubmitBtn');
     const lockoutTimer = document.getElementById('lockoutTimer');
     const usersListContainer = document.getElementById('usersListContainer');
@@ -1896,6 +1957,10 @@
           <img src="${sanitizeInput(show.image) || 'https://via.placeholder.com/300x400/222/fff?text=mrstoud'}" alt="${sanitizeInput(show.title)}" class="show-thumb" onerror="this.src='https://via.placeholder.com/300x400/222/fff?text=mrstoud'">
           <div class="show-info">
             <div class="show-title">${sanitizeInput(show.title)}</div>
+            <div class="meta-sub-info">
+              <span><i class="fas fa-calendar-alt"></i> ${sanitizeInput(show.year || '2026')}</span>
+              <span><i class="fas fa-star" style="color:#f1c40f;"></i> ${sanitizeInput(show.rating || '4.5')}</span>
+            </div>
           </div>
         `;
         showsGrid.appendChild(card);
@@ -2047,26 +2112,8 @@
       renderUsersAndBans();
     }
 
-    function playVideoServer(url, isLocal = false, localObj = null) {
-      if (isLocal && localObj) {
-        const localBlobUrl = URL.createObjectURL(localObj);
-        videoPlayerBox.innerHTML = `
-          <video controls autoplay style="width:100%; height:100%;" id="activeVideoElement">
-            <source src="${localBlobUrl}" type="${localObj.type}">
-            <track kind="subtitles" srclang="ar" label="العربية" default>
-            <track kind="subtitles" srclang="en" label="English">
-            <track kind="subtitles" srclang="fr" label="Français">
-            متصفحك لا يدعم تشغيل هذا الفيديو
-          </video>`;
-        
-        // تفعيل ميزة التشغيل التلقائي للعمل التالي عند انتهاء الفيديو المحلي (الميزة 3)
-        const vidEl = document.getElementById('activeVideoElement');
-        vidEl.onended = () => {
-          if (document.getElementById('autoplayNextCheck').checked) {
-            playNextShow();
-          }
-        };
-      } else if (url && url.trim() !== '') {
+    function playVideoServer(url) {
+      if (url && url.trim() !== '') {
         const safeUrl = sanitizeInput(url);
         videoPlayerBox.innerHTML = `<iframe id="videoIframe" src="${safeUrl}" allowfullscreen></iframe>`;
       } else {
@@ -2075,14 +2122,31 @@
       applyVideoFilters();
     }
 
-    // الانتقال للعمل التالي تلقائياً (الميزة 3)
-    function playNextShow() {
-      const currentIndex = shows.findIndex(s => s.id === currentShowId);
-      if (currentIndex !== -1 && currentIndex + 1 < shows.length) {
-        showToast('جاري تشغيل العمل التالي تلقائياً...');
-        openPlayer(shows[currentIndex + 1]);
+    function renderEpisodesList(show) {
+      const episodesBox = document.getElementById('episodesSectionBox');
+      const episodesGrid = document.getElementById('episodesGridContainer');
+      episodesGrid.innerHTML = '';
+
+      if (show.episodes && show.episodes.length > 0) {
+        episodesBox.style.display = 'block';
+        show.episodes.forEach((ep, idx) => {
+          const btn = document.createElement('div');
+          btn.className = `episode-chip ${idx === 0 ? 'active' : ''}`;
+          btn.innerHTML = `<i class="fas fa-play"></i> ${sanitizeInput(ep.name)}`;
+          btn.onclick = () => {
+            document.querySelectorAll('.episode-chip').forEach(c => c.classList.remove('active'));
+            btn.classList.add('active');
+            playVideoServer(ep.url);
+          };
+          episodesGrid.appendChild(btn);
+        });
+        // تشغيل الحلقة الأولى افتراضياً
+        playVideoServer(show.episodes[0].url);
       } else {
-        showToast('هذا هو آخر عمل في القائمة.');
+        episodesBox.style.display = 'none';
+        if (show.videoUrl) {
+          playVideoServer(show.videoUrl);
+        }
       }
     }
 
@@ -2090,17 +2154,14 @@
       serverSelectorContainer.innerHTML = '';
       const servers = [];
 
-      if (show.isVideoLocal && show.videoObject) {
-        servers.push({ name: 'سيرفر الهاتف المحلي', action: () => playVideoServer(null, true, show.videoObject) });
-      }
       if (show.videoUrl && show.videoUrl.trim() !== '') {
-        servers.push({ name: 'سيرفر 1 (الرئيسي)', action: () => playVideoServer(show.videoUrl) });
+        servers.push({ name: 'سيرفر 1 (الرئيسي)', url: show.videoUrl });
       }
       if (show.videoUrl2 && show.videoUrl2.trim() !== '') {
-        servers.push({ name: 'سيرفر 2 (احتياطي)', action: () => playVideoServer(show.videoUrl2) });
+        servers.push({ name: 'سيرفر 2 (احتياطي)', url: show.videoUrl2 });
       }
       if (show.videoUrl3 && show.videoUrl3.trim() !== '') {
-        servers.push({ name: 'سيرفر 3 (سريع)', action: () => playVideoServer(show.videoUrl3) });
+        servers.push({ name: 'سيرفر 3 (سريع)', url: show.videoUrl3 });
       }
 
       if (servers.length > 0) {
@@ -2108,16 +2169,13 @@
           const btn = document.createElement('button');
           btn.className = `server-btn ${index === 0 ? 'active' : ''}`;
           btn.innerHTML = `<i class="fas fa-server"></i> ${srv.name}`;
-          btn.onclick = (e) => {
+          btn.onclick = () => {
             document.querySelectorAll('.server-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            srv.action();
+            playVideoServer(srv.url);
           };
           serverSelectorContainer.appendChild(btn);
         });
-        servers[0].action();
-      } else {
-        videoPlayerBox.innerHTML = `<div style="padding:40px; text-align:center; color:var(--primary-color);"><i class="fas fa-exclamation-triangle" style="font-size:30px; margin-bottom:10px;"></i><br>تنبيه: لا توجد أي روابط أو فيديوهات مضافة لهذا العمل بعد!</div>`;
       }
     }
 
@@ -2299,8 +2357,8 @@
         document.getElementById('watchlistBtnText').textContent = 'المشاهدة لاحقاً';
       }
 
-      const currentRating = ratingsData[show.id] || 0;
-      updateStarDisplay(currentRating);
+      const currentRating = ratingsData[show.id] || parseFloat(show.rating) || 0;
+      updateStarDisplay(Math.round(currentRating));
 
       if (!historyData.includes(show.id)) {
         historyData.unshift(show.id);
@@ -2308,6 +2366,7 @@
         localStorage.setItem('mrstoud_history', JSON.stringify(historyData));
       }
 
+      renderEpisodesList(show);
       renderServerButtons(show);
       
       if (show.downloadUrl && show.downloadUrl.trim() !== '') {
@@ -2326,11 +2385,7 @@
     }
 
     function saveData() {
-      const cleanShows = shows.map(item => {
-        const { videoObject, ...rest } = item;
-        return rest;
-      });
-      localStorage.setItem('mrstoud_shows', JSON.stringify(cleanShows));
+      localStorage.setItem('mrstoud_shows', JSON.stringify(shows));
       renderShows(sidebarSearchInput.value);
       renderAdminList();
     }
@@ -2344,19 +2399,27 @@
     };
 
     window.editShow = function(id) {
-      const show = shows.find(item => item.id === id);
+      const show = shows.find(item => item.id == id);
       if (show) {
         document.getElementById('editShowId').value = show.id;
         document.getElementById('showCategory').value = show.category || 'series';
         document.getElementById('showGenre').value = show.genre || 'action';
         document.getElementById('showTitle').value = show.title;
         document.getElementById('showBadge').value = show.badge || '';
+        document.getElementById('showYear').value = show.year || '2026';
+        document.getElementById('showRating').value = show.rating || '4.8';
         document.getElementById('showImage').value = show.image || '';
         document.getElementById('showVideoUrl').value = show.videoUrl || '';
         document.getElementById('showVideoUrl2').value = show.videoUrl2 || '';
         document.getElementById('showVideoUrl3').value = show.videoUrl3 || '';
         document.getElementById('showQuality').value = show.quality || '';
         document.getElementById('showDownloadUrl').value = show.downloadUrl || '';
+
+        if (show.episodes) {
+          document.getElementById('showEpisodesInput').value = show.episodes.map(e => `${e.name}: ${e.url}`).join('\n');
+        } else {
+          document.getElementById('showEpisodesInput').value = '';
+        }
 
         document.getElementById('formSubTitle').textContent = 'تعديل العمل الحالي';
         document.getElementById('saveBtn').textContent = 'حفظ التعديلات';
@@ -2472,16 +2535,34 @@
       const genre = document.getElementById('showGenre').value;
       const title = document.getElementById('showTitle').value;
       const badge = document.getElementById('showBadge').value;
+      const year = document.getElementById('showYear').value;
+      const rating = document.getElementById('showRating').value;
       const image = document.getElementById('showImage').value.trim();
+      const episodesText = document.getElementById('showEpisodesInput').value.trim();
       const videoUrl = document.getElementById('showVideoUrl').value.trim();
       const videoUrl2 = document.getElementById('showVideoUrl2').value.trim();
       const videoUrl3 = document.getElementById('showVideoUrl3').value.trim();
       const quality = document.getElementById('showQuality').value;
       const downloadUrl = document.getElementById('showDownloadUrl').value.trim();
-      const fileInput = showVideoFile.files[0];
 
-      if (!image && !fileInput && !videoUrl && !videoUrl2 && !videoUrl3) {
-        alert('⚠️ تنبيه: يرجى إدخال رابط صورة غلاف وتوفير رابط فيديو أو سيرفر عرض واحد على الأقل!');
+      // تحليل الحلقات المكتوبة
+      let parsedEpisodes = [];
+      if (episodesText) {
+        const lines = episodesText.split('\n');
+        lines.forEach(line => {
+          if (line.includes(':')) {
+            const parts = line.split(':');
+            const name = parts[0].trim();
+            const url = parts.slice(1).join(':').trim();
+            if (url) parsedEpisodes.push({ name, url });
+          } else if (line.trim().startsWith('http')) {
+            parsedEpisodes.push({ name: `الحلقة ${parsedEpisodes.length + 1}`, url: line.trim() });
+          }
+        });
+      }
+
+      if (!image && !videoUrl && parsedEpisodes.length === 0) {
+        alert('⚠️ تنبيه: يرجى إدخال رابط صورة غلاف وتوفير رابط فيديو أو حلقات عرض واحدة على الأقل!');
         return;
       }
 
@@ -2490,16 +2571,13 @@
         if (index !== -1) {
           shows[index] = { 
             ...shows[index],
-            category, genre, title, badge, image, videoUrl, videoUrl2, videoUrl3, quality, downloadUrl,
-            ...(fileInput && { isVideoLocal: true, videoObject: fileInput })
+            category, genre, title, badge, year, rating, image, episodes: parsedEpisodes, videoUrl, videoUrl2, videoUrl3, quality, downloadUrl
           };
         }
       } else {
         const newShow = {
           id: Date.now(),
-          category, genre, title, badge, image, videoUrl, videoUrl2, videoUrl3, quality, downloadUrl,
-          isVideoLocal: fileInput ? true : false,
-          videoObject: fileInput || null
+          category, genre, title, badge, year, rating, image, episodes: parsedEpisodes, videoUrl, videoUrl2, videoUrl3, quality, downloadUrl
         };
         shows.unshift(newShow);
       }
