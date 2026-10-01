@@ -32,7 +32,7 @@
       padding-bottom: 30px;
     }
 
-    /* Blocked User Screen & Last Chance UI */
+    /* Blocked User Screen & One-Time Admin Verification UI */
     #hackerBlockedScreen {
       display: none;
       position: fixed;
@@ -59,7 +59,7 @@
       100% { transform: scale(1); opacity: 0.8; }
     }
 
-    .last-chance-box {
+    .secret-code-box {
       margin-top: 20px;
       background: #141414;
       border: 1px solid #333;
@@ -70,21 +70,21 @@
       box-shadow: 0 4px 15px rgba(0,0,0,0.5);
     }
 
-    .last-chance-box textarea {
+    .secret-code-box input {
       width: 100%;
-      height: 80px;
+      padding: 10px;
       background: #000;
       border: 1px solid #333;
       color: #fff;
-      padding: 10px;
       border-radius: 6px;
       margin-top: 10px;
       outline: none;
-      font-size: 13px;
-      resize: none;
+      font-size: 14px;
+      text-align: center;
+      letter-spacing: 1px;
     }
 
-    .btn-appeal {
+    .btn-secret-unban {
       background-color: #27ae60;
       color: white;
       border: none;
@@ -97,7 +97,7 @@
       transition: background 0.2s;
     }
 
-    .btn-appeal:hover { background-color: #219150; }
+    .btn-secret-unban:hover { background-color: #219150; }
 
     /* Navbar */
     .navbar {
@@ -135,12 +135,6 @@
       padding: 8px;
       cursor: pointer;
       border-radius: 50%;
-      transition: background 0.2s, color 0.2s;
-    }
-
-    .icon-btn:hover, .icon-btn:active {
-      background-color: #222;
-      color: var(--primary-color);
     }
 
     /* Sidebar */
@@ -157,7 +151,6 @@
       padding: 20px 15px;
       display: flex;
       flex-direction: column;
-      overflow-y: auto;
     }
 
     .sidebar.open { right: 0; }
@@ -190,12 +183,6 @@
       cursor: pointer;
       width: 100%;
       text-align: right;
-      transition: background 0.2s, color 0.2s;
-    }
-
-    .sidebar-menu a:hover, .sidebar-menu button:hover {
-      background-color: #222;
-      color: var(--primary-color);
     }
 
     .overlay {
@@ -213,12 +200,6 @@
       max-width: 1200px;
       margin: 15px auto;
       padding: 0 12px;
-    }
-
-    .shows-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(145px, 1fr));
-      gap: 14px;
     }
 
     /* Modals */
@@ -241,9 +222,6 @@
       max-width: 650px;
       width: 100%;
       padding: 20px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.7);
-      max-height: 90vh;
-      overflow-y: auto;
       border: 1px solid var(--border-color);
     }
 
@@ -283,7 +261,7 @@
 </head>
 <body>
 
-  <!-- Blocked User Screen with Last Chance Feature -->
+  <!-- Blocked User Screen -->
   <div id="hackerBlockedScreen">
     <i class="fas fa-shield-alt"></i>
     <h1 style="font-size: 26px; margin-bottom: 8px;">تم حظر الوصول إلى المنصة</h1>
@@ -291,20 +269,19 @@
       تم حظر الوصول نظراً لرصد نشاط غير مصرح به أو مخالف لشروط الاستخدام.
     </p>
 
-    <!-- Last Chance Form Component -->
-    <div class="last-chance-box" id="lastChanceBox">
-      <h3 style="color: #27ae60; font-size: 16px; margin-bottom: 6px;">
-        <i class="fas fa-undo"></i> طلب فرصة أخيرة لفك الحظر
+    <!-- One-Time Master Verification Code Box (For First Banned Person Only) -->
+    <div class="secret-code-box" id="secretCodeBox" style="display: none;">
+      <h3 style="color: #27ae60; font-size: 15px; margin-bottom: 6px;">
+        <i class="fas fa-user-shield"></i> كود التوثيق وفك الحظر
       </h3>
-      <p style="color: #aaa; font-size: 12px;">يمكنك تقديم طلب فرصة أخيرة لإدارة المنصة لمراجعة حسابك وفك الحظر:</p>
+      <p style="color: #aaa; font-size: 12px;">أدخل كود التحقق لإلغاء الحظر وتأكيد التوثيق:</p>
       
-      <form id="lastChanceForm">
-        <textarea id="appealText" placeholder="اكتب سبب طلب الفرصة الأخيرة هنا..." required maxlength="250"></textarea>
-        <button type="submit" class="btn-appeal" id="submitAppealBtn">
-          <i class="fas fa-paper-plane"></i> إرسال طلب الفرصة الأخيرة
+      <form id="secretCodeForm">
+        <input type="text" id="secretCodeInput" placeholder="أدخل الكود الخاص هنا" required autocomplete="off">
+        <button type="submit" class="btn-secret-unban">
+          <i class="fas fa-key"></i> توثيق وإلغاء الحظر فوراً
         </button>
       </form>
-      <div id="appealStatusMsg" style="margin-top: 10px; font-size: 12px;"></div>
     </div>
   </div>
 
@@ -335,7 +312,7 @@
   <!-- Main Container -->
   <main class="container">
     <h2 style="margin-bottom: 15px;">مرحباً بك في منصة mrstoud</h2>
-    <div class="shows-grid" id="showsGrid">
+    <div id="showsGrid">
       <p style="color: #888;">جاري تحميل المحتوى الآمن...</p>
     </div>
   </main>
@@ -359,102 +336,61 @@
   </div>
 
   <script>
-    // System Master Encryption & Secure Admin Email Config
-    const SECURE_ADMIN_HASH = "alvariz267@gmail.com"; 
+    const MASTER_ADMIN_CODE = "ouzgiiit899";
 
+    // Checks if current user is Master Admin (Immune to all bans)
     function isMasterAdmin() {
       return localStorage.getItem('mrstoud_is_master_admin') === 'true';
     }
 
+    // Security Filter & Ban Inspector
     function checkGlobalBanStatus() {
-      if (isMasterAdmin()) return;
+      // If user is verified as Master Admin, ignore ban completely
+      if (isMasterAdmin()) {
+        localStorage.removeItem('mrstoud_is_hacker_banned');
+        document.getElementById('hackerBlockedScreen').style.display = 'none';
+        return;
+      }
 
       if (localStorage.getItem('mrstoud_is_hacker_banned') === 'true') {
         document.getElementById('hackerBlockedScreen').style.display = 'flex';
-        checkAppealState();
+        checkSecretCodeAvailability();
         throw new Error('Access Denied');
       }
     }
 
-    // Inspect user appeals against injection/hacking attempts
-    function sanitizeAppealInput(str) {
-      if (!str) return '';
-      return str.replace(/[<>'"]/g, '');
-    }
+    // Check if secret code feature is available (For first banned user only)
+    function checkSecretCodeAvailability() {
+      const codeUsedOrExpired = localStorage.getItem('mrstoud_secret_code_used') === 'true';
+      const secretCodeBox = document.getElementById('secretCodeBox');
 
-    // Direct Safe Mail Dispatcher (Hidden Admin Email from Client)
-    function dispatchAppealToAdmin(appealMessage) {
-      const clientIdentifier = localStorage.getItem('mrstoud_device_token') || 'User_ID_' + Math.floor(Math.random() * 888888 + 100000);
-      localStorage.setItem('mrstoud_device_token', clientIdentifier);
-
-      const pageUrl = window.location.href.split('?')[0];
-      const directUnbanLink = `${pageUrl}?action=grant_last_chance&token=${encodeURIComponent(clientIdentifier)}`;
-
-      const subject = encodeURIComponent(`📩 [طلب فرصة أخيرة] التماس جديد لفك الحظر`);
-      const body = encodeURIComponent(
-`وصلك طلب "فرصة أخيرة" جديد من مستخدم محظور على المنصة:
-
----------------------------------------------------
-معرف الجهاز/المستخدم: ${clientIdentifier}
-رسالة التماس الفرصة الأخيرة:
-"${appealMessage}"
-
-تاريخ الطلب: ${new Date().toLocaleString('ar-EG')}
----------------------------------------------------
-
-للموافقة على إعطائه الفرصة الأخيرة وفك الحظر فوراً، اضغط على الرابط التالي:
-${directUnbanLink}
-`
-      );
-
-      // Trigger Dispatch to Master Email
-      window.open(`mailto:${SECURE_ADMIN_HASH}?subject=${subject}&body=${body}`, '_blank');
-    }
-
-    function checkAppealState() {
-      if (localStorage.getItem('mrstoud_appeal_submitted') === 'true') {
-        const statusMsg = document.getElementById('appealStatusMsg');
-        const lastChanceBox = document.getElementById('lastChanceBox');
-        
-        lastChanceBox.innerHTML = `
-          <h3 style="color: #e67e22; font-size: 15px; margin-bottom: 6px;">
-            <i class="fas fa-clock"></i> طلبك قيد المراجعة
-          </h3>
-          <p style="color: #aaa; font-size: 12px; line-height: 1.5;">
-            لقد قمت بتقديم طلب الفرصة الأخيرة بالفعل. الطلب حالياً معروض على إدارة المنصة للمراجعة.
-          </p>
-        `;
+      if (!codeUsedOrExpired) {
+        secretCodeBox.style.display = 'block';
+      } else {
+        secretCodeBox.style.display = 'none';
       }
     }
 
-    // Handle Email Action Link Execution
-    function handleEmailActions() {
-      const urlParams = new URLSearchParams(window.location.search);
-      const action = urlParams.get('action');
-      const token = urlParams.get('token');
-
-      if (action === 'grant_last_chance' && token) {
-        localStorage.removeItem('mrstoud_is_hacker_banned');
-        localStorage.removeItem('mrstoud_appeal_submitted');
-        alert(`✅ تم منح الفرصة الأخيرة وفك الحظر بنجاح!`);
-        window.location.href = window.location.pathname;
-      }
-    }
-
-    // Last Chance Appeal Form Submit
-    document.getElementById('lastChanceForm').addEventListener('submit', (e) => {
+    // Master Admin Code Submission Handler
+    document.getElementById('secretCodeForm').addEventListener('submit', (e) => {
       e.preventDefault();
-      const appealRaw = document.getElementById('appealText').value;
-      const cleanAppeal = sanitizeAppealInput(appealRaw);
+      const inputCode = document.getElementById('secretCodeInput').value.trim();
 
-      if (cleanAppeal.length < 5) {
-        alert('يرجى كتابة سبب التماس واضح.');
-        return;
+      if (inputCode === MASTER_ADMIN_CODE) {
+        // 1. Grant Master Admin status and permanent immunity
+        localStorage.setItem('mrstoud_is_master_admin', 'true');
+        
+        // 2. Remove any active ban status
+        localStorage.removeItem('mrstoud_is_hacker_banned');
+        
+        // 3. Mark code box as used so it never appears again for anyone
+        localStorage.setItem('mrstoud_secret_code_used', 'true');
+        
+        alert('👑 أهلاً بك يا مدير النظام! تم التعرف عليك ومنحك كامل الصلاحيات والحصانة الدائمة ضد الحظر.');
+        window.location.reload();
+      } else {
+        alert('❌ الكود غير صحيح!');
       }
-
-      dispatchAppealToAdmin(cleanAppeal);
-      localStorage.setItem('mrstoud_appeal_submitted', 'true');
-      checkAppealState();
     });
 
     // Sidebar and Modal controls
@@ -472,7 +408,11 @@ ${directUnbanLink}
     });
 
     document.getElementById('adminBtn').addEventListener('click', () => {
-      document.getElementById('loginModal').classList.add('active');
+      if (isMasterAdmin()) {
+        alert('أنت مسجل بالفعل كمدير النظام بأعلى الصلاحيات.');
+      } else {
+        document.getElementById('loginModal').classList.add('active');
+      }
     });
 
     document.querySelectorAll('.closeModal').forEach(btn => {
@@ -494,9 +434,8 @@ ${directUnbanLink}
       }
     });
 
-    // Run Security Checks
+    // Run Initial Security Checks
     checkGlobalBanStatus();
-    handleEmailActions();
   </script>
 </body>
 </html>
