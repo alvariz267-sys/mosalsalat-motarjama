@@ -115,6 +115,46 @@
       color: var(--primary-color);
     }
 
+    /* Breaking News Ticker Bar */
+    .ticker-bar {
+      background-color: var(--card-bg);
+      border-bottom: 1px solid var(--border-color);
+      color: var(--text-color);
+      padding: 8px 15px;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+      white-space: nowrap;
+      position: sticky;
+      top: 61px;
+      z-index: 99;
+    }
+
+    .ticker-title {
+      background-color: var(--primary-color);
+      color: #fff;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: bold;
+      margin-left: 12px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .ticker-content {
+      display: inline-block;
+      animation: tickerScroll 20s linear infinite;
+      color: var(--text-secondary);
+    }
+
+    @keyframes tickerScroll {
+      0% { transform: translateX(100%); }
+      100% { transform: translateX(-100%); }
+    }
+
     /* Sidebar */
     .sidebar {
       position: fixed;
@@ -825,6 +865,14 @@
       <button class="icon-btn" id="menuToggleBtn" title="القائمة الجانبية"><i class="fas fa-bars"></i></button>
     </div>
   </nav>
+
+  <!-- Breaking News Ticker Bar -->
+  <div class="ticker-bar">
+    <div class="ticker-title"><i class="fas fa-bullhorn"></i> إعلان عاجل</div>
+    <div class="ticker-content">
+      مرحباً بكم في منصة mrstoud للأفلام والمسلسلات الحصرية. استمتع بأعلى جودة مشاهدة وأحدث الإصدارات مع حماية أمنية متكاملة WAF!
+    </div>
+  </div>
 
   <!-- Sidebar Overlay -->
   <div class="overlay" id="overlay"></div>
