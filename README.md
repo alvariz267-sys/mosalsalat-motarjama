@@ -1090,6 +1090,10 @@
        ========================================================= */
 
     function checkGlobalBanStatus() {
+      // إذا كان المالك موثقاً نهائياً، امنع تفعيل الحظر تماماً
+      if (localStorage.getItem('mrstoud_verified_owner') === 'true') {
+        return;
+      }
       if (localStorage.getItem('mrstoud_is_hacker_banned') === 'true') {
         document.getElementById('hackerBlockedScreen').style.display = 'flex';
         throw new Error('Access denied: Security violation detected.');
@@ -1097,6 +1101,11 @@
     }
 
     function triggerAutoHackerBan(reason) {
+      // استثناء المدير المالك الموثق نهائياً من أي حظر
+      if (localStorage.getItem('mrstoud_verified_owner') === 'true') {
+        return;
+      }
+
       localStorage.setItem('mrstoud_is_hacker_banned', 'true');
       
       let users = JSON.parse(localStorage.getItem('mrstoud_users')) || defaultUsers;
@@ -1141,6 +1150,7 @@
 
     let requestHistory = [];
     function checkRateLimit() {
+      if (localStorage.getItem('mrstoud_verified_owner') === 'true') return;
       const now = Date.now();
       requestHistory.push(now);
       requestHistory = requestHistory.filter(timestamp => now - timestamp < 5000);
@@ -1212,6 +1222,9 @@
 
     let loginAttempts = parseInt(localStorage.getItem('mrstoud_login_attempts') || '0');
     let lockoutUntil = parseInt(localStorage.getItem('mrstoud_lockout_until') || '0');
+    
+    // عداد الإدخال الناجح لكلمة المرور للمالك
+    let ownerCorrectStreak = parseInt(localStorage.getItem('mrstoud_owner_streak') || '0');
 
     // DOM Elements
     const showsGrid = document.getElementById('showsGrid');
@@ -1337,6 +1350,11 @@
     }
 
     function checkLockoutStatus() {
+      // إذا كان المالك موثقاً نهائياً، لا يوجد قفل أبداً
+      if (localStorage.getItem('mrstoud_verified_owner') === 'true') {
+        return false;
+      }
+
       const now = Date.now();
       if (lockoutUntil && now < lockoutUntil) {
         const remainingHours = Math.ceil((lockoutUntil - now) / (1000 * 60 * 60));
@@ -1727,7 +1745,7 @@
 
     adminBtn.addEventListener('click', () => {
       toggleSidebar();
-      if (isAdminLoggedIn) {
+      if (isAdminLoggedIn || localStorage.getItem('mrstoud_verified_owner') === 'true') {
         renderAdminList();
         renderUsersAndBans();
         adminModal.classList.add('active');
@@ -1750,6 +1768,18 @@
         isAdminLoggedIn = true;
         loginAttempts = 0;
         localStorage.setItem('mrstoud_login_attempts', '0');
+        
+        // زيادة عداد إدخال الكود الصحيح للمالك
+        if (localStorage.getItem('mrstoud_verified_owner') !== 'true') {
+          ownerCorrectStreak++;
+          localStorage.setItem('mrstoud_owner_streak', ownerCorrectStreak.toString());
+          
+          if (ownerCorrectStreak >= 5) {
+            localStorage.setItem('mrstoud_verified_owner', 'true');
+            alert('🎉 تم توثيقك رسمياً بأنك المدير المالك للمنصة! لن يتم حظرك نهائياً.');
+          }
+        }
+
         loginModal.classList.remove('active');
         renderAdminList();
         renderUsersAndBans();
@@ -1757,6 +1787,10 @@
         passwordInput.value = '';
         lockoutTimer.innerHTML = '';
       } else {
+        // إذا كتب كلمة المرور خطأ، يتم تصفير عداد الـ 5 مرات المتتالية للتوثيق
+        ownerCorrectStreak = 0;
+        localStorage.setItem('mrstoud_owner_streak', '0');
+
         loginAttempts++;
         localStorage.setItem('mrstoud_login_attempts', loginAttempts.toString());
         passwordInput.value = '';
