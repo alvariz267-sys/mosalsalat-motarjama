@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ط<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
@@ -134,6 +134,7 @@
       cursor: pointer;
       border-radius: 50%;
       transition: background 0.2s, color 0.2s;
+      position: relative;
     }
 
     .icon-btn:hover, .icon-btn:active {
@@ -1014,9 +1015,45 @@
       border: 2px solid transparent;
     }
     .color-dot.active { border-color: #fff; }
+
+    /* === 🚀 إضافات جديدة مميزة (New Added UI Features) === */
+    .notif-badge-counter {
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      background: var(--primary-color);
+      color: #fff;
+      font-size: 9px;
+      padding: 2px 5px;
+      border-radius: 50%;
+      font-weight: bold;
+    }
+    .scroll-to-top {
+      position: fixed;
+      bottom: 25px;
+      right: 25px;
+      background: var(--primary-color);
+      color: #fff;
+      border: none;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 90;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      font-size: 16px;
+      transition: 0.2s;
+    }
+    .scroll-to-top:hover { transform: scale(1.1); }
   </style>
 </head>
 <body>
+
+  <!-- زر العودة للأعلى الجديد -->
+  <button class="scroll-to-top" id="scrollToTopBtn" onclick="scrollToTop()" title="العودة لأعلى الصفحة"><i class="fas fa-arrow-up"></i></button>
 
   <!-- رسالة الترحيب العلوية (ميزة جديدة) -->
   <div class="welcome-banner-top" id="topWelcomeBanner">
@@ -1046,6 +1083,12 @@
   <nav class="navbar">
     <a href="#" class="brand" onclick="filterByCategory('all')">mrstoud</a>
     <div class="nav-actions">
+      <!-- زر الإشعارات الجديد -->
+      <button class="icon-btn" onclick="openNotificationsModal()" title="الإشعارات والتنبيهات">
+        <i class="fas fa-bell"></i>
+        <span class="notif-badge-counter" id="notifBadge">1</span>
+      </button>
+
       <div class="accent-picker" title="اختر لون المنصة">
         <div class="color-dot active" style="background:#e50914;" onclick="changeAccentColor('#e50914')"></div>
         <div class="color-dot" style="background:#3498db;" onclick="changeAccentColor('#3498db')"></div>
@@ -1100,6 +1143,12 @@
         <a href="#" onclick="filterByCategory('movie', event)">
           <div class="sidebar-menu-left"><i class="fas fa-film"></i> الأفلام</div>
           <span class="badge-count" id="countMovies">0</span>
+        </a>
+      </li>
+      <!-- ميزة جديدة: وضع الأطفال الآمن -->
+      <li>
+        <a href="#" onclick="filterByCategory('kids', event)">
+          <div class="sidebar-menu-left"><i class="fas fa-child" style="color:#f1c40f;"></i> وضع الأطفال الآمن</div>
         </a>
       </li>
       <li>
@@ -1168,6 +1217,23 @@
     </div>
   </div>
 
+  <!-- Notifications Modal (ميزة جديدة) -->
+  <div class="modal" id="notificationsModal">
+    <div class="modal-content" style="max-width: 450px;">
+      <div class="modal-header">
+        <h3><i class="fas fa-bell"></i> التنبيهات والإشعارات</h3>
+        <button class="close-btn closeModal">&times;</button>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 10px; font-size: 13px;" id="notificationsListContainer">
+        <div style="background:var(--sidebar-bg); padding:10px; border-radius:6px; border-right:3px solid var(--primary-color);">
+          <strong>🎉 أهلاً بك في التحديث الجديد</strong>
+          <p style="color:var(--text-secondary); margin-top:3px;">تم إضافة وضع الأطفال الآمن وميزة النسخ الاحتياطي للوحة التحكم.</p>
+        </div>
+      </div>
+      <button class="btn closeModal" style="margin-top: 15px;">حسناً</button>
+    </div>
+  </div>
+
   <!-- Privacy Policy Modal -->
   <div class="modal" id="privacyModal">
     <div class="modal-content" style="max-width: 600px;">
@@ -1211,6 +1277,7 @@
           <strong id="statTotalWatchlist">0</strong>
         </div>
       </div>
+      <button class="btn btn-secondary" onclick="exportUserStats()" style="margin-top: 5px;"><i class="fas fa-share-alt"></i> مشاركة إحصائياتي</button>
       <button class="btn closeModal" style="margin-top: 10px;">حسناً</button>
     </div>
   </div>
@@ -1253,6 +1320,8 @@
         <button class="tab-btn active" onclick="switchAdminTab('tab-shows')"><i class="fas fa-film"></i> المسلسلات والأفلام</button>
         <button class="tab-btn" onclick="switchAdminTab('tab-users')"><i class="fas fa-users"></i> إدارة المستخدمين</button>
         <button class="tab-btn" onclick="switchAdminTab('tab-ban')"><i class="fas fa-user-slash"></i> الحظر وفك الحظر</button>
+        <!-- تبويب جديد للإعدادات والنسخ الاحتياطي -->
+        <button class="tab-btn" onclick="switchAdminTab('tab-backup')"><i class="fas fa-database"></i> النسخ الاحتياطي</button>
       </div>
 
       <!-- Tab 1: Shows & Movies -->
@@ -1370,6 +1439,17 @@
 
         <h4 style="margin-bottom: 12px; color: #27ae60;">قائمة المحظورين</h4>
         <div id="bannedUsersContainer"></div>
+      </div>
+
+      <!-- Tab 4: Backup & Restore (إضافة جديدة) -->
+      <div id="tab-backup" class="tab-content">
+        <h4 style="margin-bottom: 12px; color: var(--primary-color);">إدارة قاعدة البيانات (Backup & Restore)</h4>
+        <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 15px;">يمكنك حفظ نسخة احتياطية لجميع أفلام المسلسلات والبيانات في ملف JSON أو استعادتها.</p>
+        <button class="btn" onclick="exportDatabaseJSON()" style="margin-bottom: 10px;"><i class="fas fa-download"></i> تصدير قاعدة البيانات (JSON)</button>
+        <div class="form-group">
+          <label for="importJsonFile">استعادة البيانات من ملف:</label>
+          <input type="file" id="importJsonFile" accept=".json" onchange="importDatabaseJSON(this)">
+        </div>
       </div>
 
     </div>
@@ -1722,6 +1802,60 @@
       window.open(`https://api.whatsapp.com/send?text=${waText}`, '_blank');
     };
 
+    // ميزات جديدة مضافة: فتح نافذة الإشعارات & إحصائيات المشاركة & زر العودة للأعلى
+    window.openNotificationsModal = function() {
+      document.getElementById('notificationsModal').classList.add('active');
+    };
+
+    window.exportUserStats = function() {
+      const text = `📊 إحصائياتي على منصة mrstoud:\n- الأعمال المشاهدة: ${historyData.length}\n- المفضلة: ${favoritesData.length}\n- المشاهدة لاحقاً: ${watchlistData.length}`;
+      navigator.clipboard.writeText(text);
+      showToast('تم نسخ إحصائياتك لمشاركتها مع أصدقائك!');
+    };
+
+    window.exportDatabaseJSON = function() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(shows, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", "mrstoud_backup.json");
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+      showToast('تم تصدير ملف النسخ الاحتياطي بنجاح!');
+    };
+
+    window.importDatabaseJSON = function(input) {
+      const file = input.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const imported = JSON.parse(e.target.result);
+          if (Array.isArray(imported)) {
+            shows = imported;
+            saveData();
+            showToast('تم استعادة قاعدة البيانات بنجاح!');
+          }
+        } catch (err) {
+          alert('ملف غير صالح!');
+        }
+      };
+      reader.readAsText(file);
+    };
+
+    window.scrollToTop = function() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    window.addEventListener('scroll', () => {
+      const scrollBtn = document.getElementById('scrollToTopBtn');
+      if (window.scrollY > 300) {
+        scrollBtn.style.display = 'flex';
+      } else {
+        scrollBtn.style.display = 'none';
+      }
+    });
+
     // Theme Setup
     const currentTheme = localStorage.getItem('mrstoud_theme') || 'dark';
     if (currentTheme === 'light') {
@@ -1994,6 +2128,9 @@
         filtered = filtered.filter(show => show.category === 'series');
       } else if (currentCategory === 'movie') {
         filtered = filtered.filter(show => show.category === 'movie');
+      } else if (currentCategory === 'kids') {
+        // ميزة جديدة: تصفية أعمال الأطفال والكوميديا والرسوم
+        filtered = filtered.filter(show => show.genre === 'comedy' || (show.title && show.title.includes('أطفال')));
       } else if (currentCategory === 'favorites') {
         filtered = shows.filter(show => favoritesData.includes(show.id));
       } else if (currentCategory === 'history') {
@@ -2007,7 +2144,7 @@
       }
 
       if (cleanFilter) {
-        filtered = filtered.filter(show => show.title.toLowerCase().includes(cleanFilter));
+        filtered = filtered.filter(show => show.title.toLowerCase().includes(cleanFilter) || (show.year && show.year.includes(cleanFilter)));
       }
 
       if (filtered.length === 0) {
@@ -2050,6 +2187,8 @@
         titleSpan.innerHTML = '<i class="fas fa-tv"></i> قائمة المسلسلات';
       } else if (category === 'movie') {
         titleSpan.innerHTML = '<i class="fas fa-film"></i> قائمة الأفلام';
+      } else if (category === 'kids') {
+        titleSpan.innerHTML = '<i class="fas fa-child" style="color:#f1c40f;"></i> وضع الأطفال الآمن';
       } else if (category === 'favorites') {
         titleSpan.innerHTML = '<i class="fas fa-heart" style="color:var(--primary-color);"></i> قائمة المفضلة';
       } else if (category === 'history') {
@@ -2527,6 +2666,7 @@
         playerModal.classList.remove('active');
         privacyModal.classList.remove('active');
         analyticsModal.classList.remove('active');
+        document.getElementById('notificationsModal').classList.remove('active');
         videoPlayerBox.innerHTML = '';
         if (sleepTimerTimeout) clearTimeout(sleepTimerTimeout);
       });
