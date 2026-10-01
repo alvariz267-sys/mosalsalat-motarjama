@@ -715,6 +715,18 @@
     <div class="shows-grid" id="showsGrid"></div>
   </main>
 
+  <!-- Welcome Modal for First-time Visitors -->
+  <div class="modal" id="welcomeModal">
+    <div class="modal-content" style="text-align: center; max-width: 450px;">
+      <i class="fas fa-film" style="font-size: 50px; color: var(--primary-color); margin-bottom: 15px;"></i>
+      <h2 style="margin-bottom: 10px; color: #fff;">مرحباً بك في منصة mrstoud!</h2>
+      <p style="color: var(--text-secondary); font-size: 14px; line-height: 1.6; margin-bottom: 20px;">
+        يسعدنا انضمامك إلينا. يمكنك الآن مشاهدة أحدث الأفلام والمسلسلات عالية الجودة بكل أمان وسهولة. نتمنى لك تجربة ممتعة!
+      </p>
+      <button class="btn closeModal">ابدأ المشاهدة الآن</button>
+    </div>
+  </div>
+
   <!-- Login Modal -->
   <div class="modal" id="loginModal">
     <div class="modal-content">
@@ -762,7 +774,7 @@
           <h4 style="margin-bottom: 12px; color: var(--primary-color);" id="formSubTitle">إضافة عمل جديد (فيلم / مسلسل)</h4>
           
           <div class="form-group">
-            <label for="showCategory">تصنيف العمل:</label>
+            <label for="showCategory">نوع العمل / التصنيف:</label>
             <select id="showCategory" required>
               <option value="series">مسلسل</option>
               <option value="movie">فيلم</option>
@@ -1003,6 +1015,7 @@
     const loginModal = document.getElementById('loginModal');
     const adminModal = document.getElementById('adminModal');
     const playerModal = document.getElementById('playerModal');
+    const welcomeModal = document.getElementById('welcomeModal');
     const loginForm = document.getElementById('loginForm');
     const saveShowForm = document.getElementById('saveShowForm');
     const adminShowsList = document.getElementById('adminShowsList');
@@ -1019,6 +1032,14 @@
     const playerTitle = document.getElementById('playerTitle');
     const playerQuality = document.getElementById('playerQuality');
     const downloadContainer = document.getElementById('downloadContainer');
+
+    // First visit welcome check
+    function checkFirstVisit() {
+      if (!localStorage.getItem('mrstoud_visited_before')) {
+        welcomeModal.classList.add('active');
+        localStorage.setItem('mrstoud_visited_before', 'true');
+      }
+    }
 
     window.switchAdminTab = function(tabId) {
       document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
@@ -1309,6 +1330,7 @@
 
     closeModalBtns.forEach(btn => {
       btn.addEventListener('click', () => {
+        welcomeModal.classList.remove('active');
         loginModal.classList.remove('active');
         adminModal.classList.remove('active');
         playerModal.classList.remove('active');
@@ -1398,10 +1420,11 @@
 
       saveData();
       resetAdminForm();
-      alert('تم إضافه العمل بنجاح وسيتوفر فوراً للعرض!');
+      alert('تم إضافة العمل بنجاح وسيتوفر فوراً للعرض!');
     });
 
     renderShows();
+    checkFirstVisit();
   </script>
 </body>
 </html>
