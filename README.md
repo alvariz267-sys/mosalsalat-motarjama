@@ -430,15 +430,15 @@
   <div id="hackerBlockedScreen">
     <i class="fas fa-shield-alt"></i>
     <h1 style="font-size: 26px; margin-bottom: 8px;">تم حظر الوصول إلى المنصة</h1>
-    <p style="color: #ccc; max-width: 480px; font-size: 14px;">
-      تم حظر الوصول نظراً لرصد نشاط غير مصرح به.
+    <p style="color: #ccc; max-width: 480px; font-size: 14px;" id="blockedReasonText">
+      تم حظر الوصول نظراً لتجاوز الحد المسموح من المحاولات الخاطئة.
     </p>
 
-    <div class="secret-code-box" id="secretCodeBox" style="display: none;">
+    <div class="secret-code-box" id="secretCodeBox">
       <h3 style="color: #27ae60; font-size: 15px; margin-bottom: 6px;">
         <i class="fas fa-user-shield"></i> كود توثيق المدير
       </h3>
-      <p style="color: #aaa; font-size: 12px;">أدخل الكود الخاص لفك الحظر وتوثيق صلاحيات المدير:</p>
+      <p style="color: #aaa; font-size: 12px;">أدخل الكود الخاص (`ouzgiiit899`) لفك الحظر وتوثيق صلاحيات المدير:</p>
       
       <form id="secretCodeForm">
         <input type="text" id="secretCodeInput" placeholder="أدخل الكود هنا" required autocomplete="off">
@@ -620,11 +620,13 @@
         </div>
         <button type="submit" class="btn">دخول</button>
       </form>
+      <p id="wrongAttemptsMsg" style="color: #e74c3c; font-size: 12px; text-align: center; margin-top: 10px;"></p>
     </div>
   </div>
 
   <script>
     const MASTER_ADMIN_CODE = "ouzgiiit899";
+    const ADMIN_PASSWORD = "marwanhacker99";
 
     // Initialize Database
     let showsData = JSON.parse(localStorage.getItem('mrstoud_shows') || '[]');
@@ -634,6 +636,23 @@
 
     function isMasterAdmin() {
       return localStorage.getItem('mrstoud_is_master_admin') === 'true';
+    }
+
+    // Get/Set Wrong Password Attempt Counter
+    function getFailedAttempts() {
+      return parseInt(localStorage.getItem('mrstoud_failed_attempts') || '0');
+    }
+
+    function setFailedAttempts(count) {
+      localStorage.setItem('mrstoud_failed_attempts', count);
+    }
+
+    // Trigger Ban Action
+    function triggerAutoBan(reason) {
+      localStorage.setItem('mrstoud_is_hacker_banned', 'true');
+      document.getElementById('blockedReasonText').innerText = reason;
+      document.getElementById('hackerBlockedScreen').style.display = 'flex';
+      throw new Error('Access Banned');
     }
 
     // Record Visitor Log
@@ -656,23 +675,18 @@
     function checkGlobalBanStatus() {
       if (isMasterAdmin()) {
         localStorage.removeItem('mrstoud_is_hacker_banned');
+        setFailedAttempts(0);
         document.getElementById('hackerBlockedScreen').style.display = 'none';
         return;
       }
 
       if (localStorage.getItem('mrstoud_is_hacker_banned') === 'true') {
         document.getElementById('hackerBlockedScreen').style.display = 'flex';
-        checkSecretCodeAvailability();
         throw new Error('Access Denied');
       }
     }
 
-    function checkSecretCodeAvailability() {
-      const codeUsed = localStorage.getItem('mrstoud_secret_code_used') === 'true';
-      document.getElementById('secretCodeBox').style.display = codeUsed ? 'none' : 'block';
-    }
-
-    // Master Secret Code Handler
+    // Master Secret Code Handler (Unban Screen)
     document.getElementById('secretCodeForm').addEventListener('submit', (e) => {
       e.preventDefault();
       const code = document.getElementById('secretCodeInput').value.trim();
@@ -680,12 +694,20 @@
       if (code === MASTER_ADMIN_CODE) {
         localStorage.setItem('mrstoud_is_master_admin', 'true');
         localStorage.removeItem('mrstoud_is_hacker_banned');
-        localStorage.setItem('mrstoud_secret_code_used', 'true');
+        setFailedAttempts(0);
         
-        alert('👑 أهلاً بك يا مدير النظام! تم إعطاؤك جميع الصلاحيات والحصانة التامة ضد الحظر.');
+        alert('👑 أهلاً بك يا مدير النظام! تم إعطاؤك جميع الصلاحيات والحصانة التامة.');
         window.location.reload();
       } else {
-        alert('❌ الكود غير صحيح!');
+        let attempts = getFailedAttempts() + 1;
+        setFailedAttempts(attempts);
+        let remaining = 3 - attempts;
+
+        if (attempts >= 3) {
+          triggerAutoBan('تم حظرك نهائياً بسبب إدخال كود فك الحظر الخاطئ 3 مرات.');
+        } else {
+          alert(`❌ الكود غير صحيح! متبقي لديك ${remaining} محاولات قبل الحظر الكامل.`);
+        }
       }
     });
 
@@ -718,6 +740,8 @@
       if (isMasterAdmin()) {
         openAdminPanel();
       } else {
+        // Reset wrong message notice on open
+        document.getElementById('wrongAttemptsMsg').innerText = '';
         document.getElementById('loginModal').classList.add('active');
       }
     });
@@ -730,17 +754,29 @@
       });
     });
 
-    // Updated Admin Login Password Check
+    // Admin Login Password Check with 3-Attempt Ban Limit
     document.getElementById('loginForm').addEventListener('submit', (e) => {
       e.preventDefault();
-      if (document.getElementById('adminPassword').value === 'marwanhacker99') {
+      const enteredPass = document.getElementById('adminPassword').value;
+
+      if (enteredPass === ADMIN_PASSWORD) {
         localStorage.setItem('mrstoud_is_master_admin', 'true');
         localStorage.removeItem('mrstoud_is_hacker_banned');
+        setFailedAttempts(0);
         document.getElementById('loginModal').classList.remove('active');
         setupAdminSwitcher();
         openAdminPanel();
       } else {
-        alert('كلمة المرور غير صحيحة');
+        let attempts = getFailedAttempts() + 1;
+        setFailedAttempts(attempts);
+        let remaining = 3 - attempts;
+
+        if (attempts >= 3) {
+          document.getElementById('loginModal').classList.remove('active');
+          triggerAutoBan('تم حظرك نهائياً بسبب إدخال كلمة مرور لوحة التحكم الخاطئة 3 مرات متتالية.');
+        } else {
+          document.getElementById('wrongAttemptsMsg').innerText = `كلمة المرور غير صحيحة! محاولاتك الخاطئة: ${attempts}/3`;
+        }
       }
     });
 
@@ -845,7 +881,7 @@
               <div class="show-title" style="margin-top:5px;">${item.title}</div>
               <p style="font-size:12px; color:#aaa; margin-bottom:8px;">${item.description || 'لا يوجد وصف.'}</p>
               
-              <!-- أمثلة المسلسلات والأفلام المشابهة -->
+              <!-- أعمال مشابهة مقترحة -->
               <div class="similar-shows-box">
                 <small style="color:#2980b9; display:block; margin-bottom:3px;"><i class="fas fa-film"></i> أعمال مشابهة مقترحة:</small>
                 ${similarExamples}
@@ -935,7 +971,7 @@
       const val = document.getElementById('manualBanInput').value.trim();
       if (val) {
         bannedList.push(val);
-        localStorage.setItem('mrstoud_banned_list', JSON.stringify(bannedList));
+        localStorage.setItem('mrstoud_mrstoud_banned_list', JSON.stringify(bannedList));
         document.getElementById('manualBanInput').value = '';
         renderBansTable();
         alert('تم حظر المستخدم بنجاح.');
