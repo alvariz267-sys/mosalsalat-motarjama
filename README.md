@@ -550,12 +550,12 @@
         
         <div class="form-group">
           <label for="showTitle">عنوان العمل:</label>
-          <input type="text" id="showTitle" required placeholder="مثال: مسلسل في السابعة عشر">
+          <input type="text" id="showTitle" required placeholder="مثال: فيلم/مسلسل كامل (ساعتان ونصف)">
         </div>
         
         <div class="form-group">
           <label for="showBadge">نص الشارة (اختياري):</label>
-          <input type="text" id="showBadge" placeholder="مثال: حلقة 22 / فيلم">
+          <input type="text" id="showBadge" placeholder="مثال: 2:30 ساعة / فيلم">
         </div>
 
         <div class="form-group">
@@ -563,11 +563,11 @@
           <input type="url" id="showImage" placeholder="https://example.com/image.jpg">
         </div>
 
-        <!-- إضافة خيار رفع فيديو من ملفات الهاتف -->
+        <!-- اختيار فيديو بأي حجم ومن ملفات الهاتف مباشرة -->
         <div class="form-group" style="background: #181818; padding: 12px; border-radius: 8px; border: 1px dashed var(--primary-color);">
-          <label for="showVideoFile" style="color: #fff; font-weight: bold;"><i class="fas fa-file-video"></i> اختيار فيديو من ملفات الهاتف:</label>
+          <label for="showVideoFile" style="color: #fff; font-weight: bold;"><i class="fas fa-file-video"></i> اختيار فيديو طويل من ملفات الهاتف (يدعم الحجم الكبير):</label>
           <input type="file" id="showVideoFile" accept="video/*" style="padding: 6px; cursor: pointer;">
-          <small style="color: var(--text-secondary); display: block; margin-top: 4px;">اختر ملف فيديو مباشر من ذاكرة جهازك</small>
+          <small style="color: #27ae60; display: block; margin-top: 4px;">✔ يدعم الأفلام والمسلسلات طويلة المدة (ساعتان ونصف فأكثر) بدون مشاكل ذاكرة.</small>
         </div>
 
         <div style="text-align: center; margin: 10px 0; color: var(--text-secondary); font-size: 12px;">— أو استخدم رابط فيديو خارجي —</div>
@@ -608,7 +608,7 @@
         <button class="close-btn closeModal">&times;</button>
       </div>
       
-      <!-- إمكانية التبديل بين Iframe ومُشغل فيديو HTML5 محلي -->
+      <!-- Video Player -->
       <div class="video-container" id="videoPlayerBox">
         <iframe id="videoIframe" src="" allowfullscreen></iframe>
       </div>
@@ -627,7 +627,7 @@
   </div>
 
   <script>
-    // Initial Data
+    // Default Initial Data
     const defaultShows = [
       {
         id: 1,
@@ -637,19 +637,10 @@
         videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
         quality: "1080p Full HD",
         downloadUrl: "https://example.com/download.mp4"
-      },
-      {
-        id: 2,
-        title: "مسلسل هذا البحر سوف يفيض",
-        badge: "جديد",
-        image: "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=400&q=80",
-        videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-        quality: "720p HD",
-        downloadUrl: "https://example.com/download.mp4"
       }
     ];
 
-    // Storage Initialization
+    // Data handling
     let shows = JSON.parse(localStorage.getItem('mrstoud_shows')) || defaultShows;
     let isAdminLoggedIn = false;
 
@@ -663,7 +654,7 @@
     const searchContainer = document.getElementById('searchContainer');
     const searchInput = document.getElementById('searchInput');
     
-    // Admin & Modals DOM
+    // Admin DOM Elements
     const adminBtn = document.getElementById('adminBtn');
     const loginModal = document.getElementById('loginModal');
     const adminModal = document.getElementById('adminModal');
@@ -677,7 +668,6 @@
 
     // Player Elements
     const videoPlayerBox = document.getElementById('videoPlayerBox');
-    const videoIframe = document.getElementById('videoIframe');
     const playerTitle = document.getElementById('playerTitle');
     const playerQuality = document.getElementById('playerQuality');
     const downloadContainer = document.getElementById('downloadContainer');
@@ -729,17 +719,19 @@
       playerTitle.textContent = show.title;
       playerQuality.textContent = show.quality || 'عالية';
       
-      // التمييز بين ملف فيديو محلي رفع من الهاتف ورابط خارجي
-      if (show.isVideoLocal) {
-        videoPlayerBox.innerHTML = `<video controls autoplay style="width:100%; height:100%;"><source src="${show.videoUrl}" type="video/mp4">متصفحك لا يدعم هذا الفيديو</video>`;
+      // تشغيل فيديو من ذاكرة الهاتف بدون استهلاك التخزين المحلي
+      if (show.isVideoLocal && show.videoObject) {
+        const localBlobUrl = URL.createObjectURL(show.videoObject);
+        videoPlayerBox.innerHTML = `<video controls autoplay style="width:100%; height:100%;"><source src="${localBlobUrl}" type="${show.videoObject.type}">متصفحك لا يدعم تشغيل هذا الفيديو</video>`;
+      } else if (show.videoUrl) {
+        videoPlayerBox.innerHTML = `<iframe id="videoIframe" src="${show.videoUrl}" allowfullscreen></iframe>`;
       } else {
-        videoPlayerBox.innerHTML = `<iframe id="videoIframe" src="${show.videoUrl || ''}" allowfullscreen></iframe>`;
+        videoPlayerBox.innerHTML = `<div style="padding:20px; text-align:center; color:#aaa;">لا يوجد فيديو متاح لهذا العمل</div>`;
       }
       
-      if (show.downloadUrl || show.isVideoLocal) {
-        const dUrl = show.downloadUrl || show.videoUrl;
+      if (show.downloadUrl) {
         downloadContainer.innerHTML = `
-          <a href="${dUrl}" download target="_blank" class="download-btn">
+          <a href="${show.downloadUrl}" download target="_blank" class="download-btn">
             <i class="fas fa-download"></i> تحميل الفيديو على الهاتف
           </a>
         `;
@@ -752,16 +744,17 @@
 
     // Save Data
     function saveData() {
-      try {
-        localStorage.setItem('mrstoud_shows', JSON.stringify(shows));
-      } catch (e) {
-        alert('حجم ملف الفيديو كبير جداً للتخزين الداخلي المحلي! يفضل استخدام الفيديوهات الخفيفة.');
-      }
+      // حفظ بيانات المسلسل واستثناء ملف الفيديو الخام من localStorage لمنع امتلاء الذكرة
+      const cleanShows = shows.map(item => {
+        const { videoObject, ...rest } = item;
+        return rest;
+      });
+      localStorage.setItem('mrstoud_shows', JSON.stringify(cleanShows));
       renderShows();
       renderAdminList();
     }
 
-    // Delete Show (Admin Only)
+    // Delete Show
     window.deleteShow = function(id) {
       if (confirm('هل أنت تأكد من حذف هذا الفيديو؟')) {
         shows = shows.filter(item => item.id !== id);
@@ -769,7 +762,7 @@
       }
     };
 
-    // Edit Show (Admin Only)
+    // Edit Show
     window.editShow = function(id) {
       const show = shows.find(item => item.id === id);
       if (show) {
@@ -777,7 +770,7 @@
         document.getElementById('showTitle').value = show.title;
         document.getElementById('showBadge').value = show.badge || '';
         document.getElementById('showImage').value = show.image || '';
-        document.getElementById('showVideoUrl').value = show.isVideoLocal ? '' : (show.videoUrl || '');
+        document.getElementById('showVideoUrl').value = show.videoUrl || '';
         document.getElementById('showQuality').value = show.quality || '';
         document.getElementById('showDownloadUrl').value = show.downloadUrl || '';
 
@@ -826,7 +819,7 @@
         loginModal.classList.remove('active');
         adminModal.classList.remove('active');
         playerModal.classList.remove('active');
-        videoPlayerBox.innerHTML = `<iframe id="videoIframe" src="" allowfullscreen></iframe>`; // Stop video
+        videoPlayerBox.innerHTML = ''; // إيقاف إطلاق الصوت وإغلاق الفيديو
       });
     });
 
@@ -863,30 +856,25 @@
       const title = document.getElementById('showTitle').value;
       const badge = document.getElementById('showBadge').value;
       const image = document.getElementById('showImage').value;
-      let videoUrl = document.getElementById('showVideoUrl').value;
+      const videoUrl = document.getElementById('showVideoUrl').value;
       const quality = document.getElementById('showQuality').value;
       const downloadUrl = document.getElementById('showDownloadUrl').value;
       const fileInput = showVideoFile.files[0];
 
-      // معالجة إضافة ملف فيديو من الهاتف
-      if (fileInput) {
-        const reader = new FileReader();
-        reader.onload = function(evt) {
-          const fileDataUrl = evt.target.result;
-          saveShowObject(editId, title, badge, image, fileDataUrl, quality, downloadUrl, true);
-        };
-        reader.readAsDataURL(fileInput);
-      } else {
-        saveShowObject(editId, title, badge, image, videoUrl, quality, downloadUrl, false);
-      }
-    });
-
-    function saveShowObject(editId, title, badge, image, videoUrl, quality, downloadUrl, isVideoLocal) {
       if (editId) {
         // Update
         const index = shows.findIndex(item => item.id == editId);
         if (index !== -1) {
-          shows[index] = { id: Number(editId), title, badge, image, videoUrl, quality, downloadUrl, isVideoLocal };
+          shows[index] = { 
+            ...shows[index],
+            title, 
+            badge, 
+            image, 
+            videoUrl, 
+            quality, 
+            downloadUrl,
+            ...(fileInput && { isVideoLocal: true, videoObject: fileInput })
+          };
         }
       } else {
         // Add New
@@ -898,15 +886,16 @@
           videoUrl,
           quality,
           downloadUrl,
-          isVideoLocal
+          isVideoLocal: fileInput ? true : false,
+          videoObject: fileInput || null
         };
         shows.unshift(newShow);
       }
 
       saveData();
       resetAdminForm();
-      alert('تم حفظ الفيديو بنجاح!');
-    }
+      alert('تم إضافه المسلسل / الفيلم بنجاح وسيتوفر فوراً للعرض!');
+    });
 
     // Initial Launch
     renderShows();
