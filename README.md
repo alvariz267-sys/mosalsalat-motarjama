@@ -841,6 +841,65 @@
     .star-rating .star.rated {
       color: #f1c40f;
     }
+
+    /* === تنسيقات الإضافات الـ 7 الجديدة === */
+    .filters-bar {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+      overflow-x: auto;
+      padding-bottom: 5px;
+    }
+    .filter-chip {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: 0.2s;
+    }
+    .filter-chip.active, .filter-chip:hover {
+      background: var(--primary-color);
+      color: #fff;
+      border-color: var(--primary-color);
+    }
+    .cinema-mode body {
+      background-color: #000 !important;
+    }
+    .speed-badge {
+      background: var(--sidebar-bg);
+      border: 1px solid var(--border-color);
+      color: var(--text-color);
+      padding: 5px 10px;
+      border-radius: 4px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .download-progress-container {
+      margin-top: 10px;
+      background: var(--sidebar-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 8px;
+      display: none;
+    }
+    .progress-bar-track {
+      width: 100%;
+      height: 6px;
+      background: var(--border-color);
+      border-radius: 3px;
+      overflow: hidden;
+      margin-top: 5px;
+    }
+    .progress-bar-fill {
+      width: 0%;
+      height: 100%;
+      background: #27ae60;
+      transition: width 0.3s;
+    }
   </style>
 </head>
 <body>
@@ -861,6 +920,8 @@
   <nav class="navbar">
     <a href="#" class="brand" onclick="filterByCategory('all')">mrstoud</a>
     <div class="nav-actions">
+      <!-- 1. زر وضع السينما الجديد -->
+      <button class="icon-btn" id="cinemaModeBtn" title="وضع السينما المظلم"><i class="fas fa-theater-masks"></i></button>
       <button class="icon-btn" id="themeToggleBtn" title="تبديل المظهر (ليلي/نهاري)"><i class="fas fa-moon" id="themeIcon"></i></button>
       <button class="icon-btn" id="menuToggleBtn" title="القائمة الجانبية"><i class="fas fa-bars"></i></button>
     </div>
@@ -920,6 +981,13 @@
           <div class="sidebar-menu-left"><i class="fas fa-history"></i> سجل المشاهدة</div>
         </a>
       </li>
+      <!-- 2. رابط قائمة الانتظار والمشاهدة لاحقاً -->
+      <li>
+        <a href="#" onclick="filterByCategory('watchlist', event)">
+          <div class="sidebar-menu-left"><i class="fas fa-clock"></i> المشاهدة لاحقاً</div>
+          <span class="badge-count" id="countWatchlist">0</span>
+        </a>
+      </li>
       <li>
         <a href="#" id="privacyBtn">
           <div class="sidebar-menu-left"><i class="fas fa-user-lock"></i> سياسة الخصوصية</div>
@@ -934,6 +1002,15 @@
   <main class="container">
     <div class="ad-banner">
       <p>📢 مساحة إعلانية - ضع كود الإعلان الخاص بك هنا (AdSense / Native Ads)</p>
+    </div>
+
+    <!-- 3. شريط تصنيفات سريعة إضافي (Genres Filter) -->
+    <div class="filters-bar" id="genresFilterBar">
+      <div class="filter-chip active" onclick="filterByGenre('all', this)">الكل</div>
+      <div class="filter-chip" onclick="filterByGenre('action', this)">أكشن ومغامرة</div>
+      <div class="filter-chip" onclick="filterByGenre('drama', this)">دراما وتشويق</div>
+      <div class="filter-chip" onclick="filterByGenre('comedy', this)">كوميدي</div>
+      <div class="filter-chip" onclick="filterByGenre('scifi', this)">خيال علمي</div>
     </div>
 
     <div class="section-title" id="sectionTitle">
@@ -1028,6 +1105,17 @@
             <select id="showCategory" required>
               <option value="series">مسلسل</option>
               <option value="movie">فيلم</option>
+            </select>
+          </div>
+
+          <!-- 4. حقل اختيار تصنيف فرعي للعمل عند الإضافة -->
+          <div class="form-group">
+            <label for="showGenre">التصنيف الفرعي:</label>
+            <select id="showGenre">
+              <option value="action">أكشن ومغامرة</option>
+              <option value="drama">دراما وتشويق</option>
+              <option value="comedy">كوميدي</option>
+              <option value="scifi">خيال علمي</option>
             </select>
           </div>
 
@@ -1134,6 +1222,11 @@
           <i class="far fa-heart" id="favoriteIcon"></i> <span id="favoriteBtnText">أضف للمفضلة</span>
         </button>
 
+        <!-- 5. زر الإضافة لقائمة "المشاهدة لاحقاً" الجديد -->
+        <button class="action-badge-btn" id="watchlistToggleBtn" onclick="toggleCurrentWatchlist()">
+          <i class="far fa-clock" id="watchlistIcon"></i> <span id="watchlistBtnText">المشاهدة لاحقاً</span>
+        </button>
+
         <button class="action-badge-btn" onclick="shareCurrentShow()">
           <i class="fas fa-share-alt"></i> مشاركة
         </button>
@@ -1173,6 +1266,15 @@
               <option value="sharp">Ultra Sharp (وضوح حدة)</option>
             </select>
           </div>
+
+          <!-- 6. أزرار التحكم بسرعة التشغيل الجديدة (Playback Speed) -->
+          <div class="tool-group">
+            <i class="fas fa-bolt" style="color:#f39c12;"></i>
+            <label>السرعة:</label>
+            <button class="speed-badge" onclick="changePlaybackSpeed(0.5)">0.5x</button>
+            <button class="speed-badge" onclick="changePlaybackSpeed(1)" style="background:var(--primary-color);color:#fff;">1x</button>
+            <button class="speed-badge" onclick="changePlaybackSpeed(1.5)">1.5x</button>
+          </div>
         </div>
 
         <div class="tool-row">
@@ -1205,6 +1307,17 @@
           <span class="quality-tag" id="playerQuality">1080p</span>
         </div>
         <div id="downloadContainer"></div>
+        
+        <!-- 7. شريط محاكاة تقدم التحميل الذكي الجديد (Smart Download Progress) -->
+        <div class="download-progress-container" id="downloadProgressBox">
+          <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--text-secondary);">
+            <span id="downloadStatusText">جاري تحضير ملف التحميل...</span>
+            <span id="downloadPercentText">0%</span>
+          </div>
+          <div class="progress-bar-track">
+            <div class="progress-bar-fill" id="progressBarFill"></div>
+          </div>
+        </div>
       </div>
 
       <!-- Comments Section -->
@@ -1324,6 +1437,7 @@
       {
         id: 1,
         category: "series",
+        genre: "drama",
         title: "مسلسل في السابعة عشر",
         badge: "حلقة 1",
         image: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=400&q=80",
@@ -1336,6 +1450,7 @@
       {
         id: 2,
         category: "movie",
+        genre: "action",
         title: "فيلم الأكشن والمغامرة",
         badge: "2:15 ساعة",
         image: "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=400&q=80",
@@ -1356,11 +1471,13 @@
     let users = JSON.parse(localStorage.getItem('mrstoud_users')) || defaultUsers;
     let commentsData = JSON.parse(localStorage.getItem('mrstoud_comments')) || {};
     let favoritesData = JSON.parse(localStorage.getItem('mrstoud_favorites')) || [];
+    let watchlistData = JSON.parse(localStorage.getItem('mrstoud_watchlist')) || []; // بيانات قائمة المشاهدة لاحقاً
     let historyData = JSON.parse(localStorage.getItem('mrstoud_history')) || [];
     let ratingsData = JSON.parse(localStorage.getItem('mrstoud_ratings')) || {};
 
     let currentShowId = null;
     let currentCategory = 'all';
+    let currentGenre = 'all'; // فلتر التصنيف الفرعي النشط
     let isAdminLoggedIn = false;
 
     let loginAttempts = parseInt(localStorage.getItem('mrstoud_login_attempts') || '0');
@@ -1387,6 +1504,21 @@
       }
     });
 
+    // --- الوظيفة الإضافية 1: تفعيل وضع السينما المظلم ---
+    const cinemaModeBtn = document.getElementById('cinemaModeBtn');
+    let isCinemaMode = false;
+    cinemaModeBtn.addEventListener('click', () => {
+      isCinemaMode = !isCinemaMode;
+      if (isCinemaMode) {
+        document.body.classList.add('cinema-mode');
+        cinemaModeBtn.style.color = 'var(--primary-color)';
+        alert('تم تفعيل وضع السينما المظلم للمشاهدة المركزة!');
+      } else {
+        document.body.classList.remove('cinema-mode');
+        cinemaModeBtn.style.color = '';
+      }
+    });
+
     // DOM Elements
     const showsGrid = document.getElementById('showsGrid');
     const menuToggleBtn = document.getElementById('menuToggleBtn');
@@ -1400,6 +1532,7 @@
     const countSeries = document.getElementById('countSeries');
     const countMovies = document.getElementById('countMovies');
     const countFavorites = document.getElementById('countFavorites');
+    const countWatchlist = document.getElementById('countWatchlist'); // عداد قائمة المشاهدة لاحقاً
 
     const adminBtn = document.getElementById('adminBtn');
     const privacyBtn = document.getElementById('privacyBtn');
@@ -1475,6 +1608,17 @@
       applyVideoFilters();
     };
 
+    // --- الوظيفة الإضافية 6: تغيير سرعة التشغيل للفيديو المحلي ---
+    window.changePlaybackSpeed = function(speed) {
+      const videoEl = videoPlayerBox.querySelector('video');
+      if (videoEl) {
+        videoEl.playbackRate = speed;
+        alert(`تم تغيير سرعة التشغيل إلى ${speed}x`);
+      } else {
+        alert('ميزة تغيير السرعة متاحة للفيديوهات المحلية المباشرة حالياً.');
+      }
+    };
+
     function resetVideoTools() {
       brightnessSlider.value = 100;
       contrastSlider.value = 100;
@@ -1507,6 +1651,7 @@
       countSeries.textContent = seriesCount;
       countMovies.textContent = moviesCount;
       countFavorites.textContent = favoritesData.length;
+      countWatchlist.textContent = watchlistData.length;
     }
 
     function checkLockoutStatus() {
@@ -1544,6 +1689,13 @@
         filtered = shows.filter(show => favoritesData.includes(show.id));
       } else if (currentCategory === 'history') {
         filtered = shows.filter(show => historyData.includes(show.id));
+      } else if (currentCategory === 'watchlist') {
+        filtered = shows.filter(show => watchlistData.includes(show.id));
+      }
+
+      // فلترة التصنيف الفرعي (الـ Genre)
+      if (currentGenre !== 'all') {
+        filtered = filtered.filter(show => show.genre === currentGenre);
       }
 
       if (cleanFilter) {
@@ -1589,10 +1741,20 @@
         sectionTitle.innerHTML = '<i class="fas fa-heart" style="color:var(--primary-color);"></i> قائمة المفضلة';
       } else if (category === 'history') {
         sectionTitle.innerHTML = '<i class="fas fa-history"></i> سجل المشاهدة (Continue Watching)';
+      } else if (category === 'watchlist') {
+        sectionTitle.innerHTML = '<i class="fas fa-clock"></i> قائمة المشاهدة لاحقاً';
       } else {
         sectionTitle.innerHTML = '<i class="fas fa-play-circle"></i> جميع الأعمال';
       }
 
+      renderShows(sidebarSearchInput.value);
+    };
+
+    // --- الوظيفة الإضافية 3: تفعيل فلاتر الأقسام الفرعية (Genres) ---
+    window.filterByGenre = function(genre, element) {
+      currentGenre = genre;
+      document.querySelectorAll('.filter-chip').forEach(chip => chip.classList.remove('active'));
+      element.classList.add('active');
       renderShows(sidebarSearchInput.value);
     };
 
@@ -1758,7 +1920,6 @@
       }
     }
 
-    // New Favorite & History & Rating Functions
     window.toggleCurrentFavorite = function() {
       if (!currentShowId) return;
       const index = favoritesData.indexOf(currentShowId);
@@ -1773,6 +1934,24 @@
         document.getElementById('favoriteBtnText').textContent = 'تم الإضافة للمفضلة';
       }
       localStorage.setItem('mrstoud_favorites', JSON.stringify(favoritesData));
+      updateCounters();
+    };
+
+    // --- الوظيفة الإضافية 5: إدارة قائمة "المشاهدة لاحقاً" (Watchlist) ---
+    window.toggleCurrentWatchlist = function() {
+      if (!currentShowId) return;
+      const index = watchlistData.indexOf(currentShowId);
+      if (index > -1) {
+        watchlistData.splice(index, 1);
+        document.getElementById('watchlistIcon').className = 'far fa-clock';
+        document.getElementById('watchlistBtnText').textContent = 'المشاهدة لاحقاً';
+      } else {
+        watchlistData.push(currentShowId);
+        document.getElementById('watchlistIcon').className = 'fas fa-clock';
+        document.getElementById('watchlistIcon').style.color = 'var(--primary-color)';
+        document.getElementById('watchlistBtnText').textContent = 'في قائمة المشاهدة';
+      }
+      localStorage.setItem('mrstoud_watchlist', JSON.stringify(watchlistData));
       updateCounters();
     };
 
@@ -1858,6 +2037,32 @@
       }
     });
 
+    // --- الوظيفة الإضافية 7: شريط تقدم التحميل التفاعلي عند النقر على تحميل الفيديو ---
+    function triggerSmartDownloadProgress(downloadUrl) {
+      const progressBox = document.getElementById('downloadProgressBox');
+      const fillBar = document.getElementById('progressBarFill');
+      const statusText = document.getElementById('downloadStatusText');
+      const percentText = document.getElementById('downloadPercentText');
+
+      progressBox.style.display = 'block';
+      fillBar.style.width = '0%';
+      percentText.textContent = '0%';
+      statusText.textContent = 'جاري الاتصال بسيرفر التحميل...';
+
+      let progress = 0;
+      const interval = setInterval(() => {
+        progress += Math.floor(Math.random() * 15) + 5;
+        if (progress >= 100) {
+          progress = 100;
+          clearInterval(interval);
+          statusText.textContent = 'اكتمل التحميل بنجاح!';
+          window.open(downloadUrl, '_blank');
+        }
+        fillBar.style.width = progress + '%';
+        percentText.textContent = progress + '%';
+      }, 300);
+    }
+
     function openPlayer(show) {
       currentShowId = show.id;
       playerTitle.textContent = show.title;
@@ -1865,6 +2070,7 @@
       
       resetVideoTools();
       renderServerButtons(show);
+      document.getElementById('downloadProgressBox').style.display = 'none';
 
       // Check favorite state for UI
       if (favoritesData.includes(show.id)) {
@@ -1875,6 +2081,17 @@
         document.getElementById('favoriteIcon').className = 'far fa-heart';
         document.getElementById('favoriteIcon').style.color = '';
         document.getElementById('favoriteBtnText').textContent = 'أضف للمفضلة';
+      }
+
+      // Check Watchlist state for UI
+      if (watchlistData.includes(show.id)) {
+        document.getElementById('watchlistIcon').className = 'fas fa-clock';
+        document.getElementById('watchlistIcon').style.color = 'var(--primary-color)';
+        document.getElementById('watchlistBtnText').textContent = 'في قائمة المشاهدة';
+      } else {
+        document.getElementById('watchlistIcon').className = 'far fa-clock';
+        document.getElementById('watchlistIcon').style.color = '';
+        document.getElementById('watchlistBtnText').textContent = 'المشاهدة لاحقاً';
       }
 
       // Check user rating state
@@ -1895,10 +2112,11 @@
       }
       
       if (show.downloadUrl) {
+        const safeDl = sanitizeInput(show.downloadUrl);
         downloadContainer.innerHTML = `
-          <a href="${sanitizeInput(show.downloadUrl)}" download target="_blank" class="download-btn">
+          <button onclick="triggerSmartDownloadProgress('${safeDl}')" class="download-btn" style="width:100%; border:none; cursor:pointer;">
             <i class="fas fa-download"></i> تحميل الفيديو على الهاتف
-          </a>
+          </button>
         `;
       } else {
         downloadContainer.innerHTML = '';
@@ -1930,6 +2148,7 @@
       if (show) {
         document.getElementById('editShowId').value = show.id;
         document.getElementById('showCategory').value = show.category || 'series';
+        document.getElementById('showGenre').value = show.genre || 'action';
         document.getElementById('showTitle').value = show.title;
         document.getElementById('showBadge').value = show.badge || '';
         document.getElementById('showImage').value = show.image || '';
@@ -2047,6 +2266,7 @@
       e.preventDefault();
       const editId = document.getElementById('editShowId').value;
       const category = document.getElementById('showCategory').value;
+      const genre = document.getElementById('showGenre').value; // حفظ التصنيف الفرعي
       const title = document.getElementById('showTitle').value;
       const badge = document.getElementById('showBadge').value;
       const image = document.getElementById('showImage').value;
@@ -2062,14 +2282,14 @@
         if (index !== -1) {
           shows[index] = { 
             ...shows[index],
-            category, title, badge, image, videoUrl, videoUrl2, videoUrl3, quality, downloadUrl,
+            category, genre, title, badge, image, videoUrl, videoUrl2, videoUrl3, quality, downloadUrl,
             ...(fileInput && { isVideoLocal: true, videoObject: fileInput })
           };
         }
       } else {
         const newShow = {
           id: Date.now(),
-          category, title, badge, image, videoUrl, videoUrl2, videoUrl3, quality, downloadUrl,
+          category, genre, title, badge, image, videoUrl, videoUrl2, videoUrl3, quality, downloadUrl,
           isVideoLocal: fileInput ? true : false,
           videoObject: fileInput || null
         };
