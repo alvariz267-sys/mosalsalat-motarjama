@@ -317,6 +317,34 @@
       cursor: pointer;
     }
 
+    /* Security Notice Banner */
+    .admin-warning-box {
+      background-color: rgba(229, 9, 20, 0.15);
+      border: 1px solid var(--primary-color);
+      color: #ff6b6b;
+      padding: 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      line-height: 1.5;
+    }
+
+    .admin-warning-box i {
+      font-size: 20px;
+      color: var(--primary-color);
+    }
+
+    .lockout-msg {
+      color: #ff4d4d;
+      font-size: 13px;
+      margin-top: 10px;
+      text-align: center;
+      font-weight: bold;
+    }
+
     .form-group {
       margin-bottom: 14px;
     }
@@ -356,7 +384,12 @@
       transition: background 0.2s;
     }
 
-    .btn:hover {
+    .btn:disabled {
+      background-color: #555;
+      cursor: not-allowed;
+    }
+
+    .btn:hover:not(:disabled) {
       background-color: var(--primary-hover);
     }
 
@@ -525,12 +558,22 @@
         <h3>دخول لوحة الإدارة</h3>
         <button class="close-btn closeModal">&times;</button>
       </div>
+
+      <!-- Warning Box for Security -->
+      <div class="admin-warning-box">
+        <i class="fas fa-exclamation-triangle"></i>
+        <div>
+          <strong>تنبيه أمني هام:</strong> هذه اللوحة مخصصة حصراً لمدير الموقع! يُمنع محاولة التخمين أو الدخول غير المصرح به.
+        </div>
+      </div>
+
       <form id="loginForm">
         <div class="form-group">
           <label for="adminPassword">كلمة المرور:</label>
-          <input type="password" id="adminPassword" placeholder="أدخل كلمة المرور" required>
+          <input type="password" id="adminPassword" placeholder="أدخل كلمة المرور" required autocomplete="off">
         </div>
-        <button type="submit" class="btn">دخول</button>
+        <button type="submit" class="btn" id="loginSubmitBtn">دخول</button>
+        <div id="lockoutTimer" class="lockout-msg"></div>
       </form>
     </div>
   </div>
@@ -627,6 +670,14 @@
   </div>
 
   <script>
+    // Security & Sanitization Function (XSS Protection)
+    function sanitizeInput(str) {
+      if (!str) return '';
+      const temp = document.createElement('div');
+      temp.textContent = str;
+      return temp.innerHTML;
+    }
+
     // Default Initial Data
     const defaultShows = [
       {
@@ -643,6 +694,10 @@
     // Data handling
     let shows = JSON.parse(localStorage.getItem('mrstoud_shows')) || defaultShows;
     let isAdminLoggedIn = false;
+
+    // Security: Login Attempt Control
+    let loginAttempts = parseInt(localStorage.getItem('mrstoud_login_attempts') || '0');
+    let lockoutUntil = parseInt(localStorage.getItem('mrstoud_lockout_until') || '0');
 
     // DOM Elements
     const showsGrid = document.getElementById('showsGrid');
@@ -665,6 +720,8 @@
     const closeModalBtns = document.querySelectorAll('.closeModal');
     const cancelEditBtn = document.getElementById('cancelEditBtn');
     const showVideoFile = document.getElementById('showVideoFile');
+    const loginSubmitBtn = document.getElementById('loginSubmitBtn');
+    const lockoutTimer = document.getElementById('lockoutTimer');
 
     // Player Elements
     const videoPlayerBox = document.getElementById('videoPlayerBox');
@@ -672,10 +729,30 @@
     const playerQuality = document.getElementById('playerQuality');
     const downloadContainer = document.getElementById('downloadContainer');
 
+    // Check Lockout Status
+    function checkLockoutStatus() {
+      const now = Date.now();
+      if (lockoutUntil && now < lockoutUntil) {
+        const remainingHours = Math.ceil((lockoutUntil - now) / (1000 * 60 * 60));
+        loginSubmitBtn.disabled = true;
+        lockoutTimer.innerHTML = `<i class="fas fa-lock"></i> تم حظر محاولات الدخول لكثرة الأخطاء! يرجى الانتظار ${remainingHours} ساعة.`;
+        return true;
+      } else if (lockoutUntil && now >= lockoutUntil) {
+        // Reset Lockout
+        localStorage.removeItem('mrstoud_lockout_until');
+        localStorage.setItem('mrstoud_login_attempts', '0');
+        loginAttempts = 0;
+        loginSubmitBtn.disabled = false;
+        lockoutTimer.innerHTML = '';
+      }
+      return false;
+    }
+
     // Render Grid for Visitors
     function renderShows(filterText = '') {
       showsGrid.innerHTML = '';
-      const filtered = shows.filter(show => show.title.toLowerCase().includes(filterText.toLowerCase()));
+      const cleanFilter = sanitizeInput(filterText.toLowerCase());
+      const filtered = shows.filter(show => show.title.toLowerCase().includes(cleanFilter));
 
       if (filtered.length === 0) {
         showsGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #777; padding: 20px;">لا توجد نتائج مطابقة</p>';
@@ -687,10 +764,10 @@
         card.className = 'show-card';
         card.onclick = () => openPlayer(show);
         card.innerHTML = `
-          ${show.badge ? `<div class="show-badge">${show.badge}</div>` : ''}
-          <img src="${show.image || 'https://via.placeholder.com/300x400/222/fff?text=mrstoud'}" alt="${show.title}" class="show-thumb" onerror="this.src='https://via.placeholder.com/300x400/222/fff?text=mrstoud'">
+          ${show.badge ? `<div class="show-badge">${sanitizeInput(show.badge)}</div>` : ''}
+          <img src="${sanitizeInput(show.image) || 'https://via.placeholder.com/300x400/222/fff?text=mrstoud'}" alt="${sanitizeInput(show.title)}" class="show-thumb" onerror="this.src='https://via.placeholder.com/300x400/222/fff?text=mrstoud'">
           <div class="show-info">
-            <div class="show-title">${show.title}</div>
+            <div class="show-title">${sanitizeInput(show.title)}</div>
           </div>
         `;
         showsGrid.appendChild(card);
@@ -704,7 +781,7 @@
         const item = document.createElement('div');
         item.className = 'admin-item';
         item.innerHTML = `
-          <div class="admin-item-title">${show.title}</div>
+          <div class="admin-item-title">${sanitizeInput(show.title)}</div>
           <div class="admin-actions">
             <button class="sm-btn btn-edit" onclick="editShow(${show.id})"><i class="fas fa-edit"></i> تعديل</button>
             <button class="sm-btn btn-del" onclick="deleteShow(${show.id})"><i class="fas fa-trash"></i> حذف</button>
@@ -724,14 +801,15 @@
         const localBlobUrl = URL.createObjectURL(show.videoObject);
         videoPlayerBox.innerHTML = `<video controls autoplay style="width:100%; height:100%;"><source src="${localBlobUrl}" type="${show.videoObject.type}">متصفحك لا يدعم تشغيل هذا الفيديو</video>`;
       } else if (show.videoUrl) {
-        videoPlayerBox.innerHTML = `<iframe id="videoIframe" src="${show.videoUrl}" allowfullscreen></iframe>`;
+        const safeUrl = sanitizeInput(show.videoUrl);
+        videoPlayerBox.innerHTML = `<iframe id="videoIframe" src="${safeUrl}" allowfullscreen></iframe>`;
       } else {
         videoPlayerBox.innerHTML = `<div style="padding:20px; text-align:center; color:#aaa;">لا يوجد فيديو متاح لهذا العمل</div>`;
       }
       
       if (show.downloadUrl) {
         downloadContainer.innerHTML = `
-          <a href="${show.downloadUrl}" download target="_blank" class="download-btn">
+          <a href="${sanitizeInput(show.downloadUrl)}" download target="_blank" class="download-btn">
             <i class="fas fa-download"></i> تحميل الفيديو على الهاتف
           </a>
         `;
@@ -830,22 +908,44 @@
         renderAdminList();
         adminModal.classList.add('active');
       } else {
+        checkLockoutStatus();
         loginModal.classList.add('active');
       }
     });
 
-    // Login Submission
+    // Login Submission with Brute-Force Security Protection
     loginForm.addEventListener('submit', (e) => {
       e.preventDefault();
-      const password = document.getElementById('adminPassword').value;
+
+      if (checkLockoutStatus()) return;
+
+      const passwordInput = document.getElementById('adminPassword');
+      const password = passwordInput.value;
+
       if (password === 'marwanhacker99') {
         isAdminLoggedIn = true;
+        loginAttempts = 0;
+        localStorage.setItem('mrstoud_login_attempts', '0');
         loginModal.classList.remove('active');
         renderAdminList();
         adminModal.classList.add('active');
-        document.getElementById('adminPassword').value = '';
+        passwordInput.value = '';
+        lockoutTimer.innerHTML = '';
       } else {
-        alert('كلمة المرور غير صحيحة!');
+        loginAttempts++;
+        localStorage.setItem('mrstoud_login_attempts', loginAttempts.toString());
+        passwordInput.value = '';
+
+        if (loginAttempts >= 3) {
+          const lockoutTime = Date.now() + (24 * 60 * 60 * 1000); // 24 ساعة
+          localStorage.setItem('mrstoud_lockout_until', lockoutTime.toString());
+          lockoutUntil = lockoutTime;
+          checkLockoutStatus();
+          alert('⚠️ أدخلت كلمة المرور خاطئة 3 مرات! تم قفل لوحة الدخول لمدة 24 ساعة لأسباب أمنية.');
+        } else {
+          const remaining = 3 - loginAttempts;
+          alert(`❌ كلمة المرور غير صحيحة! تبقّى لديك ${remaining} محاولة قبل الحظر لمدة 24 ساعة.`);
+        }
       }
     });
 
@@ -877,7 +977,7 @@
           };
         }
       } else {
-        // Add New
+        // Add New (يحتفظ بجميع الأجزاء السابقة دون مسح)
         const newShow = {
           id: Date.now(),
           title,
