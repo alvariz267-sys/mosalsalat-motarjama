@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>mrstoud - منصة الأفلام والمسلسلات</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
@@ -17,23 +17,19 @@
       --border-color: #2a2a2a;
     }
 
-    html, body {
-      width: 100%;
-      max-width: 100%;
-      overflow-x: hidden;
-      margin: 0;
-      padding: 0;
-      background-color: var(--bg-color);
-      color: var(--text-color);
-      direction: rtl;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      -webkit-tap-highlight-color: transparent;
-    }
-
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      direction: rtl;
+      padding-bottom: 30px;
     }
 
     /* Navbar */
@@ -42,17 +38,16 @@
       justify-content: space-between;
       align-items: center;
       background-color: #050505;
-      padding: 12px 15px;
+      padding: 12px 18px;
       position: sticky;
       top: 0;
       z-index: 100;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.8);
       border-bottom: 1px solid var(--border-color);
-      width: 100%;
     }
 
     .brand {
-      font-size: 22px;
+      font-size: 24px;
       font-weight: 800;
       color: var(--primary-color);
       text-decoration: none;
@@ -62,14 +57,14 @@
     .nav-actions {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
     }
 
     .icon-btn {
       background: none;
       border: none;
       color: var(--text-color);
-      font-size: 18px;
+      font-size: 20px;
       padding: 8px;
       cursor: pointer;
       border-radius: 50%;
@@ -85,9 +80,8 @@
     .sidebar {
       position: fixed;
       top: 0;
-      right: -280px;
-      width: 260px;
-      max-width: 80%;
+      right: -300px;
+      width: 270px;
       height: 100%;
       background-color: var(--sidebar-bg);
       box-shadow: -4px 0 15px rgba(0, 0, 0, 0.8);
@@ -112,7 +106,7 @@
     }
 
     .sidebar-header h3 {
-      font-size: 18px;
+      font-size: 20px;
       color: var(--primary-color);
     }
 
@@ -127,7 +121,7 @@
     .sidebar-menu a, .sidebar-menu button {
       color: var(--text-color);
       text-decoration: none;
-      font-size: 15px;
+      font-size: 16px;
       display: flex;
       align-items: center;
       gap: 12px;
@@ -164,7 +158,7 @@
 
     /* Search Box */
     .search-container {
-      padding: 10px 15px;
+      padding: 12px 15px;
       max-width: 1200px;
       margin: 0 auto;
       display: none;
@@ -176,12 +170,12 @@
 
     .search-input {
       width: 100%;
-      padding: 10px 14px;
+      padding: 12px 16px;
       border-radius: 8px;
       border: 1px solid var(--border-color);
       background-color: #1a1a1a;
       color: #fff;
-      font-size: 14px;
+      font-size: 15px;
       outline: none;
     }
 
@@ -191,10 +185,9 @@
 
     /* Main Container & Grid */
     .container {
-      width: 100%;
       max-width: 1200px;
       margin: 15px auto;
-      padding: 0 10px;
+      padding: 0 12px;
     }
 
     /* Ad Banner */
@@ -203,29 +196,19 @@
       border: 1px dashed var(--primary-color);
       color: var(--text-secondary);
       text-align: center;
-      padding: 12px;
-      margin-bottom: 15px;
+      padding: 14px;
+      margin-bottom: 20px;
       border-radius: 8px;
-      font-size: 12px;
-      word-break: break-word;
+      font-size: 13px;
     }
 
-    /* Responsive Grid for all mobile screens */
     .shows-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-      gap: 10px;
-      width: 100%;
+      grid-template-columns: repeat(auto-fill, minmax(145px, 1fr));
+      gap: 14px;
     }
 
-    @media (min-width: 480px) {
-      .shows-grid {
-        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-        gap: 14px;
-      }
-    }
-
-    @media (min-width: 768px) {
+    @media (min-width: 600px) {
       .shows-grid {
         grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
         gap: 18px;
@@ -240,21 +223,20 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.4);
       transition: transform 0.2s;
       cursor: pointer;
-      width: 100%;
     }
 
     .show-card:hover {
-      transform: translateY(-3px);
+      transform: translateY(-4px);
     }
 
     .show-badge {
       position: absolute;
-      top: 6px;
-      right: 6px;
+      top: 8px;
+      right: 8px;
       background-color: var(--primary-color);
       color: #fff;
-      padding: 2px 6px;
-      font-size: 10px;
+      padding: 3px 7px;
+      font-size: 11px;
       border-radius: 4px;
       font-weight: bold;
       z-index: 2;
@@ -262,24 +244,24 @@
 
     .show-thumb {
       width: 100%;
-      height: 190px;
+      height: 220px;
       object-fit: cover;
       display: block;
     }
 
-    @media (min-width: 480px) {
+    @media (min-width: 600px) {
       .show-thumb {
-        height: 230px;
+        height: 260px;
       }
     }
 
     .show-info {
-      padding: 8px;
+      padding: 10px;
       text-align: center;
     }
 
     .show-title {
-      font-size: 13px;
+      font-size: 14px;
       font-weight: 600;
       color: #fff;
       white-space: nowrap;
@@ -299,8 +281,7 @@
       z-index: 300;
       justify-content: center;
       align-items: center;
-      padding: 10px;
-      overflow-y: auto;
+      padding: 15px;
     }
 
     .modal.active {
@@ -312,7 +293,7 @@
       border-radius: 10px;
       max-width: 550px;
       width: 100%;
-      padding: 18px;
+      padding: 20px;
       box-shadow: 0 8px 24px rgba(0,0,0,0.7);
       max-height: 90vh;
       overflow-y: auto;
@@ -323,72 +304,38 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 15px;
+      margin-bottom: 18px;
       border-bottom: 1px solid var(--border-color);
-      padding-bottom: 8px;
+      padding-bottom: 10px;
     }
 
     .close-btn {
       background: none;
       border: none;
       color: #fff;
-      font-size: 20px;
+      font-size: 22px;
       cursor: pointer;
-    }
-
-    /* Admin Tabs */
-    .admin-tabs {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 15px;
-      border-bottom: 1px solid var(--border-color);
-      padding-bottom: 8px;
-    }
-
-    .tab-btn {
-      flex: 1;
-      padding: 8px;
-      background: #111;
-      border: 1px solid var(--border-color);
-      color: #fff;
-      border-radius: 6px;
-      font-size: 13px;
-      cursor: pointer;
-    }
-
-    .tab-btn.active {
-      background: var(--primary-color);
-      border-color: var(--primary-color);
-      font-weight: bold;
-    }
-
-    .tab-content {
-      display: none;
-    }
-
-    .tab-content.active {
-      display: block;
     }
 
     .form-group {
-      margin-bottom: 12px;
+      margin-bottom: 14px;
     }
 
     .form-group label {
       display: block;
-      margin-bottom: 5px;
-      font-size: 12px;
+      margin-bottom: 6px;
+      font-size: 13px;
       color: var(--text-secondary);
     }
 
     .form-group input, .form-group select {
       width: 100%;
-      padding: 10px;
+      padding: 10px 12px;
       border-radius: 6px;
       border: 1px solid var(--border-color);
       background-color: #121212;
       color: #fff;
-      font-size: 13px;
+      font-size: 14px;
       outline: none;
     }
 
@@ -398,12 +345,12 @@
 
     .btn {
       width: 100%;
-      padding: 11px;
+      padding: 12px;
       background-color: var(--primary-color);
       color: #fff;
       border: none;
       border-radius: 6px;
-      font-size: 14px;
+      font-size: 15px;
       cursor: pointer;
       font-weight: bold;
       transition: background 0.2s;
@@ -418,6 +365,10 @@
       margin-top: 8px;
     }
 
+    .btn-secondary:hover {
+      background-color: #444;
+    }
+
     /* Video Player Modal Elements */
     .video-container {
       position: relative;
@@ -427,10 +378,9 @@
       border-radius: 8px;
       background-color: #000;
       margin-bottom: 15px;
-      width: 100%;
     }
 
-    .video-container iframe, .video-container video {
+    .video-container iframe {
       position: absolute;
       top: 0;
       left: 0;
@@ -442,7 +392,7 @@
     .video-details {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 12px;
     }
 
     .quality-tags {
@@ -455,9 +405,9 @@
     .quality-tag {
       background-color: #2a2a2a;
       color: #fff;
-      padding: 3px 8px;
+      padding: 4px 8px;
       border-radius: 4px;
-      font-size: 11px;
+      font-size: 12px;
       border: 1px solid var(--border-color);
     }
 
@@ -469,8 +419,458 @@
       background-color: #27ae60;
       color: white;
       text-decoration: none;
-      padding: 10px;
+      padding: 12px;
       border-radius: 6px;
       font-weight: bold;
-      font-size: 13px;
-      text-al
+      font-size: 14px;
+      text-align: center;
+    }
+
+    .download-btn:hover {
+      background-color: #219150;
+    }
+
+    /* Admin Show List Items */
+    .admin-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: #121212;
+      padding: 10px;
+      border-radius: 6px;
+      margin-bottom: 10px;
+      border: 1px solid var(--border-color);
+    }
+
+    .admin-item-title {
+      font-size: 14px;
+      font-weight: 500;
+      max-width: 60%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .admin-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .sm-btn {
+      padding: 6px 10px;
+      font-size: 12px;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+      color: white;
+    }
+
+    .btn-edit { background-color: #2980b9; }
+    .btn-del { background-color: #c0392b; }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <a href="#" class="brand">mrstoud</a>
+    <div class="nav-actions">
+      <button class="icon-btn" id="searchToggleBtn" title="بحث"><i class="fas fa-search"></i></button>
+      <button class="icon-btn" id="menuToggleBtn" title="القائمة"><i class="fas fa-bars"></i></button>
+    </div>
+  </nav>
+
+  <!-- Sidebar Overlay -->
+  <div class="overlay" id="overlay"></div>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <h3>mrstoud</h3>
+      <button class="close-btn" id="closeSidebarBtn">&times;</button>
+    </div>
+    <ul class="sidebar-menu">
+      <li><a href="#"><i class="fas fa-home"></i> الرئيسية</a></li>
+      <li><a href="#"><i class="fas fa-tv"></i> المسلسلات</a></li>
+      <li><a href="#"><i class="fas fa-film"></i> الأفلام</a></li>
+      <hr style="border-color: var(--border-color); margin: 10px 0;">
+      <li><button id="adminBtn"><i class="fas fa-user-shield"></i> الإدارة</button></li>
+    </ul>
+  </aside>
+
+  <!-- Search Bar -->
+  <div class="search-container" id="searchContainer">
+    <input type="text" class="search-input" id="searchInput" placeholder="ابحث عن مسلسل أو فيلم...">
+  </div>
+
+  <!-- Main Content -->
+  <main class="container">
+    
+    <!-- Ad Banner -->
+    <div class="ad-banner">
+      <p>📢 مساحة إعلانية - ضع كود الإعلان الخاص بك هنا (AdSense / Native Ads)</p>
+    </div>
+
+    <!-- Shows Grid -->
+    <div class="shows-grid" id="showsGrid">
+      <!-- Dynamic Content -->
+    </div>
+
+  </main>
+
+  <!-- Login Modal -->
+  <div class="modal" id="loginModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>دخول لوحة الإدارة</h3>
+        <button class="close-btn closeModal">&times;</button>
+      </div>
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="adminPassword">كلمة المرور:</label>
+          <input type="password" id="adminPassword" placeholder="أدخل كلمة المرور" required>
+        </div>
+        <button type="submit" class="btn">دخول</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Admin Control Panel Modal -->
+  <div class="modal" id="adminModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="adminModalTitle">إدارة الفيديوهات والمحتوى</h3>
+        <button class="close-btn closeModal">&times;</button>
+      </div>
+
+      <!-- Add/Edit Form -->
+      <form id="saveShowForm" style="margin-bottom: 25px;">
+        <input type="hidden" id="editShowId" value="">
+        <h4 style="margin-bottom: 12px; color: var(--primary-color);" id="formSubTitle">إضافة مسلسل / فيلم جديد</h4>
+        
+        <div class="form-group">
+          <label for="showTitle">عنوان العمل:</label>
+          <input type="text" id="showTitle" required placeholder="مثال: مسلسل في السابعة عشر">
+        </div>
+        
+        <div class="form-group">
+          <label for="showBadge">نص الشارة (اختياري):</label>
+          <input type="text" id="showBadge" placeholder="مثال: حلقة 22 / فيلم">
+        </div>
+
+        <div class="form-group">
+          <label for="showImage">رابط صورة الغلاف (URL):</label>
+          <input type="url" id="showImage" required placeholder="https://example.com/image.jpg">
+        </div>
+
+        <div class="form-group">
+          <label for="showVideoUrl">رابط البث / مشغل الفيديو (Embed URL):</label>
+          <input type="text" id="showVideoUrl" placeholder="https://www.youtube.com/embed/..." required>
+        </div>
+
+        <div class="form-group">
+          <label for="showQuality">الجودة المتاحة:</label>
+          <input type="text" id="showQuality" placeholder="مثال: 1080p, 720p, 480p" value="1080p Full HD">
+        </div>
+
+        <div class="form-group">
+          <label for="showDownloadUrl">رابط تحميل الفيديو للهواتف:</label>
+          <input type="url" id="showDownloadUrl" placeholder="https://example.com/download.mp4">
+        </div>
+
+        <button type="submit" class="btn" id="saveBtn">حفظ وإضافة</button>
+        <button type="button" class="btn btn-secondary" id="cancelEditBtn" style="display:none;">إلغاء التعديل</button>
+      </form>
+
+      <!-- Manage List -->
+      <hr style="border-color: var(--border-color); margin-bottom: 15px;">
+      <h4 style="margin-bottom: 12px;">قائمة الفيديوهات الحالية</h4>
+      <div id="adminShowsList">
+        <!-- List Items loaded dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Player Modal (For Viewers) -->
+  <div class="modal" id="playerModal">
+    <div class="modal-content" style="max-width: 700px;">
+      <div class="modal-header">
+        <h3 id="playerTitle">عرض الفيديو</h3>
+        <button class="close-btn closeModal">&times;</button>
+      </div>
+      
+      <div class="video-container">
+        <iframe id="videoIframe" src="" allowfullscreen></iframe>
+      </div>
+
+      <div class="video-details">
+        <div class="quality-tags">
+          <span style="font-size: 13px; color: var(--text-secondary);">الجودة المتاحة:</span>
+          <span class="quality-tag" id="playerQuality">1080p</span>
+        </div>
+
+        <div id="downloadContainer">
+          <!-- Download Button -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Initial Data
+    const defaultShows = [
+      {
+        id: 1,
+        title: "مسلسل في السابعة عشر",
+        badge: "حلقة 1",
+        image: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=400&q=80",
+        videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        quality: "1080p Full HD",
+        downloadUrl: "https://example.com/download.mp4"
+      },
+      {
+        id: 2,
+        title: "مسلسل هذا البحر سوف يفيض",
+        badge: "جديد",
+        image: "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=400&q=80",
+        videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        quality: "720p HD",
+        downloadUrl: "https://example.com/download.mp4"
+      }
+    ];
+
+    // Storage Initialization
+    let shows = JSON.parse(localStorage.getItem('mrstoud_shows')) || defaultShows;
+    let isAdminLoggedIn = false;
+
+    // DOM Elements
+    const showsGrid = document.getElementById('showsGrid');
+    const menuToggleBtn = document.getElementById('menuToggleBtn');
+    const closeSidebarBtn = document.getElementById('closeSidebarBtn');
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('overlay');
+    const searchToggleBtn = document.getElementById('searchToggleBtn');
+    const searchContainer = document.getElementById('searchContainer');
+    const searchInput = document.getElementById('searchInput');
+    
+    // Admin & Modals DOM
+    const adminBtn = document.getElementById('adminBtn');
+    const loginModal = document.getElementById('loginModal');
+    const adminModal = document.getElementById('adminModal');
+    const playerModal = document.getElementById('playerModal');
+    const loginForm = document.getElementById('loginForm');
+    const saveShowForm = document.getElementById('saveShowForm');
+    const adminShowsList = document.getElementById('adminShowsList');
+    const closeModalBtns = document.querySelectorAll('.closeModal');
+    const cancelEditBtn = document.getElementById('cancelEditBtn');
+
+    // Player Elements
+    const videoIframe = document.getElementById('videoIframe');
+    const playerTitle = document.getElementById('playerTitle');
+    const playerQuality = document.getElementById('playerQuality');
+    const downloadContainer = document.getElementById('downloadContainer');
+
+    // Render Grid for Visitors
+    function renderShows(filterText = '') {
+      showsGrid.innerHTML = '';
+      const filtered = shows.filter(show => show.title.toLowerCase().includes(filterText.toLowerCase()));
+
+      if (filtered.length === 0) {
+        showsGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #777; padding: 20px;">لا توجد نتائج مطابقة</p>';
+        return;
+      }
+
+      filtered.forEach(show => {
+        const card = document.createElement('div');
+        card.className = 'show-card';
+        card.onclick = () => openPlayer(show);
+        card.innerHTML = `
+          ${show.badge ? `<div class="show-badge">${show.badge}</div>` : ''}
+          <img src="${show.image}" alt="${show.title}" class="show-thumb" onerror="this.src='https://via.placeholder.com/300x400/222/fff?text=mrstoud'">
+          <div class="show-info">
+            <div class="show-title">${show.title}</div>
+          </div>
+        `;
+        showsGrid.appendChild(card);
+      });
+    }
+
+    // Render Admin List inside Admin Panel
+    function renderAdminList() {
+      adminShowsList.innerHTML = '';
+      shows.forEach(show => {
+        const item = document.createElement('div');
+        item.className = 'admin-item';
+        item.innerHTML = `
+          <div class="admin-item-title">${show.title}</div>
+          <div class="admin-actions">
+            <button class="sm-btn btn-edit" onclick="editShow(${show.id})"><i class="fas fa-edit"></i> تعديل</button>
+            <button class="sm-btn btn-del" onclick="deleteShow(${show.id})"><i class="fas fa-trash"></i> حذف</button>
+          </div>
+        `;
+        adminShowsList.appendChild(item);
+      });
+    }
+
+    // Open Player
+    function openPlayer(show) {
+      playerTitle.textContent = show.title;
+      videoIframe.src = show.videoUrl || '';
+      playerQuality.textContent = show.quality || 'عالية';
+      
+      if (show.downloadUrl) {
+        downloadContainer.innerHTML = `
+          <a href="${show.downloadUrl}" target="_blank" class="download-btn">
+            <i class="fas fa-download"></i> تحميل الفيديو على الهاتف
+          </a>
+        `;
+      } else {
+        downloadContainer.innerHTML = '';
+      }
+
+      playerModal.classList.add('active');
+    }
+
+    // Save Data
+    function saveData() {
+      localStorage.setItem('mrstoud_shows', JSON.stringify(shows));
+      renderShows();
+      renderAdminList();
+    }
+
+    // Delete Show (Admin Only)
+    window.deleteShow = function(id) {
+      if (confirm('هل أنت تأكد من حذف هذا الفيديو؟')) {
+        shows = shows.filter(item => item.id !== id);
+        saveData();
+      }
+    };
+
+    // Edit Show (Admin Only)
+    window.editShow = function(id) {
+      const show = shows.find(item => item.id === id);
+      if (show) {
+        document.getElementById('editShowId').value = show.id;
+        document.getElementById('showTitle').value = show.title;
+        document.getElementById('showBadge').value = show.badge || '';
+        document.getElementById('showImage').value = show.image || '';
+        document.getElementById('showVideoUrl').value = show.videoUrl || '';
+        document.getElementById('showQuality').value = show.quality || '';
+        document.getElementById('showDownloadUrl').value = show.downloadUrl || '';
+
+        document.getElementById('formSubTitle').textContent = 'تعديل الفيديو الحالي';
+        document.getElementById('saveBtn').textContent = 'حفظ التعديلات';
+        cancelEditBtn.style.display = 'block';
+      }
+    };
+
+    // Reset Form
+    function resetAdminForm() {
+      saveShowForm.reset();
+      document.getElementById('editShowId').value = '';
+      document.getElementById('formSubTitle').textContent = 'إضافة مسلسل / فيلم جديد';
+      document.getElementById('saveBtn').textContent = 'حفظ وإضافة';
+      cancelEditBtn.style.display = 'none';
+    }
+
+    cancelEditBtn.addEventListener('click', resetAdminForm);
+
+    // Sidebar Handlers
+    function toggleSidebar() {
+      sidebar.classList.toggle('open');
+      overlay.classList.toggle('active');
+    }
+
+    menuToggleBtn.addEventListener('click', toggleSidebar);
+    closeSidebarBtn.addEventListener('click', toggleSidebar);
+    overlay.addEventListener('click', toggleSidebar);
+
+    // Search Toggle
+    searchToggleBtn.addEventListener('click', () => {
+      searchContainer.classList.toggle('active');
+      if (searchContainer.classList.contains('active')) {
+        searchInput.focus();
+      }
+    });
+
+    searchInput.addEventListener('input', (e) => {
+      renderShows(e.target.value);
+    });
+
+    // Close Modals
+    closeModalBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        loginModal.classList.remove('active');
+        adminModal.classList.remove('active');
+        playerModal.classList.remove('active');
+        videoIframe.src = ''; // stop playback
+      });
+    });
+
+    // Admin Button Click
+    adminBtn.addEventListener('click', () => {
+      toggleSidebar();
+      if (isAdminLoggedIn) {
+        renderAdminList();
+        adminModal.classList.add('active');
+      } else {
+        loginModal.classList.add('active');
+      }
+    });
+
+    // Login Submission
+    loginForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const password = document.getElementById('adminPassword').value;
+      if (password === 'marwanhacker99') {
+        isAdminLoggedIn = true;
+        loginModal.classList.remove('active');
+        renderAdminList();
+        adminModal.classList.add('active');
+        document.getElementById('adminPassword').value = '';
+      } else {
+        alert('كلمة المرور غير صحيحة!');
+      }
+    });
+
+    // Add / Edit Submission
+    saveShowForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const editId = document.getElementById('editShowId').value;
+      const title = document.getElementById('showTitle').value;
+      const badge = document.getElementById('showBadge').value;
+      const image = document.getElementById('showImage').value;
+      const videoUrl = document.getElementById('showVideoUrl').value;
+      const quality = document.getElementById('showQuality').value;
+      const downloadUrl = document.getElementById('showDownloadUrl').value;
+
+      if (editId) {
+        // Update
+        const index = shows.findIndex(item => item.id == editId);
+        if (index !== -1) {
+          shows[index] = { id: Number(editId), title, badge, image, videoUrl, quality, downloadUrl };
+        }
+      } else {
+        // Add New
+        const newShow = {
+          id: Date.now(),
+          title,
+          badge,
+          image,
+          videoUrl,
+          quality,
+          downloadUrl
+        };
+        shows.unshift(newShow);
+      }
+
+      saveData();
+      resetAdminForm();
+      alert('تم حفظ البيانات بنجاح!');
+    });
+
+    // Initial Launch
+    renderShows();
+  </script>
+</body>
+</html>
