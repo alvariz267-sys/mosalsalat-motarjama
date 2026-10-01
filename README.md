@@ -107,8 +107,8 @@
     .sidebar {
       position: fixed;
       top: 0;
-      right: -300px;
-      width: 270px;
+      right: -320px;
+      width: 300px;
       height: 100%;
       background-color: var(--sidebar-bg);
       box-shadow: -4px 0 15px rgba(0, 0, 0, 0.8);
@@ -117,6 +117,7 @@
       padding: 20px 15px;
       display: flex;
       flex-direction: column;
+      overflow-y: auto;
     }
 
     .sidebar.open {
@@ -137,6 +138,36 @@
       color: var(--primary-color);
     }
 
+    /* Sidebar Search Box */
+    .sidebar-search-box {
+      margin-bottom: 15px;
+      position: relative;
+    }
+
+    .sidebar-search-input {
+      width: 100%;
+      padding: 10px 12px 10px 35px;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+      background-color: #1a1a1a;
+      color: #fff;
+      font-size: 14px;
+      outline: none;
+    }
+
+    .sidebar-search-input:focus {
+      border-color: var(--primary-color);
+    }
+
+    .sidebar-search-icon {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+
     .sidebar-menu {
       list-style: none;
     }
@@ -148,10 +179,10 @@
     .sidebar-menu a, .sidebar-menu button {
       color: var(--text-color);
       text-decoration: none;
-      font-size: 16px;
+      font-size: 15px;
       display: flex;
       align-items: center;
-      gap: 12px;
+      justify-content: space-between;
       padding: 12px;
       border-radius: 6px;
       background: none;
@@ -159,12 +190,26 @@
       cursor: pointer;
       width: 100%;
       text-align: right;
-      transition: background 0.2s;
+      transition: background 0.2s, color 0.2s;
     }
 
-    .sidebar-menu a:hover, .sidebar-menu button:hover {
+    .sidebar-menu-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .sidebar-menu a:hover, .sidebar-menu button:hover, .sidebar-menu a.active-link {
       background-color: #222;
       color: var(--primary-color);
+    }
+
+    .badge-count {
+      background-color: #2a2a2a;
+      color: #aaa;
+      font-size: 11px;
+      padding: 2px 7px;
+      border-radius: 10px;
     }
 
     .overlay {
@@ -183,31 +228,17 @@
       display: block;
     }
 
-    /* Search Box */
-    .search-container {
-      padding: 12px 15px;
-      max-width: 1200px;
-      margin: 0 auto;
-      display: none;
-    }
-
-    .search-container.active {
-      display: block;
-    }
-
-    .search-input {
-      width: 100%;
-      padding: 12px 16px;
-      border-radius: 8px;
-      border: 1px solid var(--border-color);
-      background-color: #1a1a1a;
-      color: #fff;
-      font-size: 15px;
-      outline: none;
-    }
-
-    .search-input:focus {
-      border-color: var(--primary-color);
+    /* Main Header Title */
+    .section-title {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--text-color);
+      border-right: 4px solid var(--primary-color);
+      padding-right: 10px;
     }
 
     /* Main Container & Grid */
@@ -266,6 +297,19 @@
       border-radius: 4px;
       font-weight: bold;
       z-index: 2;
+    }
+
+    .show-type-tag {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      background-color: rgba(0, 0, 0, 0.75);
+      color: #fff;
+      padding: 3px 7px;
+      font-size: 10px;
+      border-radius: 4px;
+      z-index: 2;
+      border: 1px solid rgba(255,255,255,0.2);
     }
 
     .show-thumb {
@@ -429,7 +473,7 @@
       outline: none;
     }
 
-    .form-group input:focus {
+    .form-group input:focus, .form-group select:focus {
       border-color: var(--primary-color);
     }
 
@@ -612,10 +656,9 @@
 
   <!-- Navigation Bar -->
   <nav class="navbar">
-    <a href="#" class="brand">mrstoud</a>
+    <a href="#" class="brand" onclick="filterByCategory('all')">mrstoud</a>
     <div class="nav-actions">
-      <button class="icon-btn" id="searchToggleBtn" title="بحث"><i class="fas fa-search"></i></button>
-      <button class="icon-btn" id="menuToggleBtn" title="القائمة"><i class="fas fa-bars"></i></button>
+      <button class="icon-btn" id="menuToggleBtn" title="القائمة الجانبية"><i class="fas fa-bars"></i></button>
     </div>
   </nav>
 
@@ -628,25 +671,47 @@
       <h3>mrstoud</h3>
       <button class="close-btn" id="closeSidebarBtn">&times;</button>
     </div>
+
+    <!-- Sidebar Search Box -->
+    <div class="sidebar-search-box">
+      <input type="text" class="sidebar-search-input" id="sidebarSearchInput" placeholder="بحث عن فيلم أو مسلسل...">
+      <i class="fas fa-search sidebar-search-icon"></i>
+    </div>
+
     <ul class="sidebar-menu">
-      <li><a href="#"><i class="fas fa-home"></i> الرئيسية</a></li>
-      <li><a href="#"><i class="fas fa-tv"></i> المسلسلات</a></li>
-      <li><a href="#"><i class="fas fa-film"></i> الأفلام</a></li>
-      <hr style="border-color: var(--border-color); margin: 10px 0;">
-      <li><button id="adminBtn"><i class="fas fa-user-shield"></i> الإدارة</button></li>
+      <li>
+        <a href="#" class="active-link" onclick="filterByCategory('all', event)">
+          <div class="sidebar-menu-left"><i class="fas fa-home"></i> الرئيسية</div>
+          <span class="badge-count" id="countAll">0</span>
+        </a>
+      </li>
+      <li>
+        <a href="#" onclick="filterByCategory('series', event)">
+          <div class="sidebar-menu-left"><i class="fas fa-tv"></i> المسلسلات</div>
+          <span class="badge-count" id="countSeries">0</span>
+        </a>
+      </li>
+      <li>
+        <a href="#" onclick="filterByCategory('movie', event)">
+          <div class="sidebar-menu-left"><i class="fas fa-film"></i> الأفلام</div>
+          <span class="badge-count" id="countMovies">0</span>
+        </a>
+      </li>
+      <hr style="border-color: var(--border-color); margin: 15px 0;">
+      <li><button id="adminBtn"><div class="sidebar-menu-left"><i class="fas fa-user-shield"></i> الإدارة</div></button></li>
     </ul>
   </aside>
-
-  <!-- Search Bar -->
-  <div class="search-container" id="searchContainer">
-    <input type="text" class="search-input" id="searchInput" placeholder="ابحث عن مسلسل أو فيلم...">
-  </div>
 
   <!-- Main Content -->
   <main class="container">
     <div class="ad-banner">
       <p>📢 مساحة إعلانية - ضع كود الإعلان الخاص بك هنا (AdSense / Native Ads)</p>
     </div>
+
+    <div class="section-title" id="sectionTitle">
+      <i class="fas fa-play-circle"></i> جميع الأعمال
+    </div>
+
     <div class="shows-grid" id="showsGrid"></div>
   </main>
 
@@ -694,16 +759,24 @@
       <div id="tab-shows" class="tab-content active">
         <form id="saveShowForm" style="margin-bottom: 25px;">
           <input type="hidden" id="editShowId" value="">
-          <h4 style="margin-bottom: 12px; color: var(--primary-color);" id="formSubTitle">إضافة مسلسل / فيلم جديد</h4>
+          <h4 style="margin-bottom: 12px; color: var(--primary-color);" id="formSubTitle">إضافة عمل جديد (فيلم / مسلسل)</h4>
           
+          <div class="form-group">
+            <label for="showCategory">تصنيف العمل:</label>
+            <select id="showCategory" required>
+              <option value="series">مسلسل</option>
+              <option value="movie">فيلم</option>
+            </select>
+          </div>
+
           <div class="form-group">
             <label for="showTitle">عنوان العمل:</label>
             <input type="text" id="showTitle" required placeholder="مثال: فيلم/مسلسل كامل">
           </div>
           
           <div class="form-group">
-            <label for="showBadge">نص الشارة (اختياري):</label>
-            <input type="text" id="showBadge" placeholder="مثال: 2:30 ساعة / فيلم">
+            <label for="showBadge">نص الشارة (مثال: حلقة 1 / 2:30 ساعة):</label>
+            <input type="text" id="showBadge" placeholder="مثال: حلقة 1">
           </div>
 
           <div class="form-group">
@@ -795,7 +868,6 @@
        🔐 ADVANCED ANTI-HACK & SECURITY SYSTEM (WAF)
        ========================================================= */
 
-    // Check if current user/IP is marked as banned
     function checkGlobalBanStatus() {
       if (localStorage.getItem('mrstoud_is_hacker_banned') === 'true') {
         document.getElementById('hackerBlockedScreen').style.display = 'flex';
@@ -803,11 +875,9 @@
       }
     }
 
-    // Trigger instant auto-ban for malicious behavior
     function triggerAutoHackerBan(reason) {
       localStorage.setItem('mrstoud_is_hacker_banned', 'true');
       
-      // Also register in banned users database
       let users = JSON.parse(localStorage.getItem('mrstoud_users')) || defaultUsers;
       users.push({
         id: Date.now(),
@@ -821,11 +891,9 @@
       document.getElementById('hackerBlockedScreen').style.display = 'flex';
     }
 
-    // Scan input for XSS, SQLi, and Exploits
     function inspectSecurityInput(inputStr) {
       if (!inputStr) return inputStr;
 
-      // Malicious patterns detector (SQLi, XSS, Scripting, Path Traversal)
       const attackPatterns = [
         /<script\b[^>]*>([\s\S]*?)<\/script>/gi,
         /javascript:/gi,
@@ -850,19 +918,17 @@
       return inputStr;
     }
 
-    // Rate Limiting (Anti-DDoS) Protection
     let requestHistory = [];
     function checkRateLimit() {
       const now = Date.now();
       requestHistory.push(now);
-      requestHistory = requestHistory.filter(timestamp => now - timestamp < 5000); // 5 seconds window
+      requestHistory = requestHistory.filter(timestamp => now - timestamp < 5000);
       
-      if (requestHistory.length > 25) { // Exceeded 25 actions in 5s
+      if (requestHistory.length > 25) {
         triggerAutoHackerBan("هجوم إغراق DDoS / Rate-Limit Exceeded");
       }
     }
 
-    // Attach security monitor to all input elements dynamically
     document.addEventListener('input', (e) => {
       checkRateLimit();
       if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
@@ -870,7 +936,6 @@
       }
     });
 
-    // Sanitizer
     function sanitizeInput(str) {
       if (!str) return '';
       inspectSecurityInput(str);
@@ -879,7 +944,6 @@
       return temp.innerHTML;
     }
 
-    // Execute security check at startup
     checkGlobalBanStatus();
 
     /* =========================================================
@@ -889,23 +953,34 @@
     const defaultShows = [
       {
         id: 1,
+        category: "series",
         title: "مسلسل في السابعة عشر",
         badge: "حلقة 1",
         image: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=400&q=80",
         videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
         quality: "1080p Full HD",
         downloadUrl: "https://example.com/download.mp4"
+      },
+      {
+        id: 2,
+        category: "movie",
+        title: "فيلم الأكشن والمغامرة",
+        badge: "2:15 ساعة",
+        image: "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=400&q=80",
+        videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        quality: "4K Ultra HD",
+        downloadUrl: "https://example.com/download.mp4"
       }
     ];
 
     const defaultUsers = [
       { id: 101, name: "أحمد علي", email: "ahmed@example.com", status: "active" },
-      { id: 102, name: "محمد ياسين", email: "mowin@example.com", status: "active" },
-      { id: 103, name: "مستخدم تجريبي", email: "spammer@test.com", status: "banned", banReason: "سلوك غير لائق" }
+      { id: 102, name: "محمد ياسين", email: "mowin@example.com", status: "active" }
     ];
 
     let shows = JSON.parse(localStorage.getItem('mrstoud_shows')) || defaultShows;
     let users = JSON.parse(localStorage.getItem('mrstoud_users')) || defaultUsers;
+    let currentCategory = 'all';
     let isAdminLoggedIn = false;
 
     let loginAttempts = parseInt(localStorage.getItem('mrstoud_login_attempts') || '0');
@@ -917,10 +992,13 @@
     const closeSidebarBtn = document.getElementById('closeSidebarBtn');
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('overlay');
-    const searchToggleBtn = document.getElementById('searchToggleBtn');
-    const searchContainer = document.getElementById('searchContainer');
-    const searchInput = document.getElementById('searchInput');
+    const sidebarSearchInput = document.getElementById('sidebarSearchInput');
+    const sectionTitle = document.getElementById('sectionTitle');
     
+    const countAll = document.getElementById('countAll');
+    const countSeries = document.getElementById('countSeries');
+    const countMovies = document.getElementById('countMovies');
+
     const adminBtn = document.getElementById('adminBtn');
     const loginModal = document.getElementById('loginModal');
     const adminModal = document.getElementById('adminModal');
@@ -950,6 +1028,15 @@
       document.getElementById(tabId).classList.add('active');
     };
 
+    function updateCounters() {
+      const seriesCount = shows.filter(s => s.category === 'series').length;
+      const moviesCount = shows.filter(s => s.category === 'movie').length;
+
+      countAll.textContent = shows.length;
+      countSeries.textContent = seriesCount;
+      countMovies.textContent = moviesCount;
+    }
+
     function checkLockoutStatus() {
       const now = Date.now();
       if (lockoutUntil && now < lockoutUntil) {
@@ -970,10 +1057,23 @@
     function renderShows(filterText = '') {
       showsGrid.innerHTML = '';
       const cleanFilter = sanitizeInput(filterText.toLowerCase());
-      const filtered = shows.filter(show => show.title.toLowerCase().includes(cleanFilter));
+
+      let filtered = shows;
+
+      // Filter by Category
+      if (currentCategory === 'series') {
+        filtered = filtered.filter(show => show.category === 'series');
+      } else if (currentCategory === 'movie') {
+        filtered = filtered.filter(show => show.category === 'movie');
+      }
+
+      // Filter by Search Text
+      if (cleanFilter) {
+        filtered = filtered.filter(show => show.title.toLowerCase().includes(cleanFilter));
+      }
 
       if (filtered.length === 0) {
-        showsGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #777; padding: 20px;">لا توجد نتائج مطابقة</p>';
+        showsGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #777; padding: 30px;">لا توجد أية نتائج مطابقة لهذا القسم أو البحث</p>';
         return;
       }
 
@@ -983,6 +1083,7 @@
         card.onclick = () => openPlayer(show);
         card.innerHTML = `
           ${show.badge ? `<div class="show-badge">${sanitizeInput(show.badge)}</div>` : ''}
+          <div class="show-type-tag">${show.category === 'movie' ? 'فيلم' : 'مسلسل'}</div>
           <img src="${sanitizeInput(show.image) || 'https://via.placeholder.com/300x400/222/fff?text=mrstoud'}" alt="${sanitizeInput(show.title)}" class="show-thumb" onerror="this.src='https://via.placeholder.com/300x400/222/fff?text=mrstoud'">
           <div class="show-info">
             <div class="show-title">${sanitizeInput(show.title)}</div>
@@ -990,7 +1091,34 @@
         `;
         showsGrid.appendChild(card);
       });
+
+      updateCounters();
     }
+
+    window.filterByCategory = function(category, event = null) {
+      currentCategory = category;
+      
+      // Update sidebar active link styling
+      document.querySelectorAll('.sidebar-menu a').forEach(a => a.classList.remove('active-link'));
+      if (event && event.currentTarget) {
+        event.currentTarget.classList.add('active-link');
+      }
+
+      // Update Header Title
+      if (category === 'series') {
+        sectionTitle.innerHTML = '<i class="fas fa-tv"></i> قائمة المسلسلات';
+      } else if (category === 'movie') {
+        sectionTitle.innerHTML = '<i class="fas fa-film"></i> قائمة الأفلام';
+      } else {
+        sectionTitle.innerHTML = '<i class="fas fa-play-circle"></i> جميع الأعمال';
+      }
+
+      renderShows(sidebarSearchInput.value);
+    };
+
+    sidebarSearchInput.addEventListener('input', (e) => {
+      renderShows(e.target.value);
+    });
 
     function renderAdminList() {
       adminShowsList.innerHTML = '';
@@ -998,7 +1126,7 @@
         const item = document.createElement('div');
         item.className = 'admin-item';
         item.innerHTML = `
-          <div class="admin-item-title">${sanitizeInput(show.title)}</div>
+          <div class="admin-item-title">[${show.category === 'movie' ? 'فيلم' : 'مسلسل'}] ${sanitizeInput(show.title)}</div>
           <div class="admin-actions">
             <button class="sm-btn btn-edit" onclick="editShow(${show.id})"><i class="fas fa-edit"></i> تعديل</button>
             <button class="sm-btn btn-del" onclick="deleteShow(${show.id})"><i class="fas fa-trash"></i> حذف</button>
@@ -1131,7 +1259,7 @@
         return rest;
       });
       localStorage.setItem('mrstoud_shows', JSON.stringify(cleanShows));
-      renderShows();
+      renderShows(sidebarSearchInput.value);
       renderAdminList();
     }
 
@@ -1146,6 +1274,7 @@
       const show = shows.find(item => item.id === id);
       if (show) {
         document.getElementById('editShowId').value = show.id;
+        document.getElementById('showCategory').value = show.category || 'series';
         document.getElementById('showTitle').value = show.title;
         document.getElementById('showBadge').value = show.badge || '';
         document.getElementById('showImage').value = show.image || '';
@@ -1153,7 +1282,7 @@
         document.getElementById('showQuality').value = show.quality || '';
         document.getElementById('showDownloadUrl').value = show.downloadUrl || '';
 
-        document.getElementById('formSubTitle').textContent = 'تعديل الفيديو الحالي';
+        document.getElementById('formSubTitle').textContent = 'تعديل العمل الحالي';
         document.getElementById('saveBtn').textContent = 'حفظ التعديلات';
         cancelEditBtn.style.display = 'block';
       }
@@ -1162,7 +1291,7 @@
     function resetAdminForm() {
       saveShowForm.reset();
       document.getElementById('editShowId').value = '';
-      document.getElementById('formSubTitle').textContent = 'إضافة مسلسل / فيلم جديد';
+      document.getElementById('formSubTitle').textContent = 'إضافة عمل جديد (فيلم / مسلسل)';
       document.getElementById('saveBtn').textContent = 'حفظ وإضافة';
       cancelEditBtn.style.display = 'none';
     }
@@ -1177,17 +1306,6 @@
     menuToggleBtn.addEventListener('click', toggleSidebar);
     closeSidebarBtn.addEventListener('click', toggleSidebar);
     overlay.addEventListener('click', toggleSidebar);
-
-    searchToggleBtn.addEventListener('click', () => {
-      searchContainer.classList.toggle('active');
-      if (searchContainer.classList.contains('active')) {
-        searchInput.focus();
-      }
-    });
-
-    searchInput.addEventListener('input', (e) => {
-      renderShows(e.target.value);
-    });
 
     closeModalBtns.forEach(btn => {
       btn.addEventListener('click', () => {
@@ -1250,6 +1368,7 @@
     saveShowForm.addEventListener('submit', (e) => {
       e.preventDefault();
       const editId = document.getElementById('editShowId').value;
+      const category = document.getElementById('showCategory').value;
       const title = document.getElementById('showTitle').value;
       const badge = document.getElementById('showBadge').value;
       const image = document.getElementById('showImage').value;
@@ -1263,14 +1382,14 @@
         if (index !== -1) {
           shows[index] = { 
             ...shows[index],
-            title, badge, image, videoUrl, quality, downloadUrl,
+            category, title, badge, image, videoUrl, quality, downloadUrl,
             ...(fileInput && { isVideoLocal: true, videoObject: fileInput })
           };
         }
       } else {
         const newShow = {
           id: Date.now(),
-          title, badge, image, videoUrl, quality, downloadUrl,
+          category, title, badge, image, videoUrl, quality, downloadUrl,
           isVideoLocal: fileInput ? true : false,
           videoObject: fileInput || null
         };
@@ -1279,7 +1398,7 @@
 
       saveData();
       resetAdminForm();
-      alert('تم إضافه المسلسل / الفيلم بنجاح وسيتوفر فوراً للعرض!');
+      alert('تم إضافه العمل بنجاح وسيتوفر فوراً للعرض!');
     });
 
     renderShows();
