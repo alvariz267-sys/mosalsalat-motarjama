@@ -1879,11 +1879,11 @@
             <track kind="subtitles" srclang="fr" label="Français">
             متصفحك لا يدعم تشغيل هذا الفيديو
           </video>`;
-      } else if (url) {
+      } else if (url && url.trim() !== '') {
         const safeUrl = sanitizeInput(url);
         videoPlayerBox.innerHTML = `<iframe id="videoIframe" src="${safeUrl}" allowfullscreen></iframe>`;
       } else {
-        videoPlayerBox.innerHTML = `<div style="padding:20px; text-align:center; color:var(--text-secondary);">لا يوجد فيديو متاح في هذا السيرفر</div>`;
+        videoPlayerBox.innerHTML = `<div style="padding:40px; text-align:center; color:var(--primary-color);"><i class="fas fa-exclamation-circle" style="font-size:30px; margin-bottom:10px;"></i><br>عذراً، لا يوجد فيديو أو رابط تشغيل صالح متاح في هذا السيرفر</div>`;
       }
       applyVideoFilters();
     }
@@ -1892,20 +1892,20 @@
       serverSelectorContainer.innerHTML = '';
       const servers = [];
 
-      if (show.isVideoLocal) {
+      if (show.isVideoLocal && show.videoObject) {
         servers.push({ name: 'سيرفر الهاتف المحلي', action: () => playVideoServer(null, true, show.videoObject) });
       }
-      if (show.videoUrl) {
+      if (show.videoUrl && show.videoUrl.trim() !== '') {
         servers.push({ name: 'سيرفر 1 (الرئيسي)', action: () => playVideoServer(show.videoUrl) });
       }
-      if (show.videoUrl2) {
+      if (show.videoUrl2 && show.videoUrl2.trim() !== '') {
         servers.push({ name: 'سيرفر 2 (احتياطي)', action: () => playVideoServer(show.videoUrl2) });
       }
-      if (show.videoUrl3) {
+      if (show.videoUrl3 && show.videoUrl3.trim() !== '') {
         servers.push({ name: 'سيرفر 3 (سريع)', action: () => playVideoServer(show.videoUrl3) });
       }
 
-      if (servers.length > 1) {
+      if (servers.length > 0) {
         servers.forEach((srv, index) => {
           const btn = document.createElement('button');
           btn.className = `server-btn ${index === 0 ? 'active' : ''}`;
@@ -1917,6 +1917,10 @@
           };
           serverSelectorContainer.appendChild(btn);
         });
+        // تشغيل السيرفر الأول تلقائياً عند فتح المشغل
+        servers[0].action();
+      } else {
+        videoPlayerBox.innerHTML = `<div style="padding:40px; text-align:center; color:var(--primary-color);"><i class="fas fa-exclamation-triangle" style="font-size:30px; margin-bottom:10px;"></i><br>تنبيه: لا توجد أي روابط أو فيديوهات مضافة لهذا العمل بعد!</div>`;
       }
     }
 
@@ -2039,6 +2043,10 @@
 
     // --- الوظيفة الإضافية 7: شريط تقدم التحميل التفاعلي عند النقر على تحميل الفيديو ---
     function triggerSmartDownloadProgress(downloadUrl) {
+      if (!downloadUrl || downloadUrl.trim() === '') {
+        alert('عذراً، لا يوجد رابط تحميل مباشر متاح لهذا العمل.');
+        return;
+      }
       const progressBox = document.getElementById('downloadProgressBox');
       const fillBar = document.getElementById('progressBarFill');
       const statusText = document.getElementById('downloadStatusText');
@@ -2069,13 +2077,12 @@
       playerQuality.textContent = show.quality || 'عالية';
       
       resetVideoTools();
-      renderServerButtons(show);
       document.getElementById('downloadProgressBox').style.display = 'none';
 
       // Check favorite state for UI
       if (favoritesData.includes(show.id)) {
         document.getElementById('favoriteIcon').className = 'fas fa-heart';
-        document.getElementById('favoriteIcon').style.color = 'var(--primary-color)';
+        document.getElementById('favoriteIconstyle').color = 'var(--primary-color)';
         document.getElementById('favoriteBtnText').textContent = 'تم الإضافة للمفضلة';
       } else {
         document.getElementById('favoriteIcon').className = 'far fa-heart';
@@ -2105,13 +2112,10 @@
         localStorage.setItem('mrstoud_history', JSON.stringify(historyData));
       }
 
-      if (show.isVideoLocal && show.videoObject) {
-        playVideoServer(null, true, show.videoObject);
-      } else {
-        playVideoServer(show.videoUrl);
-      }
+      // Render server selection & play valid video securely
+      renderServerButtons(show);
       
-      if (show.downloadUrl) {
+      if (show.downloadUrl && show.downloadUrl.trim() !== '') {
         const safeDl = sanitizeInput(show.downloadUrl);
         downloadContainer.innerHTML = `
           <button onclick="triggerSmartDownloadProgress('${safeDl}')" class="download-btn" style="width:100%; border:none; cursor:pointer;">
@@ -2254,7 +2258,7 @@
           localStorage.setItem('mrstoud_lockout_until', lockoutTime.toString());
           lockoutUntil = lockoutTime;
           checkLockoutStatus();
-          alert('⚠️ أدخلت كلمة المرور خاطئة 3 مرات! تم قفل لوحة الدخول لمدة 24 ساعة لأسباب أمنية.');
+          alert('⚠️️ أدخلت كلمة المرور خاطئة 3 مرات! تم قفل لوحة الدخول لمدة 24 ساعة لأسباب أمنية.');
         } else {
           const remaining = 3 - loginAttempts;
           alert(`❌ كلمة المرور غير صحيحة! تبقّى لديك ${remaining} محاولة قبل الحظر لمدة 24 ساعة.`);
@@ -2266,16 +2270,22 @@
       e.preventDefault();
       const editId = document.getElementById('editShowId').value;
       const category = document.getElementById('showCategory').value;
-      const genre = document.getElementById('showGenre').value; // حفظ التصنيف الفرعي
+      const genre = document.getElementById('showGenre').value;
       const title = document.getElementById('showTitle').value;
       const badge = document.getElementById('showBadge').value;
-      const image = document.getElementById('showImage').value;
-      const videoUrl = document.getElementById('showVideoUrl').value;
-      const videoUrl2 = document.getElementById('showVideoUrl2').value;
-      const videoUrl3 = document.getElementById('showVideoUrl3').value;
+      const image = document.getElementById('showImage').value.trim();
+      const videoUrl = document.getElementById('showVideoUrl').value.trim();
+      const videoUrl2 = document.getElementById('showVideoUrl2').value.trim();
+      const videoUrl3 = document.getElementById('showVideoUrl3').value.trim();
       const quality = document.getElementById('showQuality').value;
-      const downloadUrl = document.getElementById('showDownloadUrl').value;
+      const downloadUrl = document.getElementById('showDownloadUrl').value.trim();
       const fileInput = showVideoFile.files[0];
+
+      // التأكد من إدخال وسيلة عرض مرئية صحيحة (صورة غلاف وفيديو/سيرفر صالح)
+      if (!image && !fileInput && !videoUrl && !videoUrl2 && !videoUrl3) {
+        alert('⚠️ تنبيه: يرجى إدخال رابط صورة غلاف صحيحة وتوفير رابط فيديو أو سيرفر عرض واحد على الأقل قبل الحفظ!');
+        return;
+      }
 
       if (editId) {
         const index = shows.findIndex(item => item.id == editId);
