@@ -1,4 +1,4 @@
-ط<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
@@ -44,7 +44,7 @@
       transition: background-color 0.3s, color 0.3s;
     }
 
-    /* Floating Welcome Banner (إضافة جديدة) */
+    /* Floating Welcome Banner */
     .welcome-banner-top {
       background: linear-gradient(135deg, var(--primary-color), #ff4757);
       color: #fff;
@@ -798,7 +798,7 @@
       color: #fff;
     }
 
-    /* Player Tools Bar (Subtitles & Enhance Controls) */
+    /* Player Tools Bar */
     .player-tools-bar {
       background: var(--sidebar-bg);
       border: 1px solid var(--border-color);
@@ -879,7 +879,6 @@
       margin-bottom: 4px;
     }
 
-    /* Extra Action Buttons inside Player Modal */
     .extra-player-actions {
       display: flex;
       gap: 10px;
@@ -920,7 +919,6 @@
       color: #f1c40f;
     }
 
-    /* === تنسيقات الإضافات السابقة === */
     .filters-bar {
       display: flex;
       gap: 10px;
@@ -1016,7 +1014,6 @@
     }
     .color-dot.active { border-color: #fff; }
 
-    /* === 🚀 إضافات جديدة مميزة (New Added UI Features) === */
     .notif-badge-counter {
       position: absolute;
       top: 3px;
@@ -1052,10 +1049,10 @@
 </head>
 <body>
 
-  <!-- زر العودة للأعلى الجديد -->
+  <!-- زر العودة للأعلى -->
   <button class="scroll-to-top" id="scrollToTopBtn" onclick="scrollToTop()" title="العودة لأعلى الصفحة"><i class="fas fa-arrow-up"></i></button>
 
-  <!-- رسالة الترحيب العلوية (ميزة جديدة) -->
+  <!-- رسالة الترحيب العلوية -->
   <div class="welcome-banner-top" id="topWelcomeBanner">
     <span>🎬 أهلاً بك في <strong>mrstoud</strong>! وجهتك الأولى لمشاهدة أحدث الأفلام والمسلسلات بجودة عالية وأمان تام.</span>
     <button onclick="closeTopWelcome()">إخفاء</button>
@@ -1083,7 +1080,12 @@
   <nav class="navbar">
     <a href="#" class="brand" onclick="filterByCategory('all')">mrstoud</a>
     <div class="nav-actions">
-      <!-- زر الإشعارات الجديد -->
+      <!-- زر حساب المستخدم الجديد (الميزة الأولى والثانية) -->
+      <button class="icon-btn" onclick="openAuthOrProfileModal()" title="حساب المستخدم وتسجيل الدخول">
+        <i class="fas fa-user-circle" id="navUserIcon"></i>
+      </button>
+
+      <!-- زر الإشعارات -->
       <button class="icon-btn" onclick="openNotificationsModal()" title="الإشعارات والتنبيهات">
         <i class="fas fa-bell"></i>
         <span class="notif-badge-counter" id="notifBadge">1</span>
@@ -1145,7 +1147,6 @@
           <span class="badge-count" id="countMovies">0</span>
         </a>
       </li>
-      <!-- ميزة جديدة: وضع الأطفال الآمن -->
       <li>
         <a href="#" onclick="filterByCategory('kids', event)">
           <div class="sidebar-menu-left"><i class="fas fa-child" style="color:#f1c40f;"></i> وضع الأطفال الآمن</div>
@@ -1217,7 +1218,87 @@
     </div>
   </div>
 
-  <!-- Notifications Modal (ميزة جديدة) -->
+  <!-- ميزة تسجيل الدخول وحساب المستخدمين الجديد (Auth Modal) -->
+  <div class="modal" id="authModal">
+    <div class="modal-content" style="max-width: 420px;">
+      <div class="modal-header">
+        <h3><i class="fas fa-user-circle"></i> بوابة حساب المستخدم</h3>
+        <button class="close-btn closeModal">&times;</button>
+      </div>
+
+      <div class="admin-tabs">
+        <button class="tab-btn active" onclick="switchAuthTab('login')">تسجيل الدخول</button>
+        <button class="tab-btn" onclick="switchAuthTab('register')">حساب جديد</button>
+      </div>
+
+      <!-- تبويب تسجيل الدخول -->
+      <div id="authLoginTab" class="tab-content active">
+        <form id="userLoginForm">
+          <div class="form-group">
+            <label>البريد الإلكتروني:</label>
+            <input type="email" id="loginEmail" placeholder="name@example.com" required>
+          </div>
+          <div class="form-group">
+            <label>كلمة المرور:</label>
+            <input type="password" id="loginPassword" placeholder="كلمة المرور" required>
+          </div>
+          <button type="submit" class="btn">دخول إلى الحساب</button>
+        </form>
+      </div>
+
+      <!-- تبويب إنشاء حساب جديد -->
+      <div id="authRegisterTab" class="tab-content">
+        <form id="userRegisterForm">
+          <div class="form-group">
+            <label>اسم المستخدم:</label>
+            <input type="text" id="regName" placeholder="اسمك الكامل أو المستعار" required>
+          </div>
+          <div class="form-group">
+            <label>البريد الإلكتروني:</label>
+            <input type="email" id="regEmail" placeholder="name@example.com" required>
+          </div>
+          <div class="form-group">
+            <label>كلمة المرور:</label>
+            <input type="password" id="regPassword" placeholder="كلمة مرور قوية" required>
+          </div>
+          <button type="submit" class="btn">إنشاء حساب جديد</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ميزة الملف الشخصي ونظام النقاط والمستويات (Profile & Points Modal) -->
+  <div class="modal" id="userProfileModal">
+    <div class="modal-content" style="max-width: 450px; text-align: center;">
+      <div class="modal-header">
+        <h3><i class="fas fa-id-badge"></i> ملف المستخدم الشخصي</h3>
+        <button class="close-btn closeModal">&times;</button>
+      </div>
+      <div style="padding: 10px; display: flex; flex-direction: column; gap: 15px;">
+        <div style="font-size: 60px; color: var(--primary-color);">
+          <i class="fas fa-user-circle"></i>
+        </div>
+        <div>
+          <h3 id="profileUserName" style="color: var(--text-color);">اسم المستخدم</h3>
+          <p id="profileUserEmail" style="color: var(--text-secondary); font-size: 13px;">email@example.com</p>
+        </div>
+
+        <!-- نظام النقاط والمستويات (Gamification) -->
+        <div style="background: var(--sidebar-bg); border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; text-align: right;">
+          <div style="display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 8px;">
+            <span><i class="fas fa-trophy" style="color: #f1c40f;"></i> مستوى العضوية: <span id="profileUserLevel" style="color: var(--primary-color);">مبتدئ</span></span>
+            <span>نقاط XP: <span id="profileUserPoints" style="color: #27ae60;">0</span></span>
+          </div>
+          <p style="font-size: 11px; color: var(--text-secondary); margin-top: 5px;">شاهد المزيد من الحلقات واكتب التعليقات لترقية مستواك وجمع النقاط!</p>
+        </div>
+
+        <button class="btn btn-del" onclick="logoutUser()"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</button>
+      </div>
+      <button class="btn closeModal" style="margin-top: 10px;">إغلاق</button>
+    </div>
+  </div>
+
+  <!-- Notifications Modal -->
   <div class="modal" id="notificationsModal">
     <div class="modal-content" style="max-width: 450px;">
       <div class="modal-header">
@@ -1227,7 +1308,7 @@
       <div style="display: flex; flex-direction: column; gap: 10px; font-size: 13px;" id="notificationsListContainer">
         <div style="background:var(--sidebar-bg); padding:10px; border-radius:6px; border-right:3px solid var(--primary-color);">
           <strong>🎉 أهلاً بك في التحديث الجديد</strong>
-          <p style="color:var(--text-secondary); margin-top:3px;">تم إضافة وضع الأطفال الآمن وميزة النسخ الاحتياطي للوحة التحكم.</p>
+          <p style="color:var(--text-secondary); margin-top:3px;">تم إضافة نظام تسجيل حسابات المستخدمين ونظام النقاط والمستويات بنجاح!</p>
         </div>
       </div>
       <button class="btn closeModal" style="margin-top: 15px;">حسناً</button>
@@ -1248,7 +1329,7 @@
         <h4 style="color: var(--primary-color); margin-top: 5px;">2. حماية البيانات وأمانها</h4>
         <p>نحن نستخدم أنظمة جدار حماية (WAF) متطورة لرصد أي هجمات أو محاولات اختراق وضمان حماية المستخدمين والسيرفرات من أي استغلال خبيث.</p>
         <h4 style="color: var(--primary-color); margin-top: 5px;">3. الإعلانات وملفات الكوكيز (Cookies)</h4>
-        <p>قد تستخدم المنصة شبكات إعلانية خارجية (مثل Google AdSense) تضع ملفات تعريف ارتباط لتقديم إعلانات مخصصة للمستخدم بناءً على زياراته للموقع.</p>
+        <p>قد تستخدم المنصة شبكات إعلانية خارجية تضع ملفات تعريف ارتباط لتقديم إعلانات مخصصة للمستخدم بناءً على زياراته للموقع.</p>
         <h4 style="color: var(--primary-color); margin-top: 5px;">4. التعليقات والاستخدام المقبول</h4>
         <p>يتحمل المستخدم المسؤولية كاملة عن أي تعليق يتم نشره عبر المنصة، ويُمنع استخدام ألفاظ خرسانية أو محاولات إغراق، وتخضع المدخلات لفحص أمني آلي.</p>
       </div>
@@ -1320,7 +1401,6 @@
         <button class="tab-btn active" onclick="switchAdminTab('tab-shows')"><i class="fas fa-film"></i> المسلسلات والأفلام</button>
         <button class="tab-btn" onclick="switchAdminTab('tab-users')"><i class="fas fa-users"></i> إدارة المستخدمين</button>
         <button class="tab-btn" onclick="switchAdminTab('tab-ban')"><i class="fas fa-user-slash"></i> الحظر وفك الحظر</button>
-        <!-- تبويب جديد للإعدادات والنسخ الاحتياطي -->
         <button class="tab-btn" onclick="switchAdminTab('tab-backup')"><i class="fas fa-database"></i> النسخ الاحتياطي</button>
       </div>
 
@@ -1373,7 +1453,6 @@
             <input type="url" id="showImage" placeholder="https://example.com/image.jpg">
           </div>
 
-          <!-- قائمة الحلقات (معدلة لتدعم الحلقات المتعددة وتشغيلها مباشرة) -->
           <div class="form-group" style="background: var(--sidebar-bg); padding: 12px; border-radius: 8px; border: 1px dashed var(--primary-color);">
             <label for="showEpisodesInput" style="color: var(--text-color); font-weight: bold;"><i class="fas fa-list-ol"></i> قائمة الحلقات (روابط يوتيوب أو سيرفرات مفصولة بفاصلة أو سطر جديد):</label>
             <textarea id="showEpisodesInput" rows="3" placeholder="الحلقة 1: https://www.youtube.com/embed/...&#10;الحلقة 2: https://www.youtube.com/embed/..."></textarea>
@@ -1441,7 +1520,7 @@
         <div id="bannedUsersContainer"></div>
       </div>
 
-      <!-- Tab 4: Backup & Restore (إضافة جديدة) -->
+      <!-- Tab 4: Backup & Restore -->
       <div id="tab-backup" class="tab-content">
         <h4 style="margin-bottom: 12px; color: var(--primary-color);">إدارة قاعدة البيانات (Backup & Restore)</h4>
         <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 15px;">يمكنك حفظ نسخة احتياطية لجميع أفلام المسلسلات والبيانات في ملف JSON أو استعادتها.</p>
@@ -1482,7 +1561,6 @@
           <i class="far fa-clock" id="watchlistIcon"></i> <span id="watchlistBtnText">المشاهدة لاحقاً</span>
         </button>
 
-        <!-- أزرار إضافية جديدة مفيدة داخل المشغل -->
         <button class="action-badge-btn" onclick="toggleFullscreenPlayer()" title="ملء الشاشة">
           <i class="fas fa-expand"></i> تكبير
         </button>
@@ -1610,7 +1688,7 @@
             <input type="text" id="commentUserName" placeholder="اسمك (اختياري)" style="margin-bottom: 8px;">
             <textarea id="commentText" rows="2" placeholder="اكتب تعليقك هنا..." required></textarea>
           </div>
-          <button type="submit" class="btn" style="padding: 8px 15px; font-size: 13px;">إرسال التعليق</button>
+          <button type="submit" class="btn" style="padding: 8px 15px; font-size: 13px;">إرسال التعليق (+10 نقاط XP)</button>
         </form>
 
         <div id="commentsList"></div>
@@ -1765,6 +1843,99 @@
     let historyData = JSON.parse(localStorage.getItem('mrstoud_history')) || [];
     let ratingsData = JSON.parse(localStorage.getItem('mrstoud_ratings')) || {};
 
+    // نظام إدارة حسابات المستخدمين والنقاط (ميزات جديدة مضافة)
+    let currentUserSession = JSON.parse(localStorage.getItem('mrstoud_current_user')) || null;
+    let userPoints = parseInt(localStorage.getItem('mrstoud_user_points') || '0');
+
+    window.addPoints = function(amount) {
+      userPoints += amount;
+      localStorage.setItem('mrstoud_user_points', userPoints.toString());
+      showToast(`+${amount} نقطة XP جديدة لصالحك!`);
+    };
+
+    window.getUserLevel = function(points) {
+      if (points >= 200) return "محترف أسطوري ⭐";
+      if (points >= 100) return "متابع نشيط 🎬";
+      if (points >= 50) return "عضو متفاعل 🍿";
+      return "مبتدئ جديد 🌱";
+    };
+
+    window.openAuthOrProfileModal = function() {
+      if (currentUserSession) {
+        document.getElementById('profileUserName').textContent = currentUserSession.name;
+        document.getElementById('profileUserEmail').textContent = currentUserSession.email;
+        document.getElementById('profileUserPoints').textContent = userPoints;
+        document.getElementById('profileUserLevel').textContent = getUserLevel(userPoints);
+        document.getElementById('userProfileModal').classList.add('active');
+      } else {
+        document.getElementById('authModal').classList.add('active');
+      }
+    };
+
+    window.switchAuthTab = function(tab) {
+      document.querySelectorAll('#authModal .tab-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById('authLoginTab').classList.remove('active');
+      document.getElementById('authRegisterTab').classList.remove('active');
+
+      if (tab === 'login') {
+        event.currentTarget.classList.add('active');
+        document.getElementById('authLoginTab').classList.add('active');
+      } else {
+        event.currentTarget.classList.add('active');
+        document.getElementById('authRegisterTab').classList.add('active');
+      }
+    };
+
+    document.getElementById('userLoginForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const email = document.getElementById('loginEmail').value.trim();
+      const pass = document.getElementById('loginPassword').value.trim();
+      
+      const found = users.find(u => u.email.toLowerCase() === email.toLowerCase());
+      if (found) {
+        if (found.status === 'banned') {
+          alert('عذراً، هذا الحساب محظور من قبل الإدارة.');
+          return;
+        }
+        currentUserSession = found;
+        localStorage.setItem('mrstoud_current_user', JSON.stringify(currentUserSession));
+        document.getElementById('authModal').classList.remove('active');
+        showToast(`مرحباً بك مجدداً يا ${found.name}!`);
+      } else {
+        alert('البريد الإلكتروني غير مسجل. يرجى إنشاء حساب جديد.');
+      }
+    });
+
+    document.getElementById('userRegisterForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = document.getElementById('regName').value.trim();
+      const email = document.getElementById('regEmail').value.trim();
+      const pass = document.getElementById('regPassword').value.trim();
+
+      if (users.some(u => u.email.toLowerCase() === email.toLowerCase())) {
+        alert('البريد الإلكتروني مسجل مسبقاً!');
+        return;
+      }
+
+      const newUser = { id: Date.now(), name, email, status: 'active' };
+      users.push(newUser);
+      localStorage.setItem('mrstoud_users', JSON.stringify(users));
+
+      currentUserSession = newUser;
+      localStorage.setItem('mrstoud_current_user', JSON.stringify(currentUserSession));
+      addPoints(20); // مكافأة تسجيل جديد
+
+      document.getElementById('authModal').classList.remove('active');
+      showToast('تم إنشاء الحساب وتسجيل الدخول بنجاح! +20 نقطة');
+    });
+
+    window.logoutUser = function() {
+      currentUserSession = null;
+      localStorage.removeItem('mrstoud_current_user');
+      document.getElementById('userProfileModal').classList.remove('active');
+      showToast('تم تسجيل الخروج بنجاح.');
+    };
+
     let currentShowId = null;
     let currentCategory = 'all';
     let currentGenre = 'all';
@@ -1775,7 +1946,6 @@
     let lockoutUntil = parseInt(localStorage.getItem('mrstoud_lockout_until') || '0');
     let ownerCorrectStreak = parseInt(localStorage.getItem('mrstoud_owner_streak') || '0');
 
-    // إخفاء أو إظهار شريط الترحيب العلوي بناءً على تفضيل المستخدم
     window.closeTopWelcome = function() {
       document.getElementById('topWelcomeBanner').style.display = 'none';
       localStorage.setItem('mrstoud_top_welcome_closed', 'true');
@@ -1784,7 +1954,6 @@
       document.getElementById('topWelcomeBanner').style.display = 'none';
     }
 
-    // ميزات إضافية جديدة للمشغل
     window.toggleFullscreenPlayer = function() {
       const container = document.getElementById('videoPlayerBox');
       if (!document.fullscreenElement) {
@@ -1802,13 +1971,12 @@
       window.open(`https://api.whatsapp.com/send?text=${waText}`, '_blank');
     };
 
-    // ميزات جديدة مضافة: فتح نافذة الإشعارات & إحصائيات المشاركة & زر العودة للأعلى
     window.openNotificationsModal = function() {
       document.getElementById('notificationsModal').classList.add('active');
     };
 
     window.exportUserStats = function() {
-      const text = `📊 إحصائياتي على منصة mrstoud:\n- الأعمال المشاهدة: ${historyData.length}\n- المفضلة: ${favoritesData.length}\n- المشاهدة لاحقاً: ${watchlistData.length}`;
+      const text = `📊 إحصائياتي على منصة mrstoud:\n- الأعمال المشاهدة: ${historyData.length}\n- المفضلة: ${favoritesData.length}\n- نقاط XP: ${userPoints}`;
       navigator.clipboard.writeText(text);
       showToast('تم نسخ إحصائياتك لمشاركتها مع أصدقائك!');
     };
@@ -1856,7 +2024,6 @@
       }
     });
 
-    // Theme Setup
     const currentTheme = localStorage.getItem('mrstoud_theme') || 'dark';
     if (currentTheme === 'light') {
       document.documentElement.setAttribute('data-theme', 'light');
@@ -2129,7 +2296,6 @@
       } else if (currentCategory === 'movie') {
         filtered = filtered.filter(show => show.category === 'movie');
       } else if (currentCategory === 'kids') {
-        // ميزة جديدة: تصفية أعمال الأطفال والكوميديا والرسوم
         filtered = filtered.filter(show => show.genre === 'comedy' || (show.title && show.title.includes('أطفال')));
       } else if (currentCategory === 'favorites') {
         filtered = shows.filter(show => favoritesData.includes(show.id));
@@ -2344,10 +2510,10 @@
             document.querySelectorAll('.episode-chip').forEach(c => c.classList.remove('active'));
             btn.classList.add('active');
             playVideoServer(ep.url);
+            addPoints(5); // كسب نقاط عند مشاهدة حلقة
           };
           episodesGrid.appendChild(btn);
         });
-        // تشغيل الحلقة الأولى افتراضياً
         playVideoServer(show.episodes[0].url);
       } else {
         episodesBox.style.display = 'none';
@@ -2399,7 +2565,8 @@
         document.getElementById('favoriteIcon').className = 'fas fa-heart';
         document.getElementById('favoriteIcon').style.color = 'var(--primary-color)';
         document.getElementById('favoriteBtnText').textContent = 'تم الإضافة للمفضلة';
-        showToast('تمت الإضافة إلى المفضلة بنجاح!');
+        addPoints(10);
+        showToast('تمت الإضافة إلى المفضلة بنجاح! +10 نقاط');
       }
       localStorage.setItem('mrstoud_favorites', JSON.stringify(favoritesData));
       updateCounters();
@@ -2442,7 +2609,8 @@
       ratingsData[currentShowId] = stars;
       localStorage.setItem('mrstoud_ratings', JSON.stringify(ratingsData));
       updateStarDisplay(stars);
-      showToast(`شكراً لتقييمك! (${stars} نجوم).`);
+      addPoints(5);
+      showToast(`شكراً لتقييمك! (${stars} نجوم) +5 نقاط.`);
     };
 
     function updateStarDisplay(stars) {
@@ -2484,7 +2652,7 @@
       const nameInput = document.getElementById('commentUserName');
       const textInput = document.getElementById('commentText');
 
-      const userName = nameInput.value.trim() || 'زائر';
+      const userName = currentUserSession ? currentUserSession.name : (nameInput.value.trim() || 'زائر');
       const commentText = textInput.value.trim();
 
       if (commentText && currentShowId) {
@@ -2503,7 +2671,8 @@
 
         renderComments(currentShowId);
         textInput.value = '';
-        showToast('تم نشر تعليقك بنجاح.');
+        addPoints(10); // نقاط XP لكتابة تعليق
+        showToast('تم نشر تعليقك بنجاح! +10 نقاط');
       }
     });
 
@@ -2571,6 +2740,7 @@
         historyData.unshift(show.id);
         if (historyData.length > 20) historyData.pop();
         localStorage.setItem('mrstoud_history', JSON.stringify(historyData));
+        addPoints(15); // نقاط لمشاهدة عمل جديد
       }
 
       renderEpisodesList(show);
@@ -2666,6 +2836,8 @@
         playerModal.classList.remove('active');
         privacyModal.classList.remove('active');
         analyticsModal.classList.remove('active');
+        document.getElementById('authModal').classList.remove('active');
+        document.getElementById('userProfileModal').classList.remove('active');
         document.getElementById('notificationsModal').classList.remove('active');
         videoPlayerBox.innerHTML = '';
         if (sleepTimerTimeout) clearTimeout(sleepTimerTimeout);
@@ -2753,7 +2925,6 @@
       const quality = document.getElementById('showQuality').value;
       const downloadUrl = document.getElementById('showDownloadUrl').value.trim();
 
-      // تحليل الحلقات المكتوبة
       let parsedEpisodes = [];
       if (episodesText) {
         const lines = episodesText.split('\n');
