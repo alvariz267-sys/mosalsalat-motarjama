@@ -2494,7 +2494,6 @@
     function playVideoServer(url) {
       if (url && url.trim() !== '') {
         const safeUrl = sanitizeInput(url);
-        // دعم تشغيل ملفات المعرض المحلية المباشرة (مثل mp4) أو روابط الفيسبوك/يوتيوب عبر iframe
         if (safeUrl.startsWith('blob:') || safeUrl.endsWith('.mp4') || safeUrl.endsWith('.webm') || safeUrl.endsWith('.ogg')) {
           videoPlayerBox.innerHTML = `<video controls autoplay style="width:100%; height:100%; background:#000;"><source src="${safeUrl}" type="video/mp4">متصفحك لا يدعم عرض الفيديو.</video>`;
         } else {
@@ -2658,281 +2657,57 @@
       });
     }
 
-    commentForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const nameInput = document.getElementById('commentUserName');
-      const textInput = document.getElementById('commentText');
-
-      const userName = currentUserSession ? currentUserSession.name : (nameInput.value.trim() || 'زائر');
-      const commentText = textInput.value.trim();
-
-      if (commentText && currentShowId) {
-        if (!commentsData[currentShowId]) {
-          commentsData[currentShowId] = [];
-        }
-
-        const newComment = {
-          user: userName,
-          text: commentText,
-          date: new Date().toLocaleDateString('ar-EG')
-        };
-
-        commentsData[currentShowId].unshift(newComment);
-        localStorage.setItem('mrstoud_comments', JSON.stringify(commentsData));
-
-        renderComments(currentShowId);
-        textInput.value = '';
-        addPoints(10);
-        showToast('تم نشر تعليقك بنجاح! +10 نقاط');
-      }
-    });
-
-    function triggerSmartDownloadProgress(downloadUrl) {
-      if (!downloadUrl || downloadUrl.trim() === '') {
-        showToast('عذراً، لا يوجد رابط تحميل مباشر متاح.');
-        return;
-      }
-      const progressBox = document.getElementById('downloadProgressBox');
-      const fillBar = document.getElementById('progressBarFill');
-      const statusText = document.getElementById('downloadStatusText');
-      const percentText = document.getElementById('downloadPercentText');
-
-      progressBox.style.display = 'block';
-      fillBar.style.width = '0%';
-      percentText.textContent = '0%';
-      statusText.textContent = 'جاري الاتصال بسيرفر التحميل...';
-
-      let progress = 0;
-      const interval = setInterval(() => {
-        progress += Math.floor(Math.random() * 15) + 5;
-        if (progress >= 100) {
-          progress = 100;
-          clearInterval(interval);
-          statusText.textContent = 'اكتمل التحميل بنجاح!';
-          window.open(downloadUrl, '_blank');
-        }
-        fillBar.style.width = progress + '%';
-        percentText.textContent = progress + '%';
-      }, 300);
-    }
-
-    function openPlayer(show) {
-      currentShowId = show.id;
-      playerTitle.textContent = show.title;
-      playerQuality.textContent = show.quality || 'عالية';
-      
-      resetVideoTools();
-      document.getElementById('downloadProgressBox').style.display = 'none';
-
-      if (favoritesData.includes(show.id)) {
-        document.getElementById('favoriteIcon').className = 'fas fa-heart';
-        document.getElementById('favoriteIcon').style.color = 'var(--primary-color)';
-        document.getElementById('favoriteBtnText').textContent = 'تم الإضافة للمفضلة';
-      } else {
-        document.getElementById('favoriteIcon').className = 'far fa-heart';
-        document.getElementById('favoriteIcon').style.color = '';
-        document.getElementById('favoriteBtnText').textContent = 'أضف للمفضلة';
-      }
-
-      if (watchlistData.includes(show.id)) {
-        document.getElementById('watchlistIcon').className = 'fas fa-clock';
-        document.getElementById('watchlistIcon').style.color = 'var(--primary-color)';
-        document.getElementById('watchlistBtnText').textContent = 'في قائمة المشاهدة';
-      } else {
-        document.getElementById('watchlistIcon').className = 'far fa-clock';
-        document.getElementById('watchlistIcon').style.color = '';
-        document.getElementById('watchlistBtnText').textContent = 'المشاهدة لاحقاً';
-      }
-
-      const currentRating = ratingsData[show.id] || parseFloat(show.rating) || 0;
-      updateStarDisplay(Math.round(currentRating));
-
-      if (!historyData.includes(show.id)) {
-        historyData.unshift(show.id);
-        if (historyData.length > 20) historyData.pop();
-        localStorage.setItem('mrstoud_history', JSON.stringify(historyData));
-        addPoints(15);
-      }
-
-      renderEpisodesList(show);
-      renderServerButtons(show);
-      
-      if (show.downloadUrl && show.downloadUrl.trim() !== '') {
-        const safeDl = sanitizeInput(show.downloadUrl);
-        downloadContainer.innerHTML = `
-          <button onclick="triggerSmartDownloadProgress('${safeDl}')" class="download-btn" style="width:100%; border:none; cursor:pointer;">
-            <i class="fas fa-download"></i> تحميل الفيديو على الهاتف
-          </button>
-        `;
-      } else {
-        downloadContainer.innerHTML = '';
-      }
-
-      renderComments(show.id);
-      playerModal.classList.add('active');
-    }
-
-    function saveData() {
-      localStorage.setItem('mrstoud_shows', JSON.stringify(shows));
-      renderShows(sidebarSearchInput.value);
-      renderAdminList();
-    }
-
-    window.deleteShow = function(id) {
-      if (confirm('هل أنت متأكد من حذف هذا الفيديو؟')) {
-        shows = shows.filter(item => item.id !== id);
-        saveData();
-        showToast('تم حذف العمل بنجاح.');
-      }
-    };
-
-    window.editShow = function(id) {
-      const show = shows.find(item => item.id == id);
-      if (show) {
-        document.getElementById('editShowId').value = show.id;
-        document.getElementById('showCategory').value = show.category || 'series';
-        document.getElementById('showGenre').value = show.genre || 'action';
-        document.getElementById('showTitle').value = show.title;
-        document.getElementById('showBadge').value = show.badge || '';
-        document.getElementById('showYear').value = show.year || '2026';
-        document.getElementById('showRating').value = show.rating || '4.8';
-        document.getElementById('showImage').value = show.image || '';
-        document.getElementById('showImageFile').value = '';
-        document.getElementById('showVideoFile').value = '';
-        document.getElementById('showVideoUrl').value = show.videoUrl || '';
-        document.getElementById('showVideoUrl2').value = show.videoUrl2 || '';
-        document.getElementById('showVideoUrl3').value = show.videoUrl3 || '';
-        document.getElementById('showQuality').value = show.quality || '';
-        document.getElementById('showDownloadUrl').value = show.downloadUrl || '';
-
-        if (show.episodes) {
-          document.getElementById('showEpisodesInput').value = show.episodes.map(e => `${e.name}: ${e.url}`).join('\n');
-        } else {
-          document.getElementById('showEpisodesInput').value = '';
-        }
-
-        document.getElementById('formSubTitle').textContent = 'تعديل العمل الحالي';
-        document.getElementById('saveBtn').textContent = 'حفظ التعديلات';
-        cancelEditBtn.style.display = 'block';
-      }
-    };
-
-    // معالجة حفظ النموذج مع دعم رفع الصور والفيديوهات من المعرض أو الروابط (يوتيوب/فيسبوك وغيرها)
-    saveShowForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      
-      const editId = document.getElementById('editShowId').value;
-      const id = editId ? parseInt(editId) : Date.now();
-      const category = document.getElementById('showCategory').value;
-      const genre = document.getElementById('showGenre').value;
-      const title = document.getElementById('showTitle').value;
-      const badge = document.getElementById('showBadge').value;
-      const year = document.getElementById('showYear').value;
-      const rating = document.getElementById('showRating').value;
-      
-      let image = document.getElementById('showImage').value;
-      const imageFile = document.getElementById('showImageFile').files[0];
-      
-      let videoUrl = document.getElementById('showVideoUrl').value;
-      const videoFile = document.getElementById('showVideoFile').files[0];
-      
-      const videoUrl2 = document.getElementById('showVideoUrl2').value;
-      const videoUrl3 = document.getElementById('showVideoUrl3').value;
-      const quality = document.getElementById('showQuality').value;
-      const downloadUrl = document.getElementById('showDownloadUrl').value;
-      const episodesText = document.getElementById('showEpisodesInput').value;
-
-      // إذا تم اختيار صورة غلاف من المعرض، يتم تحويلها لرابط محلي
-      if (imageFile) {
-        image = URL.createObjectURL(imageFile);
-      }
-
-      // إذا تم اختيار فيديو من المعرض، يتم استخدامه كسيرفر رئيسي
-      if (videoFile) {
-        videoUrl = URL.createObjectURL(videoFile);
-      }
-
-      let episodes = [];
-      if (episodesText.trim() !== '') {
-        const lines = episodesText.split('\n');
-        lines.forEach(line => {
-          const parts = line.split(':');
-          if (parts.length >= 2) {
-            const epName = parts[0].trim();
-            const epUrl = parts.slice(1).join(':').trim();
-            episodes.push({ name: epName, url: epUrl });
-          }
-        });
-      }
-
-      const showDataObj = {
-        id,
-        category,
-        genre,
-        title,
-        badge,
-        year,
-        rating,
-        image,
-        episodes,
-        videoUrl,
-        videoUrl2,
-        videoUrl3,
-        quality,
-        downloadUrl
-      };
-
-      if (editId) {
-        const index = shows.findIndex(s => s.id == editId);
-        if (index > -1) {
-          shows[index] = showDataObj;
-        }
-        showToast('تم تعديل العمل بنجاح!');
-      } else {
-        shows.unshift(showDataObj);
-        showToast('تم إضافة العمل الجديد بنجاح! +15 نقطة');
-        addPoints(15);
-      }
-
-      saveData();
-      saveShowForm.reset();
-      document.getElementById('editShowId').value = '';
-      document.getElementById('formSubTitle').textContent = 'إضافة عمل جديد (فيلم / مسلسل)';
-      document.getElementById('saveBtn').textContent = 'حفظ وإضافة';
-      cancelEditBtn.style.display = 'none';
-    });
-
-    cancelEditBtn.addEventListener('click', () => {
-      saveShowForm.reset();
-      document.getElementById('editShowId').value = '';
-      document.getElementById('formSubTitle').textContent = 'إضافة عمل جديد (فيلم / مسلسل)';
-      document.getElementById('saveBtn').textContent = 'حفظ وإضافة';
-      cancelEditBtn.style.display = 'none';
-    });
-
+    /* ربط واجهة فتح لوحة التحكم والتحقق من كلمة المرور الجديدة marwanhacker99 */
     adminBtn.addEventListener('click', () => {
-      if (checkLockoutStatus()) return;
-      loginModal.classList.add('active');
+      toggleSidebar();
+      // ميزة التحقق من المدير (تُستخدم مرة واحدة فقط للشخص ولا تظهر مرة أخرى)
+      if (localStorage.getItem('mrstoud_admin_verified_once') === 'true') {
+        isAdminLoggedIn = true;
+        adminModal.classList.add('active');
+        renderAdminList();
+        renderUsersAndBans();
+      } else {
+        loginModal.classList.add('active');
+      }
     });
 
-    privacyBtn.addEventListener('click', (e) => {
-      e.preventDefault();
+    privacyBtn.addEventListener('click', () => {
+      toggleSidebar();
       privacyModal.classList.add('active');
     });
 
-    menuToggleBtn.addEventListener('click', () => {
-      sidebar.classList.add('open');
-      overlay.classList.add('active');
-    });
+    loginForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (checkLockoutStatus()) return;
 
-    closeSidebarBtn.addEventListener('click', () => {
-      sidebar.classList.remove('open');
-      overlay.classList.remove('active');
-    });
+      const passwordInput = document.getElementById('adminPassword').value;
 
-    overlay.addEventListener('click', () => {
-      sidebar.classList.remove('open');
-      overlay.classList.remove('active');
+      // كلمة السر الجديدة المحددة: marwanhacker99
+      if (passwordInput === 'marwanhacker99') {
+        localStorage.setItem('mrstoud_verified_owner', 'true');
+        // تفعيل علامة التحقق بحيث تُستخدم مرة واحدة فقط ولا تظهر مرة أخرى
+        localStorage.setItem('mrstoud_admin_verified_once', 'true');
+        localStorage.setItem('mrstoud_login_attempts', '0');
+        localStorage.removeItem('mrstoud_lockout_until');
+
+        isAdminLoggedIn = true;
+        loginModal.classList.remove('active');
+        document.getElementById('adminPassword').value = '';
+        adminModal.classList.add('active');
+        renderAdminList();
+        renderUsersAndBans();
+        showToast('تم التحقق بنجاح! مرحباً بك أيها المدير.');
+      } else {
+        loginAttempts++;
+        localStorage.setItem('mrstoud_login_attempts', loginAttempts.toString());
+        if (loginAttempts >= 5) {
+          lockoutUntil = Date.now() + (24 * 60 * 60 * 1000);
+          localStorage.setItem('mrstoud_lockout_until', lockoutUntil.toString());
+          checkLockoutStatus();
+        } else {
+          alert(`كلمة المرور غير صحيحة! محاولات خاطئة: ${loginAttempts}/5`);
+        }
+      }
     });
 
     closeModalBtns.forEach(btn => {
@@ -2941,35 +2716,28 @@
       });
     });
 
-    loginForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const passInput = document.getElementById('adminPassword').value;
-
-      if (passInput === 'mrstoud2026' || passInput === 'admin123') {
-        localStorage.setItem('mrstoud_verified_owner', 'true');
-        loginModal.classList.remove('active');
-        adminModal.classList.add('active');
-        renderAdminList();
-        renderUsersAndBans();
-        document.getElementById('adminPassword').value = '';
-        showToast('أهلاً بك يا مدير النظام!');
-      } else {
-        loginAttempts++;
-        localStorage.setItem('mrstoud_login_attempts', loginAttempts);
-        if (loginAttempts >= 3) {
-          lockoutUntil = Date.now() + (24 * 60 * 60 * 1000);
-          localStorage.setItem('mrstoud_lockout_until', lockoutUntil);
-          checkLockoutStatus();
-        } else {
-          alert(`كلمة المرور غير صحيحة! محاولاتك المتبقية: ${3 - loginAttempts}`);
-        }
-      }
+    overlay.addEventListener('click', () => {
+      toggleSidebar();
     });
 
-    // تهيئة التشغيل عند تحميل الصفحة
-    renderShows();
-    updateCounters();
-    checkFirstVisit();
+    menuToggleBtn.addEventListener('click', () => {
+      toggleSidebar();
+    });
+
+    closeSidebarBtn.addEventListener('click', () => {
+      toggleSidebar();
+    });
+
+    function toggleSidebar() {
+      sidebar.classList.toggle('open');
+      overlay.classList.toggle('active');
+    }
+
+    /* تهيئة وتشغيل التطبيق عند التحميل */
+    window.addEventListener('DOMContentLoaded', () => {
+      renderShows();
+      checkFirstVisit();
+    });
   </script>
 </body>
 </html>
