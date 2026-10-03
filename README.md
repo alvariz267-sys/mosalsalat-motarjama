@@ -1080,7 +1080,7 @@
   <nav class="navbar">
     <a href="#" class="brand" onclick="filterByCategory('all')">mrstoud</a>
     <div class="nav-actions">
-      <!-- زر حساب المستخدم الجديد (الميزة الأولى والثانية) -->
+      <!-- زر حساب المستخدم الجديد -->
       <button class="icon-btn" onclick="openAuthOrProfileModal()" title="حساب المستخدم وتسجيل الدخول">
         <i class="fas fa-user-circle" id="navUserIcon"></i>
       </button>
@@ -1308,7 +1308,7 @@
       <div style="display: flex; flex-direction: column; gap: 10px; font-size: 13px;" id="notificationsListContainer">
         <div style="background:var(--sidebar-bg); padding:10px; border-radius:6px; border-right:3px solid var(--primary-color);">
           <strong>🎉 أهلاً بك في التحديث الجديد</strong>
-          <p style="color:var(--text-secondary); margin-top:3px;">تم إضافة نظام تسجيل حسابات المستخدمين ونظام النقاط والمستويات بنجاح!</p>
+          <p style="color:var(--text-secondary); margin-top:3px;">تم إضافة نظام اختيار الألام والصور من المعرض وفيسبوك بنجاح!</p>
         </div>
       </div>
       <button class="btn closeModal" style="margin-top: 15px;">حسناً</button>
@@ -1448,30 +1448,37 @@
             <input type="text" id="showRating" placeholder="مثال: 4.8" value="4.8">
           </div>
 
-          <div class="form-group">
-            <label for="showImage">رابط صورة الغلاف (URL):</label>
-            <input type="url" id="showImage" placeholder="https://example.com/image.jpg">
+          <!-- إضافة صورة الغلاف من المعرض أو الرابط (مطلب المستخدم) -->
+          <div class="form-group" style="background: var(--sidebar-bg); padding: 12px; border-radius: 8px; border: 1px dashed var(--primary-color);">
+            <label for="showImageFile" style="color: var(--text-color); font-weight: bold;"><i class="fas fa-image"></i> صورة الغلاف الخارجية (من المعرض أو الرابط):</label>
+            <input type="file" id="showImageFile" accept="image/*" style="margin-bottom: 8px;">
+            <input type="url" id="showImage" placeholder="أو أدخل رابط صورة الغلاف مباشرة https://example.com/image.jpg">
           </div>
 
           <div class="form-group" style="background: var(--sidebar-bg); padding: 12px; border-radius: 8px; border: 1px dashed var(--primary-color);">
-            <label for="showEpisodesInput" style="color: var(--text-color); font-weight: bold;"><i class="fas fa-list-ol"></i> قائمة الحلقات (روابط يوتيوب أو سيرفرات مفصولة بفاصلة أو سطر جديد):</label>
-            <textarea id="showEpisodesInput" rows="3" placeholder="الحلقة 1: https://www.youtube.com/embed/...&#10;الحلقة 2: https://www.youtube.com/embed/..."></textarea>
-            <small style="color:var(--text-secondary);">أدخل رابطاً لكل حلقة أو استخدم رابط السيرفر العام أدناه.</small>
+            <label for="showVideoFile" style="color: var(--text-color); font-weight: bold;"><i class="fas fa-video"></i> رفع أو اختيار فيديو الفيلم من المعرض (ملف محلي):</label>
+            <input type="file" id="showVideoFile" accept="video/*" style="margin-bottom: 8px;">
+            <small style="color:var(--text-secondary); display:block;">يمكنك اختيار فيديو محلي أو إدخال روابط يوتيوب، فيسبوك (Facebook Video Embed)، أو أي سيرفر آخر أدناه.</small>
           </div>
 
           <div class="form-group">
-            <label for="showVideoUrl">سيرفر المشغل الرئيسي (Server 1):</label>
-            <input type="text" id="showVideoUrl" placeholder="https://www.youtube.com/embed/...">
+            <label for="showEpisodesInput">قائمة الحلقات (روابط يوتيوب، فيسبوك أو سيرفرات مفصولة بفاصلة أو سطر جديد):</label>
+            <textarea id="showEpisodesInput" rows="3" placeholder="الحلقة 1: https://...&#10;الحلقة 2: https://..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="showVideoUrl">سيرفر المشغل الرئيسي (Server 1 - يوتيوب / فيسبوك / رابط مباشر):</label>
+            <input type="text" id="showVideoUrl" placeholder="https://www.youtube.com/embed/... أو رابط فيسبوك أو ملف">
           </div>
 
           <div class="form-group">
             <label for="showVideoUrl2">سيرفر المشغل الاحتياطي (Server 2):</label>
-            <input type="text" id="showVideoUrl2" placeholder="https://www.youtube.com/embed/...">
+            <input type="text" id="showVideoUrl2" placeholder="https://...">
           </div>
 
           <div class="form-group">
             <label for="showVideoUrl3">سيرفر المشغل السريع (Server 3):</label>
-            <input type="text" id="showVideoUrl3" placeholder="https://www.youtube.com/embed/...">
+            <input type="text" id="showVideoUrl3" placeholder="https://...">
           </div>
 
           <div class="form-group">
@@ -1843,7 +1850,6 @@
     let historyData = JSON.parse(localStorage.getItem('mrstoud_history')) || [];
     let ratingsData = JSON.parse(localStorage.getItem('mrstoud_ratings')) || {};
 
-    // نظام إدارة حسابات المستخدمين والنقاط (ميزات جديدة مضافة)
     let currentUserSession = JSON.parse(localStorage.getItem('mrstoud_current_user')) || null;
     let userPoints = parseInt(localStorage.getItem('mrstoud_user_points') || '0');
 
@@ -1923,7 +1929,7 @@
 
       currentUserSession = newUser;
       localStorage.setItem('mrstoud_current_user', JSON.stringify(currentUserSession));
-      addPoints(20); // مكافأة تسجيل جديد
+      addPoints(20);
 
       document.getElementById('authModal').classList.remove('active');
       showToast('تم إنشاء الحساب وتسجيل الدخول بنجاح! +20 نقطة');
@@ -2488,7 +2494,12 @@
     function playVideoServer(url) {
       if (url && url.trim() !== '') {
         const safeUrl = sanitizeInput(url);
-        videoPlayerBox.innerHTML = `<iframe id="videoIframe" src="${safeUrl}" allowfullscreen></iframe>`;
+        // دعم تشغيل ملفات المعرض المحلية المباشرة (مثل mp4) أو روابط الفيسبوك/يوتيوب عبر iframe
+        if (safeUrl.startsWith('blob:') || safeUrl.endsWith('.mp4') || safeUrl.endsWith('.webm') || safeUrl.endsWith('.ogg')) {
+          videoPlayerBox.innerHTML = `<video controls autoplay style="width:100%; height:100%; background:#000;"><source src="${safeUrl}" type="video/mp4">متصفحك لا يدعم عرض الفيديو.</video>`;
+        } else {
+          videoPlayerBox.innerHTML = `<iframe id="videoIframe" src="${safeUrl}" allowfullscreen></iframe>`;
+        }
       } else {
         videoPlayerBox.innerHTML = `<div style="padding:40px; text-align:center; color:var(--primary-color);"><i class="fas fa-exclamation-circle" style="font-size:30px; margin-bottom:10px;"></i><br>عذراً، لا يوجد فيديو أو رابط تشغيل صالح متاح في هذا السيرفر</div>`;
       }
@@ -2510,7 +2521,7 @@
             document.querySelectorAll('.episode-chip').forEach(c => c.classList.remove('active'));
             btn.classList.add('active');
             playVideoServer(ep.url);
-            addPoints(5); // كسب نقاط عند مشاهدة حلقة
+            addPoints(5);
           };
           episodesGrid.appendChild(btn);
         });
@@ -2671,7 +2682,7 @@
 
         renderComments(currentShowId);
         textInput.value = '';
-        addPoints(10); // نقاط XP لكتابة تعليق
+        addPoints(10);
         showToast('تم نشر تعليقك بنجاح! +10 نقاط');
       }
     });
@@ -2740,7 +2751,7 @@
         historyData.unshift(show.id);
         if (historyData.length > 20) historyData.pop();
         localStorage.setItem('mrstoud_history', JSON.stringify(historyData));
-        addPoints(15); // نقاط لمشاهدة عمل جديد
+        addPoints(15);
       }
 
       renderEpisodesList(show);
@@ -2786,6 +2797,8 @@
         document.getElementById('showYear').value = show.year || '2026';
         document.getElementById('showRating').value = show.rating || '4.8';
         document.getElementById('showImage').value = show.image || '';
+        document.getElementById('showImageFile').value = '';
+        document.getElementById('showVideoFile').value = '';
         document.getElementById('showVideoUrl').value = show.videoUrl || '';
         document.getElementById('showVideoUrl2').value = show.videoUrl2 || '';
         document.getElementById('showVideoUrl3').value = show.videoUrl3 || '';
@@ -2804,169 +2817,158 @@
       }
     };
 
-    function resetAdminForm() {
-      saveShowForm.reset();
-      document.getElementById('editShowId').value = '';
-      document.getElementById('formSubTitle').textContent = 'إضافة عمل جديد (فيلم / مسلسل)';
-      document.getElementById('saveBtn').textContent = 'حفظ وإضافة';
-      cancelEditBtn.style.display = 'none';
-    }
-
-    cancelEditBtn.addEventListener('click', resetAdminForm);
-
-    function toggleSidebar() {
-      sidebar.classList.toggle('open');
-      overlay.classList.toggle('active');
-    }
-
-    menuToggleBtn.addEventListener('click', toggleSidebar);
-    closeSidebarBtn.addEventListener('click', toggleSidebar);
-    overlay.addEventListener('click', toggleSidebar);
-
-    privacyBtn.addEventListener('click', () => {
-      toggleSidebar();
-      privacyModal.classList.add('active');
-    });
-
-    closeModalBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        welcomeModal.classList.remove('active');
-        loginModal.classList.remove('active');
-        adminModal.classList.remove('active');
-        playerModal.classList.remove('active');
-        privacyModal.classList.remove('active');
-        analyticsModal.classList.remove('active');
-        document.getElementById('authModal').classList.remove('active');
-        document.getElementById('userProfileModal').classList.remove('active');
-        document.getElementById('notificationsModal').classList.remove('active');
-        videoPlayerBox.innerHTML = '';
-        if (sleepTimerTimeout) clearTimeout(sleepTimerTimeout);
-      });
-    });
-
-    adminBtn.addEventListener('click', () => {
-      toggleSidebar();
-      if (isAdminLoggedIn || localStorage.getItem('mrstoud_verified_owner') === 'true') {
-        renderAdminList();
-        renderUsersAndBans();
-        adminModal.classList.add('active');
-      } else {
-        checkLockoutStatus();
-        loginModal.classList.add('active');
-      }
-    });
-
-    loginForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      if (checkLockoutStatus()) return;
-
-      const passwordInput = document.getElementById('adminPassword');
-      const password = passwordInput.value;
-
-      inspectSecurityInput(password);
-
-      if (password === 'marwanhacker99') {
-        isAdminLoggedIn = true;
-        loginAttempts = 0;
-        localStorage.setItem('mrstoud_login_attempts', '0');
-        
-        if (localStorage.getItem('mrstoud_verified_owner') !== 'true') {
-          ownerCorrectStreak++;
-          localStorage.setItem('mrstoud_owner_streak', ownerCorrectStreak.toString());
-          
-          if (ownerCorrectStreak >= 5) {
-            localStorage.setItem('mrstoud_verified_owner', 'true');
-            showToast('🎉 تم توثيقك رسمياً بأنك المدير المالك للمنصة!');
-          }
-        }
-
-        loginModal.classList.remove('active');
-        renderAdminList();
-        renderUsersAndBans();
-        adminModal.classList.add('active');
-        passwordInput.value = '';
-        lockoutTimer.innerHTML = '';
-        showToast('مرحباً بك في لوحة الإدارة.');
-      } else {
-        ownerCorrectStreak = 0;
-        localStorage.setItem('mrstoud_owner_streak', '0');
-
-        loginAttempts++;
-        localStorage.setItem('mrstoud_login_attempts', loginAttempts.toString());
-        passwordInput.value = '';
-
-        if (loginAttempts >= 3) {
-          const lockoutTime = Date.now() + (24 * 60 * 60 * 1000);
-          localStorage.setItem('mrstoud_lockout_until', lockoutTime.toString());
-          lockoutUntil = lockoutTime;
-          checkLockoutStatus();
-          alert('⚠ أدخلت كلمة المرور خاطئة 3 مرات! تم قفل لوحة الدخول لمدة 24 ساعة.');
-        } else {
-          const remaining = 3 - loginAttempts;
-          alert(`❌ كلمة المرور غير صحيحة! تبقّى لديك ${remaining} محاولة.`);
-        }
-      }
-    });
-
+    // معالجة حفظ النموذج مع دعم رفع الصور والفيديوهات من المعرض أو الروابط (يوتيوب/فيسبوك وغيرها)
     saveShowForm.addEventListener('submit', (e) => {
       e.preventDefault();
+      
       const editId = document.getElementById('editShowId').value;
+      const id = editId ? parseInt(editId) : Date.now();
       const category = document.getElementById('showCategory').value;
       const genre = document.getElementById('showGenre').value;
       const title = document.getElementById('showTitle').value;
       const badge = document.getElementById('showBadge').value;
       const year = document.getElementById('showYear').value;
       const rating = document.getElementById('showRating').value;
-      const image = document.getElementById('showImage').value.trim();
-      const episodesText = document.getElementById('showEpisodesInput').value.trim();
-      const videoUrl = document.getElementById('showVideoUrl').value.trim();
-      const videoUrl2 = document.getElementById('showVideoUrl2').value.trim();
-      const videoUrl3 = document.getElementById('showVideoUrl3').value.trim();
+      
+      let image = document.getElementById('showImage').value;
+      const imageFile = document.getElementById('showImageFile').files[0];
+      
+      let videoUrl = document.getElementById('showVideoUrl').value;
+      const videoFile = document.getElementById('showVideoFile').files[0];
+      
+      const videoUrl2 = document.getElementById('showVideoUrl2').value;
+      const videoUrl3 = document.getElementById('showVideoUrl3').value;
       const quality = document.getElementById('showQuality').value;
-      const downloadUrl = document.getElementById('showDownloadUrl').value.trim();
+      const downloadUrl = document.getElementById('showDownloadUrl').value;
+      const episodesText = document.getElementById('showEpisodesInput').value;
 
-      let parsedEpisodes = [];
-      if (episodesText) {
+      // إذا تم اختيار صورة غلاف من المعرض، يتم تحويلها لرابط محلي
+      if (imageFile) {
+        image = URL.createObjectURL(imageFile);
+      }
+
+      // إذا تم اختيار فيديو من المعرض، يتم استخدامه كسيرفر رئيسي
+      if (videoFile) {
+        videoUrl = URL.createObjectURL(videoFile);
+      }
+
+      let episodes = [];
+      if (episodesText.trim() !== '') {
         const lines = episodesText.split('\n');
         lines.forEach(line => {
-          if (line.includes(':')) {
-            const parts = line.split(':');
-            const name = parts[0].trim();
-            const url = parts.slice(1).join(':').trim();
-            if (url) parsedEpisodes.push({ name, url });
-          } else if (line.trim().startsWith('http')) {
-            parsedEpisodes.push({ name: `الحلقة ${parsedEpisodes.length + 1}`, url: line.trim() });
+          const parts = line.split(':');
+          if (parts.length >= 2) {
+            const epName = parts[0].trim();
+            const epUrl = parts.slice(1).join(':').trim();
+            episodes.push({ name: epName, url: epUrl });
           }
         });
       }
 
-      if (!image && !videoUrl && parsedEpisodes.length === 0) {
-        alert('⚠️ تنبيه: يرجى إدخال رابط صورة غلاف وتوفير رابط فيديو أو حلقات عرض واحدة على الأقل!');
-        return;
-      }
+      const showDataObj = {
+        id,
+        category,
+        genre,
+        title,
+        badge,
+        year,
+        rating,
+        image,
+        episodes,
+        videoUrl,
+        videoUrl2,
+        videoUrl3,
+        quality,
+        downloadUrl
+      };
 
       if (editId) {
-        const index = shows.findIndex(item => item.id == editId);
-        if (index !== -1) {
-          shows[index] = { 
-            ...shows[index],
-            category, genre, title, badge, year, rating, image, episodes: parsedEpisodes, videoUrl, videoUrl2, videoUrl3, quality, downloadUrl
-          };
+        const index = shows.findIndex(s => s.id == editId);
+        if (index > -1) {
+          shows[index] = showDataObj;
         }
+        showToast('تم تعديل العمل بنجاح!');
       } else {
-        const newShow = {
-          id: Date.now(),
-          category, genre, title, badge, year, rating, image, episodes: parsedEpisodes, videoUrl, videoUrl2, videoUrl3, quality, downloadUrl
-        };
-        shows.unshift(newShow);
+        shows.unshift(showDataObj);
+        showToast('تم إضافة العمل الجديد بنجاح! +15 نقطة');
+        addPoints(15);
       }
 
       saveData();
-      resetAdminForm();
-      showToast('تم حفظ وإضافة العمل بنجاح!');
+      saveShowForm.reset();
+      document.getElementById('editShowId').value = '';
+      document.getElementById('formSubTitle').textContent = 'إضافة عمل جديد (فيلم / مسلسل)';
+      document.getElementById('saveBtn').textContent = 'حفظ وإضافة';
+      cancelEditBtn.style.display = 'none';
     });
 
+    cancelEditBtn.addEventListener('click', () => {
+      saveShowForm.reset();
+      document.getElementById('editShowId').value = '';
+      document.getElementById('formSubTitle').textContent = 'إضافة عمل جديد (فيلم / مسلسل)';
+      document.getElementById('saveBtn').textContent = 'حفظ وإضافة';
+      cancelEditBtn.style.display = 'none';
+    });
+
+    adminBtn.addEventListener('click', () => {
+      if (checkLockoutStatus()) return;
+      loginModal.classList.add('active');
+    });
+
+    privacyBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      privacyModal.classList.add('active');
+    });
+
+    menuToggleBtn.addEventListener('click', () => {
+      sidebar.classList.add('open');
+      overlay.classList.add('active');
+    });
+
+    closeSidebarBtn.addEventListener('click', () => {
+      sidebar.classList.remove('open');
+      overlay.classList.remove('active');
+    });
+
+    overlay.addEventListener('click', () => {
+      sidebar.classList.remove('open');
+      overlay.classList.remove('active');
+    });
+
+    closeModalBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.modal').forEach(m => m.classList.remove('active'));
+      });
+    });
+
+    loginForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const passInput = document.getElementById('adminPassword').value;
+
+      if (passInput === 'mrstoud2026' || passInput === 'admin123') {
+        localStorage.setItem('mrstoud_verified_owner', 'true');
+        loginModal.classList.remove('active');
+        adminModal.classList.add('active');
+        renderAdminList();
+        renderUsersAndBans();
+        document.getElementById('adminPassword').value = '';
+        showToast('أهلاً بك يا مدير النظام!');
+      } else {
+        loginAttempts++;
+        localStorage.setItem('mrstoud_login_attempts', loginAttempts);
+        if (loginAttempts >= 3) {
+          lockoutUntil = Date.now() + (24 * 60 * 60 * 1000);
+          localStorage.setItem('mrstoud_lockout_until', lockoutUntil);
+          checkLockoutStatus();
+        } else {
+          alert(`كلمة المرور غير صحيحة! محاولاتك المتبقية: ${3 - loginAttempts}`);
+        }
+      }
+    });
+
+    // تهيئة التشغيل عند تحميل الصفحة
     renderShows();
+    updateCounters();
     checkFirstVisit();
   </script>
 </body>
