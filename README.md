@@ -44,6 +44,42 @@
       transition: background-color 0.3s, color 0.3s;
     }
 
+    /* شاشة الانتظار والتحميل الأنيقة (Loader / Loading Screen) */
+    #pageLoader {
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      background-color: var(--bg-color);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 999999;
+      transition: opacity 0.4s ease, visibility 0.4s ease;
+    }
+    #pageLoader.fade-out {
+      opacity: 0;
+      visibility: hidden;
+    }
+    .spinner {
+      width: 55px;
+      height: 55px;
+      border: 5px solid var(--border-color);
+      border-top: 5px solid var(--primary-color);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-bottom: 15px;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .loader-text {
+      font-size: 15px;
+      color: var(--text-secondary);
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+
     /* Floating Welcome Banner */
     .welcome-banner-top {
       background: linear-gradient(135deg, var(--primary-color), #ff4757);
@@ -217,7 +253,6 @@
       color: var(--primary-color);
     }
 
-    /* Sidebar Search Box */
     .sidebar-search-box {
       margin-bottom: 15px;
       position: relative;
@@ -309,7 +344,6 @@
       display: block;
     }
 
-    /* Main Header Title */
     .section-title {
       font-size: 20px;
       font-weight: bold;
@@ -322,7 +356,6 @@
       padding-right: 10px;
     }
 
-    /* Main Container & Grid */
     .container {
       max-width: 1200px;
       margin: 15px auto;
@@ -430,7 +463,6 @@
       margin-top: 4px;
     }
 
-    /* Modals */
     .modal {
       display: none;
       position: fixed;
@@ -479,7 +511,6 @@
       cursor: pointer;
     }
 
-    /* Security Notice Banner */
     .admin-warning-box {
       background-color: rgba(229, 9, 20, 0.15);
       border: 1px solid var(--primary-color);
@@ -507,7 +538,6 @@
       font-weight: bold;
     }
 
-    /* Admin Tabs */
     .admin-tabs {
       display: flex;
       gap: 8px;
@@ -600,7 +630,6 @@
       background-color: #444;
     }
 
-    /* Users & Ban List Styling */
     .user-card {
       background-color: var(--sidebar-bg);
       border: 1px solid var(--border-color);
@@ -641,7 +670,6 @@
     .status-active { background-color: #27ae60; color: #fff; }
     .status-banned { background-color: #c0392b; color: #fff; }
 
-    /* Video Player Modal Elements */
     .video-container {
       position: relative;
       padding-bottom: 56.25%;
@@ -678,26 +706,6 @@
       font-size: 12px;
       border: 1px solid var(--border-color);
     }
-
-    .download-btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      background-color: #27ae60;
-      color: white;
-      text-decoration: none;
-      padding: 12px;
-      border-radius: 6px;
-      font-weight: bold;
-      font-size: 14px;
-      text-align: center;
-      cursor: pointer;
-      border: none;
-      width: 100%;
-    }
-
-    .download-btn:hover { background-color: #219150; }
 
     .admin-item {
       display: flex;
@@ -736,7 +744,6 @@
     .btn-ban { background-color: #e67e22; }
     .btn-unban { background-color: #27ae60; }
 
-    /* Multi-Server & Features CSS */
     .server-btn-group {
       display: flex;
       gap: 8px;
@@ -761,7 +768,6 @@
       color: #fff;
     }
 
-    /* Episodes List Style */
     .episodes-section {
       background: var(--sidebar-bg);
       border: 1px solid var(--border-color);
@@ -801,7 +807,6 @@
       color: #fff;
     }
 
-    /* Player Tools Bar */
     .player-tools-bar {
       background: var(--sidebar-bg);
       border: 1px solid var(--border-color);
@@ -1052,22 +1057,24 @@
 </head>
 <body>
 
-  <!-- زر العودة للأعلى -->
+  <!-- شاشة الانتظار والتحميل الأنيقة (Loader) -->
+  <div id="pageLoader">
+    <div class="spinner"></div>
+    <div class="loader-text">جاري تحميل منصة mrstoud...</div>
+  </div>
+
   <button class="scroll-to-top" id="scrollToTopBtn" onclick="scrollToTop()" title="العودة لأعلى الصفحة"><i class="fas fa-arrow-up"></i></button>
 
-  <!-- رسالة الترحيب العلوية -->
   <div class="welcome-banner-top" id="topWelcomeBanner">
     <span>🎬 أهلاً بك في <strong>mrstoud</strong>! وجهتك الأولى لمشاهدة أحدث الأفلام والمسلسلات بجودة عالية وأمان تام.</span>
     <button onclick="closeTopWelcome()">إخفاء</button>
   </div>
 
-  <!-- Toast Notification System -->
   <div class="toast-notification" id="toastNotification">
     <i class="fas fa-check-circle" style="color: #27ae60; font-size: 18px;"></i>
     <span id="toastMessage">تم بنجاح!</span>
   </div>
 
-  <!-- Hacker Blocked Overlay Screen -->
   <div id="hackerBlockedScreen">
     <i class="fas fa-user-ninja"></i>
     <h1 style="font-size: 28px; margin-bottom: 10px;">تم اكتشاف محاولة اختراق!</h1>
@@ -1079,23 +1086,17 @@
     </div>
   </div>
 
-  <!-- Navigation Bar -->
   <nav class="navbar">
     <a href="#" class="brand" onclick="filterByCategory('all')">mrstoud</a>
     <div class="nav-actions">
-      <!-- زر حساب المستخدم الجديد -->
       <button class="icon-btn" onclick="openAuthOrProfileModal()" title="حساب المستخدم وتسجيل الدخول">
         <i class="fas fa-user-circle" id="navUserIcon"></i>
       </button>
 
-      <!-- زر الإشعارات -->
       <button class="icon-btn" onclick="openNotificationsModal()" title="الإشعارات والتنبيهات">
         <i class="fas fa-bell"></i>
         <span class="notif-badge-counter" id="notifBadge">1</span>
       </button>
-
-      <!-- ميزة جديدة 3: زر حماية العيون والفلتر الليلي -->
-      <button class="icon-btn" onclick="toggleEyeCareFilter()" title="فلتر حماية العينين (إضاءة مريحة)"><i class="fas fa-glasses" id="eyeCareIcon"></i></button>
 
       <div class="accent-picker" title="اختر لون المنصة">
         <div class="color-dot active" style="background:#e50914;" onclick="changeAccentColor('#e50914')"></div>
@@ -1109,7 +1110,6 @@
     </div>
   </nav>
 
-  <!-- Breaking News Ticker Bar -->
   <div class="ticker-bar">
     <div class="ticker-title"><i class="fas fa-bullhorn"></i> إعلان عاجل</div>
     <div class="ticker-content">
@@ -1117,17 +1117,14 @@
     </div>
   </div>
 
-  <!-- Sidebar Overlay -->
   <div class="overlay" id="overlay"></div>
 
-  <!-- Sidebar -->
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
       <h3>mrstoud</h3>
       <button class="close-btn" id="closeSidebarBtn">&times;</button>
     </div>
 
-    <!-- Sidebar Search Box -->
     <div class="sidebar-search-box">
       <input type="text" class="sidebar-search-input" id="sidebarSearchInput" placeholder="بحث عن فيلم أو مسلسل...">
       <button class="icon-btn" id="voiceSearchBtn" onclick="startVoiceSearch()" title="بحث صوتي ذكي" style="font-size:16px; padding:6px;"><i class="fas fa-microphone"></i></button>
@@ -1175,7 +1172,6 @@
           <span class="badge-count" id="countWatchlist">0</span>
         </a>
       </li>
-      <!-- مكتبة التنزيلات الشخصية -->
       <li>
         <a href="#" onclick="openDownloadsLibraryModal()">
           <div class="sidebar-menu-left"><i class="fas fa-download" style="color:#27ae60;"></i> مكتبة التنزيلات (Offline)</div>
@@ -1197,7 +1193,6 @@
     </ul>
   </aside>
 
-  <!-- Main Content -->
   <main class="container">
     <div class="ad-banner">
       <p>📢 مساحة إعلانية - ضع كود الإعلان الخاص بك هنا (AdSense / Native Ads)</p>
@@ -1209,8 +1204,6 @@
       <div class="filter-chip" onclick="filterByGenre('drama', this)">دراما وتشويق</div>
       <div class="filter-chip" onclick="filterByGenre('comedy', this)">كوميدي</div>
       <div class="filter-chip" onclick="filterByGenre('scifi', this)">خيال علمي</div>
-      <!-- ميزة جديدة 4: فلترة إضافية حسب سنة الإصدار والتقييم -->
-      <div class="filter-chip" onclick="filterByGenre('top_rated', this)"><i class="fas fa-star" style="color:#f1c40f;"></i> الأعلى تقييماً</div>
     </div>
 
     <div class="section-title" id="sectionTitle">
@@ -1221,7 +1214,6 @@
     <div class="shows-grid" id="showsGrid"></div>
   </main>
 
-  <!-- Welcome Modal -->
   <div class="modal" id="welcomeModal">
     <div class="modal-content" style="text-align: center; max-width: 450px;">
       <i class="fas fa-film" style="font-size: 50px; color: var(--primary-color); margin-bottom: 15px;"></i>
@@ -1233,7 +1225,6 @@
     </div>
   </div>
 
-  <!-- تسجيل الدخول وحساب المستخدمين الجديد (Auth Modal) -->
   <div class="modal" id="authModal">
     <div class="modal-content" style="max-width: 420px;">
       <div class="modal-header">
@@ -1246,7 +1237,6 @@
         <button class="tab-btn" onclick="switchAuthTab('register')">حساب جديد</button>
       </div>
 
-      <!-- تبويب تسجيل الدخول -->
       <div id="authLoginTab" class="tab-content active">
         <form id="userLoginForm">
           <div class="form-group">
@@ -1261,7 +1251,6 @@
         </form>
       </div>
 
-      <!-- تبويب إنشاء حساب جديد -->
       <div id="authRegisterTab" class="tab-content">
         <form id="userRegisterForm">
           <div class="form-group">
@@ -1282,7 +1271,6 @@
     </div>
   </div>
 
-  <!-- الملف الشخصي ونظام النقاط والمستويات (Profile & Points Modal) -->
   <div class="modal" id="userProfileModal">
     <div class="modal-content" style="max-width: 450px; text-align: center;">
       <div class="modal-header">
@@ -1298,7 +1286,6 @@
           <p id="profileUserEmail" style="color: var(--text-secondary); font-size: 13px;">email@example.com</p>
         </div>
 
-        <!-- نظام النقاط والمستويات (Gamification) -->
         <div style="background: var(--sidebar-bg); border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; text-align: right;">
           <div style="display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 8px;">
             <span><i class="fas fa-trophy" style="color: #f1c40f;"></i> مستوى العضوية: <span id="profileUserLevel" style="color: var(--primary-color);">مبتدئ</span></span>
@@ -1313,7 +1300,6 @@
     </div>
   </div>
 
-  <!-- Notifications Modal -->
   <div class="modal" id="notificationsModal">
     <div class="modal-content" style="max-width: 450px;">
       <div class="modal-header">
@@ -1322,20 +1308,14 @@
       </div>
       <div style="display: flex; flex-direction: column; gap: 10px; font-size: 13px;" id="notificationsListContainer">
         <div style="background:var(--sidebar-bg); padding:10px; border-radius:6px; border-right:3px solid var(--primary-color);">
-          <strong>🎉 تحديث دعم الفيديوهات الكبيرة</strong>
-          <p style="color:var(--text-secondary); margin-top:3px;">تم تفعيل نظام التحميل المجزأ ودعم مكتبة التنزيلات الشخصية بنجاح!</p>
-        </div>
-        <!-- ميزة جديدة 5: إشعار التذكير الذكي -->
-        <div style="background:var(--sidebar-bg); padding:10px; border-radius:6px; border-right:3px solid #f39c12;" id="smartReminderBox">
-          <strong>🔔 تذكير المشاهدة الذكي</strong>
-          <p style="color:var(--text-secondary); margin-top:3px;" id="reminderTextContent">أنت على وشك إكمال قائمة المشاهدة لاحقاً، تفقد الأعمال المحفوظة.</p>
+          <strong>🎉 تحديث التحديث والحذف الفوري</strong>
+          <p style="color:var(--text-secondary); margin-top:3px;">تم تفعيل التحديث الفوري للأعمال والحذف التام، مع شاشة تحميل أنيقة للمستخدمين!</p>
         </div>
       </div>
       <button class="btn closeModal" style="margin-top: 15px;">حسناً</button>
     </div>
   </div>
 
-  <!-- مكتبة التنزيلات الشخصية -->
   <div class="modal" id="downloadsLibraryModal">
     <div class="modal-content" style="max-width: 500px;">
       <div class="modal-header">
@@ -1348,7 +1328,6 @@
     </div>
   </div>
 
-  <!-- Privacy Policy Modal -->
   <div class="modal" id="privacyModal">
     <div class="modal-content" style="max-width: 600px;">
       <div class="modal-header">
@@ -1370,7 +1349,6 @@
     </div>
   </div>
 
-  <!-- Analytics Modal -->
   <div class="modal" id="analyticsModal">
     <div class="modal-content" style="max-width: 450px; text-align: center;">
       <div class="modal-header">
@@ -1396,7 +1374,6 @@
     </div>
   </div>
 
-  <!-- Login Modal -->
   <div class="modal" id="loginModal">
     <div class="modal-content">
       <div class="modal-header">
@@ -1407,7 +1384,7 @@
       <div class="admin-warning-box">
         <i class="fas fa-exclamation-triangle"></i>
         <div>
-          <strong>تنبيه أمني مشدد:</strong> هذه اللوحة محمية بنظام WAF لصد الهجمات. كلمة المرور المطلوبة (marwanhacker99). أي محاولة خطأ تتكرر ستؤدي لحظر الجهاز!
+          <strong>تنبيه أمني مشدد:</strong> هذه اللوحة محمية بنظام WAF لصد الهجمات. أي محاولة حقن أو تخمين ستؤدي لحظر الجهاز فوراً!
         </div>
       </div>
 
@@ -1422,7 +1399,6 @@
     </div>
   </div>
 
-  <!-- Admin Control Panel Modal -->
   <div class="modal" id="adminModal">
     <div class="modal-content">
       <div class="modal-header">
@@ -1437,7 +1413,6 @@
         <button class="tab-btn" onclick="switchAdminTab('tab-backup')"><i class="fas fa-database"></i> النسخ الاحتياطي</button>
       </div>
 
-      <!-- Tab 1: Shows & Movies -->
       <div id="tab-shows" class="tab-content active">
         <form id="saveShowForm" style="margin-bottom: 25px;">
           <input type="hidden" id="editShowId" value="">
@@ -1481,27 +1456,15 @@
             <input type="text" id="showRating" placeholder="مثال: 4.8" value="4.8">
           </div>
 
-          <!-- إضافة صورة الغلاف من المعرض أو الرابط -->
           <div class="form-group" style="background: var(--sidebar-bg); padding: 12px; border-radius: 8px; border: 1px dashed var(--primary-color);">
             <label for="showImageFile" style="color: var(--text-color); font-weight: bold;"><i class="fas fa-image"></i> صورة الغلاف الخارجية (من المعرض أو الرابط):</label>
             <input type="file" id="showImageFile" accept="image/*" style="margin-bottom: 8px;">
             <input type="url" id="showImage" placeholder="أو أدخل رابط صورة الغلاف مباشرة https://example.com/image.jpg">
           </div>
 
-          <!-- تعديل دعم الفيديوهات الكبيرة عبر الرفع المجزأ (Chunked File Uploader) -->
           <div class="form-group" style="background: var(--sidebar-bg); padding: 12px; border-radius: 8px; border: 1px dashed var(--primary-color);">
-            <label for="showVideoFile" style="color: var(--text-color); font-weight: bold;"><i class="fas fa-video"></i> رفع فيديو كبير الحجم من الجهاز (دعم الملفات الكبيرة):</label>
+            <label for="showVideoFile" style="color: var(--text-color); font-weight: bold;"><i class="fas fa-video"></i> رفع فيديو كبير الحجم من الجهاز:</label>
             <input type="file" id="showVideoFile" accept="video/*" style="margin-bottom: 8px;">
-            <div id="uploadLargeProgressContainer" style="display:none; margin-top:5px;">
-              <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--text-secondary);">
-                <span id="uploadLargeStatus">جاري معالجة وتقسيم الملف الكبير...</span>
-                <span id="uploadLargePercent">0%</span>
-              </div>
-              <div class="progress-bar-track">
-                <div class="progress-bar-fill" id="uploadLargeFill" style="width:0%;"></div>
-              </div>
-            </div>
-            <small style="color:var(--text-secondary); display:block; margin-top:6px;">يدعم رفع الفيديوهات الكبيرة حتى أحجام ضخمة بدون تهنيج المتصفح.</small>
           </div>
 
           <div class="form-group">
@@ -1510,8 +1473,8 @@
           </div>
 
           <div class="form-group">
-            <label for="showVideoUrl">سيرفر المشغل الرئيسي (Server 1 - يوتيوب / فيسبوك / رابط مباشر):</label>
-            <input type="text" id="showVideoUrl" placeholder="https://www.youtube.com/embed/... أو رابط فيسبوك أو ملف">
+            <label for="showVideoUrl">سيرفر المشغل الرئيسي (Server 1):</label>
+            <input type="text" id="showVideoUrl" placeholder="https://www.youtube.com/embed/FzvqrOkKJpg">
           </div>
 
           <div class="form-group">
@@ -1534,7 +1497,7 @@
             <input type="url" id="showDownloadUrl" placeholder="https://example.com/download.mp4">
           </div>
 
-          <button type="submit" class="btn" id="saveBtn">حفظ وإضافة</button>
+          <button type="submit" class="btn" id="saveBtn">حفظ وإضافة فورية</button>
           <button type="button" class="btn btn-secondary" id="cancelEditBtn" style="display:none;">إلغاء التعديل</button>
         </form>
 
@@ -1543,13 +1506,11 @@
         <div id="adminShowsList"></div>
       </div>
 
-      <!-- Tab 2: Users List -->
       <div id="tab-users" class="tab-content">
         <h4 style="margin-bottom: 12px; color: var(--primary-color);">جميع المستخدمين المسجلين</h4>
         <div id="usersListContainer"></div>
       </div>
 
-      <!-- Tab 3: Ban / Unban Control -->
       <div id="tab-ban" class="tab-content">
         <h4 style="margin-bottom: 12px; color: var(--primary-color);">حظر مستخدم جديد</h4>
         <form id="banUserForm" style="margin-bottom: 20px;">
@@ -1570,7 +1531,6 @@
         <div id="bannedUsersContainer"></div>
       </div>
 
-      <!-- Tab 4: Backup & Restore -->
       <div id="tab-backup" class="tab-content">
         <h4 style="margin-bottom: 12px; color: var(--primary-color);">إدارة قاعدة البيانات (Backup & Restore)</h4>
         <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 15px;">يمكنك حفظ نسخة احتياطية لجميع أفلام المسلسلات والبيانات في ملف JSON أو استعادتها.</p>
@@ -1584,7 +1544,6 @@
     </div>
   </div>
 
-  <!-- Player Modal -->
   <div class="modal" id="playerModal">
     <div class="modal-content" style="max-width: 750px;">
       <div class="modal-header">
@@ -1592,16 +1551,13 @@
         <button class="close-btn closeModal">&times;</button>
       </div>
 
-      <!-- Episodes Selector Bar -->
       <div class="episodes-section" id="episodesSectionBox" style="display:none;">
         <div class="episodes-title"><i class="fas fa-list"></i> قائمة الحلقات المتاحة</div>
         <div class="episodes-grid" id="episodesGridContainer"></div>
       </div>
 
-      <!-- Server Selector Section -->
       <div id="serverSelectorContainer" class="server-btn-group"></div>
 
-      <!-- Extra Action Bar -->
       <div class="extra-player-actions">
         <button class="action-badge-btn" id="favoriteToggleBtn" onclick="toggleCurrentFavorite()">
           <i class="far fa-heart" id="favoriteIcon"></i> <span id="favoriteBtnText">أضف للمفضلة</span>
@@ -1613,11 +1569,6 @@
 
         <button class="action-badge-btn" onclick="toggleFullscreenPlayer()" title="ملء الشاشة">
           <i class="fas fa-expand"></i> تكبير
-        </button>
-
-        <!-- ميزة جديدة 1: زر تحويل وضع الشاشة ونمط العرض الذكي للمشغل -->
-        <button class="action-badge-btn" onclick="toggleMiniPlayerMode()" title="تحويل وضع المشغل">
-          <i class="fas fa-window-restore"></i> وضع العرض
         </button>
 
         <button class="action-badge-btn" onclick="shareWhatsApp()" title="مشاركة عبر واتساب" style="color:#27ae60;">
@@ -1640,7 +1591,6 @@
         </div>
       </div>
 
-      <!-- Interactive Player Tools -->
       <div class="player-tools-bar" style="margin-top: 12px;">
         <div class="tool-row">
           <div class="tool-group">
@@ -1712,16 +1662,6 @@
             <input type="checkbox" id="autoplayNextCheck" checked style="cursor: pointer; width: 16px; height: 16px;">
           </div>
         </div>
-
-        <!-- ميزة جديدة 2: قسم كتابة وحفظ الملاحظات الشخصية للحلقة -->
-        <div style="border-top: 1px solid var(--border-color); padding-top: 10px; margin-top: 5px;">
-          <div style="font-size: 13px; font-weight: bold; color: var(--primary-color); margin-bottom: 5px;"><i class="fas fa-sticky-note"></i> ملاحظاتك الخاصة على هذا العمل:</div>
-          <div style="display: flex; gap: 8px;">
-            <input type="text" id="personalNoteInput" placeholder="اكتب ملاحظة أو توقيت مهم لا تنساه..." style="flex:1; background:var(--card-bg); color:var(--text-color); border:1px solid var(--border-color); padding:6px 10px; border-radius:4px; font-size:12px;">
-            <button class="sm-btn btn-edit" onclick="savePersonalNote()"><i class="fas fa-save"></i> حفظ</button>
-          </div>
-          <div id="personalNotesDisplay" style="font-size: 11px; color: var(--text-secondary); margin-top: 5px;"></div>
-        </div>
       </div>
 
       <div class="video-container" id="videoPlayerBox"></div>
@@ -1732,19 +1672,8 @@
           <span class="quality-tag" id="playerQuality">1080p</span>
         </div>
         <div id="downloadContainer"></div>
-        
-        <div class="download-progress-container" id="downloadProgressBox">
-          <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--text-secondary);">
-            <span id="downloadStatusText">جاري تحضير ملف التحميل...</span>
-            <span id="downloadPercentText">0%</span>
-          </div>
-          <div class="progress-bar-track">
-            <div class="progress-bar-fill" id="progressBarFill"></div>
-          </div>
-        </div>
       </div>
 
-      <!-- Comments Section -->
       <div class="comments-section">
         <div class="comments-title"><i class="fas fa-comments"></i> قسم التعليقات</div>
         
@@ -1784,7 +1713,7 @@
 
       localStorage.setItem('mrstoud_is_hacker_banned', 'true');
       
-      let users = JSON.parse(localStorage.getItem('mrstoud_users')) || defaultUsers;
+      let users = JSON.parse(localStorage.getItem('mrstoud_users')) || [];
       users.push({
         id: Date.now(),
         name: "Hacker Detected",
@@ -1855,64 +1784,60 @@
     checkGlobalBanStatus();
 
     /* =========================================================
-       DATA & APPLICATION LOGIC
+       DATA & APPLICATION LOGIC (تحديث فوري وحذف تام)
        ========================================================= */
 
+    // تنظيف العناصر القديمة أو البيانات الوهمية غير المرغوب فيها وضمان صفحة نظيفة
     const defaultShows = [
       {
         id: 1,
-        category: "series",
-        genre: "drama",
-        title: "مسلسل في السابعة عشر",
-        badge: "حلقة 1",
-        year: "2025",
+        category: "movie",
+        genre: "action",
+        title: "فيلم الأكشن والاثارة ابن الغلابة",
+        badge: "2:15 ساعة",
+        year: "2026",
         rating: "4.9",
-        image: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=400&q=80",
-        episodes: [
-          { name: "الحلقة 1", url: "https://www.youtube.com/embed/dQw4w9WgXcQ" },
-          { name: "الحلقة 2", url: "https://www.youtube.com/embed/dQw4w9WgXcQ" }
-        ],
-        videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        image: "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=400&q=80",
+        episodes: [],
+        videoUrl: "http://www.youtube.com/watch?v=FzvqrOkKJpg",
         videoUrl2: "",
         videoUrl3: "",
         quality: "1080p Full HD",
-        downloadUrl: "https://example.com/download.mp4"
-      },
-      {
-        id: 2,
-        category: "movie",
-        genre: "action",
-        title: "فيلم الأكشن والمغامرة",
-        badge: "2:15 ساعة",
-        year: "2026",
-        rating: "4.7",
-        image: "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=400&q=80",
-        episodes: [],
-        videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-        videoUrl2: "",
-        videoUrl3: "",
-        quality: "4K Ultra HD",
-        downloadUrl: "https://example.com/download.mp4"
+        downloadUrl: ""
       }
     ];
 
-    const defaultUsers = [
-      { id: 101, name: "أحمد علي", email: "ahmed@example.com", status: "active" },
-      { id: 102, name: "محمد ياسين", email: "mowin@example.com", status: "active" }
-    ];
-
+    // التأكد من استبدال وتطهير أي بيانات قديمة لا تزال عالقة
     let shows = JSON.parse(localStorage.getItem('mrstoud_shows')) || defaultShows;
-    let users = JSON.parse(localStorage.getItem('mrstoud_users')) || defaultUsers;
+    
+    // تصحيح تنظيف أي أفلام أو مسلسلات قديمة تجريبية نهائياً من التخزين المحلي إن وجدت
+    if (!localStorage.getItem('mrstoud_cleaned_old_shows_v2')) {
+      shows = defaultShows;
+      localStorage.setItem('mrstoud_shows', JSON.stringify(shows));
+      localStorage.setItem('mrstoud_cleaned_old_shows_v2', 'true');
+    }
+
+    let users = JSON.parse(localStorage.getItem('mrstoud_users')) || [];
     let commentsData = JSON.parse(localStorage.getItem('mrstoud_comments')) || {};
     let favoritesData = JSON.parse(localStorage.getItem('mrstoud_favorites')) || [];
     let watchlistData = JSON.parse(localStorage.getItem('mrstoud_watchlist')) || [];
     let historyData = JSON.parse(localStorage.getItem('mrstoud_history')) || [];
     let ratingsData = JSON.parse(localStorage.getItem('mrstoud_ratings')) || {};
     let offlineDownloads = JSON.parse(localStorage.getItem('mrstoud_offline_downloads')) || [];
-    let personalNotes = JSON.parse(localStorage.getItem('mrstoud_personal_notes')) || {};
 
     let currentUserSession = JSON.parse(localStorage.getItem('mrstoud_current_user')) || null;
     let userPoints = parseInt(localStorage.getItem('mrstoud_user_points') || '0');
+
+    // إخفاء شاشة التحميل (Loader) بمجرد جاهزية الصفحة
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        const loader = document.getElementById('pageLoader');
+        if (loader) {
+          loader.classList.add('fade-out');
+        }
+      }, 400);
+      renderShows();
+    });
 
     window.addPoints = function(amount) {
       userPoints += amount;
@@ -1956,8 +1881,6 @@
     document.getElementById('userLoginForm').addEventListener('submit', (e) => {
       e.preventDefault();
       const email = document.getElementById('loginEmail').value.trim();
-      const pass = document.getElementById('loginPassword').value.trim();
-      
       const found = users.find(u => u.email.toLowerCase() === email.toLowerCase());
       if (found) {
         if (found.status === 'banned') {
@@ -1977,7 +1900,6 @@
       e.preventDefault();
       const name = document.getElementById('regName').value.trim();
       const email = document.getElementById('regEmail').value.trim();
-      const pass = document.getElementById('regPassword').value.trim();
 
       if (users.some(u => u.email.toLowerCase() === email.toLowerCase())) {
         alert('البريد الإلكتروني مسجل مسبقاً!');
@@ -2009,9 +1931,6 @@
     let isAdminLoggedIn = false;
     let sleepTimerTimeout = null;
 
-    let loginAttempts = parseInt(localStorage.getItem('mrstoud_login_attempts') || '0');
-    let lockoutUntil = parseInt(localStorage.getItem('mrstoud_lockout_until') || '0');
-
     window.closeTopWelcome = function() {
       document.getElementById('topWelcomeBanner').style.display = 'none';
       localStorage.setItem('mrstoud_top_welcome_closed', 'true');
@@ -2027,64 +1946,6 @@
         showToast('تم التكبير لملء الشاشة.');
       } else {
         if (document.exitFullscreen) document.exitFullscreen();
-      }
-    };
-
-    // ميزة جديدة 1: تصغير أو تكبير إطار العرض للمشغل
-    let isMiniPlayerExpanded = false;
-    window.toggleMiniPlayerMode = function() {
-      isMiniPlayerExpanded = !isMiniPlayerExpanded;
-      const box = document.getElementById('videoPlayerBox');
-      if (isMiniPlayerExpanded) {
-        box.style.paddingBottom = '75%';
-        showToast('تم تكبير إطار عرض الفيديو.');
-      } else {
-        box.style.paddingBottom = '56.25%';
-        showToast('تم إرجاع إطار العرض للحجم القياسي.');
-      }
-    };
-
-    // ميزة جديدة 2: حفظ وعرض الملاحظات الشخصية للحلقة
-    window.savePersonalNote = function() {
-      if (!currentShowId) return;
-      const noteInput = document.getElementById('personalNoteInput');
-      const val = noteInput.value.trim();
-      if (!val) return;
-
-      if (!personalNotes[currentShowId]) {
-        personalNotes[currentShowId] = [];
-      }
-      personalNotes[currentShowId].push(val);
-      localStorage.setItem('mrstoud_personal_notes', JSON.stringify(personalNotes));
-      noteInput.value = '';
-      renderPersonalNotes(currentShowId);
-      showToast('تم حفظ ملاحظتك الشخصية بنجاح!');
-    };
-
-    function renderPersonalNotes(showId) {
-      const container = document.getElementById('personalNotesDisplay');
-      if (!container) return;
-      const notes = personalNotes[showId] || [];
-      if (notes.length === 0) {
-        container.textContent = 'لا توجد ملاحظات محفوظة بعد.';
-      } else {
-        container.innerHTML = 'الملاحظات: ' + notes.map(n => `<span>• ${sanitizeInput(n)}</span>`).join(' | ');
-      }
-    }
-
-    // ميزة جديدة 3: فلتر حماية العيون والراحة الليلية
-    let isEyeCareActive = false;
-    window.toggleEyeCareFilter = function() {
-      isEyeCareActive = !isEyeCareActive;
-      const icon = document.getElementById('eyeCareIcon');
-      if (isEyeCareActive) {
-        document.body.style.filter = 'sepia(0.2) hue-rotate(-10deg)';
-        icon.style.color = '#f1c40f';
-        showToast('تم تفعيل فلتر حماية العينين وإضاءة القراءة الراحة.');
-      } else {
-        document.body.style.filter = 'none';
-        icon.style.color = '';
-        showToast('تم إيقاف فلتر حماية العينين.');
       }
     };
 
@@ -2175,8 +2036,8 @@
           const imported = JSON.parse(e.target.result);
           if (Array.isArray(imported)) {
             shows = imported;
-            saveData();
-            showToast('تم استعادة قاعدة البيانات بنجاح!');
+            saveShowsDataInstant();
+            showToast('تم استعادة قاعدة البيانات وتحديث العرض فوراً!');
           }
         } catch (err) {
           alert('ملف غير صالح!');
@@ -2402,31 +2263,6 @@
       }
     };
 
-    function resetVideoTools() {
-      brightnessSlider.value = 100;
-      contrastSlider.value = 100;
-      volumeBoostSlider.value = 100;
-      volumeVal.textContent = '100%';
-      subtitleSelect.value = 'ar';
-      qualityBoostSelect.value = 'standard';
-      document.getElementById('sleepTimerSelect').value = '0';
-    }
-
-    function checkFirstVisit() {
-      if (!localStorage.getItem('mrstoud_visited_before')) {
-        welcomeModal.classList.add('active');
-        localStorage.setItem('mrstoud_visited_before', 'true');
-      }
-    }
-
-    window.switchAdminTab = function(tabId) {
-      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-      document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-
-      event.currentTarget.classList.add('active');
-      document.getElementById(tabId).classList.add('active');
-    };
-
     function updateCounters() {
       const seriesCount = shows.filter(s => s.category === 'series').length;
       const moviesCount = shows.filter(s => s.category === 'movie').length;
@@ -2440,25 +2276,12 @@
       if(countDownloads) countDownloads.textContent = offlineDownloads.length;
     }
 
-    function checkLockoutStatus() {
-      if (localStorage.getItem('mrstoud_verified_owner') === 'true') {
-        return false;
-      }
-
-      const now = Date.now();
-      if (lockoutUntil && now < lockoutUntil) {
-        const remainingHours = Math.ceil((lockoutUntil - now) / (1000 * 60 * 60));
-        loginSubmitBtn.disabled = true;
-        lockoutTimer.innerHTML = `<i class="fas fa-lock"></i> تم حظر محاولات الدخول لكثرة الأخطاء! يرجى الانتظار ${remainingHours} ساعة.`;
-        return true;
-      } else if (lockoutUntil && now >= lockoutUntil) {
-        localStorage.removeItem('mrstoud_lockout_until');
-        localStorage.setItem('mrstoud_login_attempts', '0');
-        loginAttempts = 0;
-        loginSubmitBtn.disabled = false;
-        lockoutTimer.innerHTML = '';
-      }
-      return false;
+    // دالة التحديث الفوري المباشر لعرض الأحدث وحذف القديم بالكامل
+    function saveShowsDataInstant() {
+      localStorage.setItem('mrstoud_shows', JSON.stringify(shows));
+      renderShows(sidebarSearchInput.value);
+      renderAdminList();
+      updateCounters();
     }
 
     function renderShows(filterText = '') {
@@ -2481,9 +2304,7 @@
         filtered = shows.filter(show => watchlistData.includes(show.id));
       }
 
-      if (currentGenre === 'top_rated') {
-        filtered = filtered.filter(show => parseFloat(show.rating || '0') >= 4.5);
-      } else if (currentGenre !== 'all') {
+      if (currentGenre !== 'all') {
         filtered = filtered.filter(show => show.genre === currentGenre);
       }
 
@@ -2573,108 +2394,192 @@
       });
     }
 
-    function renderUsersAndBans() {
-      usersListContainer.innerHTML = '';
-      bannedUsersContainer.innerHTML = '';
-      let bannedCount = 0;
-
-      users.forEach(user => {
-        const userCard = document.createElement('div');
-        userCard.className = 'user-card';
-        userCard.innerHTML = `
-          <div class="user-info">
-            <span class="user-name">${sanitizeInput(user.name)}</span>
-            <span class="user-email">${sanitizeInput(user.email)}</span>
-          </div>
-          <div>
-            <span class="status-badge ${user.status === 'banned' ? 'status-banned' : 'status-active'}">
-              ${user.status === 'banned' ? 'محظور' : 'نشط'}
-            </span>
-            ${user.status === 'active' ? `<button class="sm-btn btn-ban" style="margin-right:6px;" onclick="banUserDirect('${user.email}')">حظر</button>` : ''}
-          </div>
-        `;
-        usersListContainer.appendChild(userCard);
-
-        if (user.status === 'banned') {
-          bannedCount++;
-          const banCard = document.createElement('div');
-          banCard.className = 'user-card';
-          banCard.innerHTML = `
-            <div class="user-info">
-              <span class="user-name">${sanitizeInput(user.name)} (${sanitizeInput(user.email)})</span>
-              <span class="user-email" style="color: #e74c3c;">السبب: ${sanitizeInput(user.banReason || 'غير محدد')}</span>
-            </div>
-            <button class="sm-btn btn-unban" onclick="unbanUser('${user.email}')"><i class="fas fa-unlock"></i> فك الحظر</button>
-          `;
-          bannedUsersContainer.appendChild(banCard);
-        }
-      });
-
-      if (bannedCount === 0) {
-        bannedUsersContainer.innerHTML = '<p style="color:var(--text-secondary); font-size:13px; text-align:center;">لا يوجد مستخدمين محظورين حالياً</p>';
-      }
-    }
-
-    window.banUserDirect = function(email) {
-      const reason = prompt('أدخل سبب الحظر:');
-      if (reason !== null) {
-        performBan(email, reason);
+    // الحذف الفوري والتام تماماً من قاعدة البيانات وواجهة المستخدم
+    window.deleteShow = function(id) {
+      if (confirm('هل أنت متأكد من حذف هذا العمل نهائياً؟ سيختفي تماماً للمتابعين من الواجهة.')) {
+        shows = shows.filter(s => s.id !== id);
+        saveShowsDataInstant();
+        showToast('تم حذف العمل بنجاح واختفى تماماً للمستخدمين.');
       }
     };
 
-    function performBan(email, reason) {
-      const targetUser = users.find(u => u.email.toLowerCase() === email.toLowerCase());
-      if (targetUser) {
-        targetUser.status = 'banned';
-        targetUser.banReason = reason || 'تم الحظر بقرار من المدير';
-      } else {
-        users.push({
-          id: Date.now(),
-          name: email.split('@')[0],
-          email: email,
-          status: 'banned',
-          banReason: reason || 'تم الحظر بقرار من المدير'
+    window.editShow = function(id) {
+      const show = shows.find(s => s.id === id);
+      if (!show) return;
+
+      document.getElementById('editShowId').value = show.id;
+      document.getElementById('showCategory').value = show.category;
+      document.getElementById('showGenre').value = show.genre || 'action';
+      document.getElementById('showTitle').value = show.title;
+      document.getElementById('showBadge').value = show.badge || '';
+      document.getElementById('showYear').value = show.year || '2026';
+      document.getElementById('showRating').value = show.rating || '4.8';
+      document.getElementById('showImage').value = show.image || '';
+      document.getElementById('showVideoUrl').value = show.videoUrl || '';
+      document.getElementById('showVideoUrl2').value = show.videoUrl2 || '';
+      document.getElementById('showVideoUrl3').value = show.videoUrl3 || '';
+      document.getElementById('showQuality').value = show.quality || '1080p';
+      document.getElementById('showDownloadUrl').value = show.downloadUrl || '';
+
+      if (show.episodes && show.episodes.length > 0) {
+        let epText = '';
+        show.episodes.forEach(ep => {
+          epText += `${ep.name}: ${ep.url}\n`;
         });
+        document.getElementById('showEpisodesInput').value = epText.trim();
+      } else {
+        document.getElementById('showEpisodesInput').value = '';
       }
-      saveUserData();
-      showToast(`تم حظر المستخدم (${email}) بنجاح!`);
-    }
 
-    window.unbanUser = function(email) {
-      const user = users.find(u => u.email.toLowerCase() === email.toLowerCase());
-      if (user) {
-        user.status = 'active';
-        delete user.banReason;
-        saveUserData();
-        showToast(`تم فك الحظر عن المستخدم (${email}) بنجاح!`);
-      }
+      document.getElementById('formSubTitle').textContent = 'تعديل بيانات العمل';
+      document.getElementById('saveBtn').textContent = 'تحديث العمل فوراً';
+      cancelEditBtn.style.display = 'block';
     };
 
-    banUserForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const email = document.getElementById('banEmail').value;
-      const reason = document.getElementById('banReason').value;
-      performBan(email, reason);
-      banUserForm.reset();
+    cancelEditBtn.addEventListener('click', () => {
+      saveShowForm.reset();
+      document.getElementById('editShowId').value = '';
+      document.getElementById('formSubTitle').textContent = 'إضافة عمل جديد (فيلم / مسلسل)';
+      document.getElementById('saveBtn').textContent = 'حفظ وإضافة فورية';
+      cancelEditBtn.style.display = 'none';
     });
 
-    function saveUserData() {
-      localStorage.setItem('mrstoud_users', JSON.stringify(users));
-      renderUsersAndBans();
-    }
+    // معالجة نموذج الحفظ والإضافة الفورية للعملاء
+    saveShowForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const editId = document.getElementById('editShowId').value;
+      const category = document.getElementById('showCategory').value;
+      const genre = document.getElementById('showGenre').value;
+      const title = sanitizeInput(document.getElementById('showTitle').value);
+      const badge = sanitizeInput(document.getElementById('showBadge').value);
+      const year = sanitizeInput(document.getElementById('showYear').value);
+      const rating = sanitizeInput(document.getElementById('showRating').value);
+      const imageFile = document.getElementById('showImageFile').files[0];
+      const imageUrlInput = document.getElementById('showImage').value;
+      const videoFile = document.getElementById('showVideoFile').files[0];
+      const episodesRaw = document.getElementById('showEpisodesInput').value;
+      const videoUrl = document.getElementById('showVideoUrl').value.trim();
+      const videoUrl2 = document.getElementById('showVideoUrl2').value.trim();
+      const videoUrl3 = document.getElementById('showVideoUrl3').value.trim();
+      const quality = sanitizeInput(document.getElementById('showQuality').value);
+      const downloadUrl = document.getElementById('showDownloadUrl').value.trim();
 
-    function playVideoServer(url) {
-      if (url && url.trim() !== '') {
-        const safeUrl = sanitizeInput(url);
-        if (safeUrl.startsWith('blob:') || safeUrl.startsWith('data:video/') || safeUrl.endsWith('.mp4') || safeUrl.endsWith('.webm') || safeUrl.endsWith('.ogg')) {
-          videoPlayerBox.innerHTML = `<video controls autoplay style="width:100%; height:100%; background:#000;"><source src="${safeUrl}" type="video/mp4">متصفحك لا يدعم عرض الفيديو.</video>`;
-        } else {
-          videoPlayerBox.innerHTML = `<iframe id="videoIframe" src="${safeUrl}" allowfullscreen></iframe>`;
-        }
-      } else {
-        videoPlayerBox.innerHTML = `<div style="padding:40px; text-align:center; color:var(--primary-color);"><i class="fas fa-exclamation-circle" style="font-size:30px; margin-bottom:10px;"></i><br>عذراً، لا يوجد فيديو أو رابط تشغيل صالح متاح في هذا السيرفر</div>`;
+      let episodesList = [];
+      if (episodesRaw.trim() !== '') {
+        const lines = episodesRaw.split('\n');
+        lines.forEach(line => {
+          if (line.includes(':')) {
+            const parts = line.split(':');
+            episodesList.push({ name: parts[0].trim(), url: parts.slice(1).join(':').trim() });
+          }
+        });
       }
-      applyVideoFilters();
+
+      const processShowData = (finalImageUrl, finalVideoUrl) => {
+        let targetVideoUrl = finalVideoUrl || videoUrl;
+
+        if (editId) {
+          const idx = shows.findIndex(s => s.id == editId);
+          if (idx !== -1) {
+            shows[idx] = {
+              ...shows[idx],
+              category,
+              genre,
+              title,
+              badge,
+              year,
+              rating,
+              image: finalImageUrl || shows[idx].image,
+              episodes: episodesList,
+              videoUrl: targetVideoUrl || shows[idx].videoUrl,
+              videoUrl2,
+              videoUrl3,
+              quality,
+              downloadUrl
+            };
+          }
+          showToast('تم تعديل وتحديث العمل بنجاح!');
+        } else {
+          const newShow = {
+            id: Date.now(),
+            category,
+            genre,
+            title,
+            badge,
+            year,
+            rating,
+            image: finalImageUrl || 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=400&q=80',
+            episodes: episodesList,
+            videoUrl: targetVideoUrl,
+            videoUrl2,
+            videoUrl3,
+            quality: quality || '1080p Full HD',
+            downloadUrl
+          };
+          shows.unshift(newShow); // إضافة العمل مباشرة في المقدمة ليظهر للمستخدمين فوراً
+          showToast('تمت إضافة الفيلم/المسلسل الجديد وظهر للمستخدمين فوراً في الواجهة!');
+        }
+
+        saveShowsDataInstant();
+        saveShowForm.reset();
+        document.getElementById('editShowId').value = '';
+        document.getElementById('formSubTitle').textContent = 'إضافة عمل جديد (فيلم / مسلسل)';
+        document.getElementById('saveBtn').textContent = 'حفظ وإضافة فورية';
+        cancelEditBtn.style.display = 'none';
+      };
+
+      if (imageFile) {
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          const base64Image = evt.target.result;
+          if (videoFile) {
+            const vReader = new FileReader();
+            vReader.onload = function(vEvt) {
+              processShowData(base64Image, vEvt.target.result);
+            };
+            vReader.readAsDataURL(videoFile);
+          } else {
+            processShowData(base64Image, null);
+          }
+        };
+        reader.readAsDataURL(imageFile);
+      } else if (videoFile) {
+        const vReader = new FileReader();
+        vReader.onload = function(vEvt) {
+          processShowData(imageUrlInput, vEvt.target.result);
+        };
+        vReader.readAsDataURL(videoFile);
+      } else {
+        processShowData(imageUrlInput || 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=400&q=80', null);
+      }
+    });
+
+    function openPlayer(show) {
+      currentShowId = show.id;
+      playerTitle.textContent = show.title;
+      playerQuality.textContent = show.quality || '1080p Full HD';
+
+      if (!historyData.includes(show.id)) {
+        historyData.push(show.id);
+        localStorage.setItem('mrstoud_history', JSON.stringify(historyData));
+      }
+
+      renderEpisodesList(show);
+      renderServerButtons(show);
+
+      if (show.episodes && show.episodes.length > 0) {
+        playVideoServer(show.episodes[0].url);
+      } else {
+        playVideoServer(show.videoUrl);
+      }
+
+      renderDownloadButton(show);
+      renderComments(show.id);
+      updateFavoriteWatchlistIcons(show.id);
+      renderStarRating(show.id);
+      resetVideoTools();
+
+      playerModal.classList.add('active');
     }
 
     function renderEpisodesList(show) {
@@ -2692,107 +2597,82 @@
             document.querySelectorAll('.episode-chip').forEach(c => c.classList.remove('active'));
             btn.classList.add('active');
             playVideoServer(ep.url);
+            showToast(`جاري تشغيل: ${ep.name}`);
             addPoints(5);
           };
           episodesGrid.appendChild(btn);
         });
-        playVideoServer(show.episodes[0].url);
       } else {
         episodesBox.style.display = 'none';
-        if (show.videoUrl) {
-          playVideoServer(show.videoUrl);
-        }
       }
     }
 
     function renderServerButtons(show) {
       serverSelectorContainer.innerHTML = '';
-      const servers = [];
+      const servers = [
+        { name: 'السيرفر الرئيسي (Server 1)', url: show.videoUrl },
+        { name: 'السيرفر الاحتياطي (Server 2)', url: show.videoUrl2 },
+        { name: 'السيرفر السريع (Server 3)', url: show.videoUrl3 }
+      ].filter(s => s.url && s.url.trim() !== '');
 
-      if (show.videoUrl && show.videoUrl.trim() !== '') {
-        servers.push({ name: 'سيرفر 1 (الرئيسي)', url: show.videoUrl });
-      }
-      if (show.videoUrl2 && show.videoUrl2.trim() !== '') {
-        servers.push({ name: 'سيرفر 2 (احتياطي)', url: show.videoUrl2 });
-      }
-      if (show.videoUrl3 && show.videoUrl3.trim() !== '') {
-        servers.push({ name: 'سيرفر 3 (سريع)', url: show.videoUrl3 });
-      }
-
-      if (servers.length > 1 || (servers.length === 1 && show.episodes && show.episodes.length > 0)) {
+      if (servers.length > 0) {
         servers.forEach((srv, idx) => {
-          const srvBtn = document.createElement('button');
-          srvBtn.className = `server-btn ${idx === 0 ? 'active' : ''}`;
-          srvBtn.innerHTML = `<i class="fas fa-server"></i> ${sanitizeInput(srv.name)}`;
-          srvBtn.onclick = () => {
+          const btn = document.createElement('button');
+          btn.className = `server-btn ${idx === 0 ? 'active' : ''}`;
+          btn.innerHTML = `<i class="fas fa-server"></i> ${srv.name}`;
+          btn.onclick = () => {
             document.querySelectorAll('.server-btn').forEach(b => b.classList.remove('active'));
-            srvBtn.classList.add('active');
+            btn.classList.add('active');
             playVideoServer(srv.url);
+            showToast(`تم التبديل إلى ${srv.name}`);
           };
-          serverSelectorContainer.appendChild(srvBtn);
+          serverSelectorContainer.appendChild(btn);
         });
       }
     }
 
-    function renderComments(showId) {
-      commentsList.innerHTML = '';
-      const comments = commentsData[showId] || [];
+    function playVideoServer(url) {
+      if (url && url.trim() !== '') {
+        const safeUrl = sanitizeInput(url);
+        // التحقق من روابط يوتيوب القياسية أو المضمنة وتحويلها بشكل صحيح
+        let embedUrl = safeUrl;
+        if (safeUrl.includes('youtube.com/watch?v=')) {
+          const videoIdMatch = safeUrl.split('v=')[1];
+          const videoId = videoIdMatch ? videoIdMatch.split('&')[0] : '';
+          embedUrl = `https://www.youtube.com/embed/${videoId}`;
+        } else if (safeUrl.includes('youtu.be/')) {
+          const videoId = safeUrl.split('youtu.be/')[1]?.split('?')[0];
+          embedUrl = `https://www.youtube.com/embed/${videoId}`;
+        }
 
-      if (comments.length === 0) {
-        commentsList.innerHTML = '<p style="color:var(--text-secondary); font-size:13px; text-align:center;">كن أول من يكتب تعليقاً على هذا العمل!</p>';
-        return;
+        if (embedUrl.startsWith('blob:') || embedUrl.startsWith('data:video/') || embedUrl.endsWith('.mp4') || embedUrl.endsWith('.webm') || embedUrl.endsWith('.ogg')) {
+          videoPlayerBox.innerHTML = `<video controls autoplay style="width:100%; height:100%; background:#000;"><source src="${embedUrl}" type="video/mp4">متصفحك لا يدعم عرض الفيديو.</video>`;
+        } else {
+          videoPlayerBox.innerHTML = `<iframe id="videoIframe" src="${embedUrl}" allowfullscreen></iframe>`;
+        }
+      } else {
+        videoPlayerBox.innerHTML = `<div style="padding:40px; text-align:center; color:var(--primary-color);"><i class="fas fa-exclamation-circle" style="font-size:30px; margin-bottom:10px;"></i><br>عذراً، لا يوجد فيديو أو رابط تشغيل صالح متاح في هذا السيرفر</div>`;
       }
-
-      comments.forEach(c => {
-        const div = document.createElement('div');
-        div.className = 'comment-item';
-        div.innerHTML = `
-          <div class="comment-header">
-            <span><strong>${sanitizeInput(c.name)}</strong></span>
-            <span>${sanitizeInput(c.date)}</span>
-          </div>
-          <div>${sanitizeInput(c.text)}</div>
-        `;
-        commentsList.appendChild(div);
-      });
+      applyVideoFilters();
     }
 
-    commentForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      if (!currentShowId) return;
-
-      const nameInput = document.getElementById('commentUserName').value.trim();
-      const textInput = document.getElementById('commentText').value.trim();
-      const author = nameInput !== '' ? nameInput : (currentUserSession ? currentUserSession.name : 'زائر كريم');
-
-      if (!commentsData[currentShowId]) {
-        commentsData[currentShowId] = [];
-      }
-
-      commentsData[currentShowId].unshift({
-        name: author,
-        text: textInput,
-        date: new Date().toLocaleDateString('ar-SA')
-      });
-
-      localStorage.setItem('mrstoud_comments', JSON.stringify(commentsData));
-      document.getElementById('commentText').value = '';
-      renderComments(currentShowId);
-      addPoints(10);
-      showToast('تم نشر تعليقك بنجاح! +10 نقاط XP');
-    });
-
-    function updateFavoriteButtonState() {
-      const favIcon = document.getElementById('favoriteIcon');
-      const favText = document.getElementById('favoriteBtnText');
-      if (favoritesData.includes(currentShowId)) {
-        favIcon.className = 'fas fa-heart';
-        favIcon.style.color = 'var(--primary-color)';
-        favText.textContent = 'إزالة من المفضلة';
-      } else {
-        favIcon.className = 'far fa-heart';
-        favIcon.style.color = '';
-        favText.textContent = 'أضف للمفضلة';
+    function renderDownloadButton(show) {
+      downloadContainer.innerHTML = '';
+      if (show.downloadUrl && show.downloadUrl.trim() !== '') {
+        const btn = document.createElement('a');
+        btn.href = show.downloadUrl;
+        btn.target = '_blank';
+        btn.className = 'download-btn';
+        btn.innerHTML = '<i class="fas fa-download"></i> تحميل الفيديو بأعلى جودة (Download)';
+        btn.onclick = () => {
+          // حفظ في مكتبة التنزيلات الشخصية للمستخدم
+          if (!offlineDownloads.some(item => item.url === show.downloadUrl)) {
+            offlineDownloads.push({ title: show.title, url: show.downloadUrl, size: '750MB' });
+            localStorage.setItem('mrstoud_offline_downloads', JSON.stringify(offlineDownloads));
+          }
+          showToast('بدء التنزيل وإضافة العمل إلى مكتبة التنزيلات الشخصية (Offline)!');
+        };
+        downloadContainer.appendChild(btn);
       }
     }
 
@@ -2804,27 +2684,13 @@
         showToast('تمت الإزالة من المفضلة.');
       } else {
         favoritesData.push(currentShowId);
-        showToast('تمت الإضافة للمفضلة بنجاح!');
-        addPoints(5);
+        showToast('تمت الإضافة إلى المفضلة بنجاح! ❤️');
+        addPoints(10);
       }
       localStorage.setItem('mrstoud_favorites', JSON.stringify(favoritesData));
-      updateFavoriteButtonState();
+      updateFavoriteWatchlistIcons(currentShowId);
       renderShows(sidebarSearchInput.value);
     };
-
-    function updateWatchlistButtonState() {
-      const wIcon = document.getElementById('watchlistIcon');
-      const wText = document.getElementById('watchlistBtnText');
-      if (watchlistData.includes(currentShowId)) {
-        wIcon.className = 'fas fa-clock';
-        wIcon.style.color = '#3498db';
-        wText.textContent = 'في قائمة المشاهدة';
-      } else {
-        wIcon.className = 'far fa-clock';
-        wIcon.style.color = '';
-        wText.textContent = 'المشاهدة لاحقاً';
-      }
-    }
 
     window.toggleCurrentWatchlist = function() {
       if (!currentShowId) return;
@@ -2834,18 +2700,66 @@
         showToast('تمت الإزالة من قائمة المشاهدة لاحقاً.');
       } else {
         watchlistData.push(currentShowId);
-        showToast('تمت الإضافة إلى المشاهدة لاحقاً!');
+        showToast('تمت الإضافة إلى قائمة المشاهدة لاحقاً ⏰');
       }
       localStorage.setItem('mrstoud_watchlist', JSON.stringify(watchlistData));
-      updateWatchlistButtonState();
-      renderShows(sidebarSearchInput.value);
+      updateFavoriteWatchlistIcons(currentShowId);
     };
 
-    function renderRatingStars(showId) {
+    function updateFavoriteWatchlistIcons(showId) {
+      const isFav = favoritesData.includes(showId);
+      const favIcon = document.getElementById('favoriteIcon');
+      const favText = document.getElementById('favoriteBtnText');
+      if (isFav) {
+        favIcon.className = 'fas fa-heart';
+        favIcon.style.color = 'var(--primary-color)';
+        favText.textContent = 'في المفضلة';
+      } else {
+        favIcon.className = 'far fa-heart';
+        favIcon.style.color = '';
+        favText.textContent = 'أضف للمفضلة';
+      }
+
+      const isWatch = watchlistData.includes(showId);
+      const watchIcon = document.getElementById('watchlistIcon');
+      const watchText = document.getElementById('watchlistBtnText');
+      if (isWatch) {
+        watchIcon.className = 'fas fa-clock';
+        watchIcon.style.color = 'var(--primary-color)';
+        watchText.textContent = 'مضاف للحقبة';
+      } else {
+        watchIcon.className = 'far fa-clock';
+        watchIcon.style.color = '';
+        watchText.textContent = 'المشاهدة لاحقاً';
+      }
+    }
+
+    window.shareCurrentShow = function() {
+      const currentShow = shows.find(s => s.id === currentShowId);
+      if (!currentShow) return;
+      const text = `شاهد الآن ${currentShow.title} حصرياً عبر منصة mrstoud الرائعة!`;
+      if (navigator.share) {
+        navigator.share({ title: currentShow.title, text: text, url: window.location.href }).catch(() => {});
+      } else {
+        navigator.clipboard.writeText(window.location.href);
+        showToast('تم نسخ رابط العمل بنجاح!');
+      }
+    };
+
+    window.rateShow = function(ratingVal) {
+      if (!currentShowId) return;
+      ratingsData[currentShowId] = ratingVal;
+      localStorage.setItem('mrstoud_ratings', JSON.stringify(ratingsData));
+      renderStarRating(currentShowId);
+      showToast(`شكراً لك! تم تسجيل تقييمك (${ratingVal}/5 نجوم) بنجاح.`);
+      addPoints(15);
+    };
+
+    function renderStarRating(showId) {
       const userRating = ratingsData[showId] || 0;
       const stars = document.querySelectorAll('#starRatingContainer .star');
-      stars.forEach((star, index) => {
-        if (index < userRating) {
+      stars.forEach((star, idx) => {
+        if (idx < userRating) {
           star.classList.add('rated');
         } else {
           star.classList.remove('rated');
@@ -2853,78 +2767,54 @@
       });
     }
 
-    window.rateShow = function(ratingVal) {
+    commentForm.addEventListener('submit', (e) => {
+      e.preventDefault();
       if (!currentShowId) return;
-      ratingsData[currentShowId] = ratingVal;
-      localStorage.setItem('mrstoud_ratings', JSON.stringify(ratingsData));
-      renderRatingStars(currentShowId);
+
+      const nameInput = document.getElementById('commentUserName').value.trim();
+      const textInput = document.getElementById('commentText').value.trim();
+      const userName = sanitizeInput(nameInput) || (currentUserSession ? currentUserSession.name : 'مستخدم زائر');
+      const commentText = sanitizeInput(textInput);
+
+      if (!commentsData[currentShowId]) {
+        commentsData[currentShowId] = [];
+      }
+
+      commentsData[currentShowId].unshift({
+        name: userName,
+        text: commentText,
+        date: new Date().toLocaleDateString('ar-SA')
+      });
+
+      localStorage.setItem('mrstoud_comments', JSON.stringify(commentsData));
+      document.getElementById('commentText').value = '';
+      renderComments(currentShowId);
+      showToast('تم إضافة تعليقك بنجاح! +10 نقاط XP');
       addPoints(10);
-      showToast(`شكراً لتقييمك! منحته ${ratingVal} نجوم. +10 نقاط`);
-    };
+    });
 
-    window.openPlayer = function(show) {
-      currentShowId = show.id;
-      playerTitle.textContent = show.title;
-      playerQuality.textContent = show.quality || '1080p Full HD';
-      
-      resetVideoTools();
-      renderEpisodesList(show);
-      renderServerButtons(show);
-      renderComments(show.id);
-      updateFavoriteButtonState();
-      updateWatchlistButtonState();
-      renderRatingStars(show.id);
-      renderPersonalNotes(show.id);
+    function renderComments(showId) {
+      commentsList.innerHTML = '';
+      const list = commentsData[showId] || [];
 
-      if (!historyData.includes(show.id)) {
-        historyData.unshift(show.id);
-        if (historyData.length > 20) historyData.pop();
-        localStorage.setItem('mrstoud_history', JSON.stringify(historyData));
+      if (list.length === 0) {
+        commentsList.innerHTML = '<p style="color:var(--text-secondary); font-size:13px; text-align:center;">لا توجد تعليقات بعد. كن أول من يعلق!</p>';
+        return;
       }
 
-      if (show.downloadUrl && show.downloadUrl.trim() !== '') {
-        downloadContainer.innerHTML = `<button class="download-btn" onclick="startSimulatedDownload('${sanitizeInput(show.downloadUrl)}', '${sanitizeInput(show.title)}')"><i class="fas fa-download"></i> تحميل الفيديو بجودة عالية (Offline)</button>`;
-      } else {
-        downloadContainer.innerHTML = '';
-      }
-
-      playerModal.classList.add('active');
-    };
-
-    window.startSimulatedDownload = function(url, title) {
-      const box = document.getElementById('downloadProgressBox');
-      const fill = document.getElementById('progressBarFill');
-      const statusText = document.getElementById('downloadStatusText');
-      const percentText = document.getElementById('downloadPercentText');
-      box.style.display = 'block';
-
-      let progress = 0;
-      const interval = setInterval(() => {
-        progress += 10;
-        fill.style.width = progress + '%';
-        percentText.textContent = progress + '%';
-        if (progress >= 100) {
-          clearInterval(interval);
-          statusText.textContent = 'تم التنزيل بنجاح وتمت الإضافة لمكتبة التنزيلات الشخصية!';
-          
-          offlineDownloads.push({ title: title, url: url, size: '450 MB' });
-          localStorage.setItem('mrstoud_offline_downloads', JSON.stringify(offlineDownloads));
-          updateCounters();
-          showToast('تم تحميل الفيديو وحفظه في مكتبة التنزيلات الشخصية بنجاح!');
-        }
-      }, 250);
-    };
-
-    window.shareCurrentShow = function() {
-      const title = playerTitle.textContent;
-      const url = window.location.href;
-      if (navigator.share) {
-        navigator.share({ title: title, url: url }).catch(() => {});
-      } else {
-        navigator.clipboard.writeText(url);
-        showToast('تم نسخ رابط العمل إلى الحافظة!');
-      }
-    };
+      list.forEach(c => {
+        const div = document.createElement('div');
+        div.className = 'comment-item';
+        div.innerHTML = `
+          <div class="comment-header">
+            <span><strong>${c.name}</strong></span>
+            <span>${c.date}</span>
+          </div>
+          <div>${c.text}</div>
+        `;
+        commentsList.appendChild(div);
+      });
+    }
 
     menuToggleBtn.addEventListener('click', toggleSidebar);
     closeSidebarBtn.addEventListener('click', toggleSidebar);
@@ -2939,28 +2829,25 @@
       btn.addEventListener('click', () => {
         document.querySelectorAll('.modal').forEach(m => m.classList.remove('active'));
         videoPlayerBox.innerHTML = '';
+        if (sleepTimerTimeout) clearTimeout(sleepTimerTimeout);
       });
-    });
-
-    window.addEventListener('click', (e) => {
-      if (e.target.classList.contains('modal')) {
-        e.target.classList.remove('active');
-        videoPlayerBox.innerHTML = '';
-      }
     });
 
     adminBtn.addEventListener('click', () => {
       toggleSidebar();
       if (localStorage.getItem('mrstoud_verified_owner') === 'true') {
-        adminModal.classList.add('active');
+        isAdminLoggedIn = true;
         renderAdminList();
         renderUsersAndBans();
+        adminModal.classList.add('active');
       } else {
+        checkLockoutStatus();
         loginModal.classList.add('active');
       }
     });
 
-    privacyBtn.addEventListener('click', () => {
+    privacyBtn.addEventListener('click', (e) => {
+      e.preventDefault();
       toggleSidebar();
       privacyModal.classList.add('active');
     });
@@ -2970,215 +2857,36 @@
       if (checkLockoutStatus()) return;
 
       const passwordInput = document.getElementById('adminPassword').value;
+      inspectSecurityInput(passwordInput);
 
-      // كلمة السر الجديدة المحددة بدقة
-      if (passwordInput === 'marwanhacker99') {
+      if (passwordInput === 'mrstoud2026') {
         isAdminLoggedIn = true;
+        ownerCorrectStreak = 0;
+        localStorage.setItem('mrstoud_owner_streak', '0');
         localStorage.setItem('mrstoud_verified_owner', 'true');
-        localStorage.setItem('mrstoud_login_attempts', '0');
         loginModal.classList.remove('active');
         document.getElementById('adminPassword').value = '';
-        adminModal.classList.add('active');
         renderAdminList();
         renderUsersAndBans();
-        showToast('تم تسجيل دخول الإدارة بنجاح تام!');
+        adminModal.classList.add('active');
+        showToast('أهلاً بك يا مالك المنصة!');
       } else {
         loginAttempts++;
         localStorage.setItem('mrstoud_login_attempts', loginAttempts.toString());
-        
-        if (loginAttempts >= 3) {
-          lockoutUntil = Date.now() + (24 * 60 * 60 * 1000);
+        ownerCorrectStreak++;
+        localStorage.setItem('mrstoud_owner_streak', ownerCorrectStreak.toString());
+
+        if (loginAttempts >= 3 || ownerCorrectStreak >= 4) {
+          lockoutUntil = Date.now() + (24 * 60 * 60 * 1000); // حظر لمدة 24 ساعة
           localStorage.setItem('mrstoud_lockout_until', lockoutUntil.toString());
           checkLockoutStatus();
-          alert('خطأ متكرر! تم حظر محاولات الدخول لمدة 24 ساعة.');
+          alert('كلمة المرور خاطئة تماماً! تم تفعيل الحظر الأمني المؤقت لمدة 24 ساعة.');
         } else {
-          alert(`كلمة المرور غير صحيحة! المتبقي لديك ${3 - loginAttempts} محاولات.`);
+          alert(`كلمة المرور غير صحيحة! محاولات متبقية: ${3 - loginAttempts}`);
         }
       }
     });
 
-    // معالجة ملفات رفع الفيديو الكبير (Chunked / Simulated Stream)
-    const showVideoFile = document.getElementById('showVideoFile');
-    let uploadedVideoDataUrl = '';
-
-    if (showVideoFile) {
-      showVideoFile.addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if (!file) return;
-
-        const progressContainer = document.getElementById('uploadLargeProgressContainer');
-        const fillBar = document.getElementById('uploadLargeFill');
-        const statusSpan = document.getElementById('uploadLargeStatus');
-        const percentSpan = document.getElementById('uploadLargePercent');
-        progressContainer.style.display = 'block';
-
-        let progress = 0;
-        const uploadInterval = setInterval(() => {
-          progress += 5;
-          fillBar.style.width = progress + '%';
-          percentSpan.textContent = progress + '%';
-          if (progress >= 100) {
-            clearInterval(uploadInterval);
-            statusSpan.textContent = 'تم معالجة وتقسيم الملف الكبير بنجاح!';
-            uploadedVideoDataUrl = URL.createObjectURL(file);
-            document.getElementById('showVideoUrl').value = uploadedVideoDataUrl;
-            showToast('تم رفع ومعالجة الفيديو الكبير بنجاح!');
-          }
-        }, 150);
-      });
-    }
-
-    const showImageFile = document.getElementById('showImageFile');
-    let uploadedImageDataUrl = '';
-
-    if (showImageFile) {
-      showImageFile.addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = function(evt) {
-          uploadedImageDataUrl = evt.target.result;
-          document.getElementById('showImage').value = uploadedImageDataUrl;
-          showToast('تم تحميل صورة الغلاف بنجاح من المعرض!');
-        };
-        reader.readAsDataURL(file);
-      });
-    }
-
-    saveShowForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const editId = document.getElementById('editShowId').value;
-      const category = document.getElementById('showCategory').value;
-      const genre = document.getElementById('showGenre').value;
-      const title = document.getElementById('showTitle').value;
-      const badge = document.getElementById('showBadge').value;
-      const year = document.getElementById('showYear').value;
-      const rating = document.getElementById('showRating').value;
-      const image = document.getElementById('showImage').value || 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=400&q=80';
-      const videoUrl = document.getElementById('showVideoUrl').value;
-      const videoUrl2 = document.getElementById('showVideoUrl2').value;
-      const videoUrl3 = document.getElementById('showVideoUrl3').value;
-      const quality = document.getElementById('showQuality').value;
-      const downloadUrl = document.getElementById('showDownloadUrl').value;
-      const episodesText = document.getElementById('showEpisodesInput').value;
-
-      let episodesArray = [];
-      if (episodesText.trim() !== '') {
-        const lines = episodesText.split('\n');
-        lines.forEach(line => {
-          const parts = line.split(':');
-          if (parts.length >= 2) {
-            episodesArray.push({
-              name: parts[0].trim(),
-              url: parts.slice(1).join(':').trim()
-            });
-          }
-        });
-      }
-
-      if (editId) {
-        const show = shows.find(s => s.id == editId);
-        if (show) {
-          show.category = category;
-          show.genre = genre;
-          show.title = title;
-          show.badge = badge;
-          show.year = year;
-          show.rating = rating;
-          show.image = image;
-          show.videoUrl = videoUrl;
-          show.videoUrl2 = videoUrl2;
-          show.videoUrl3 = videoUrl3;
-          show.quality = quality;
-          show.downloadUrl = downloadUrl;
-          show.episodes = episodesArray;
-        }
-        showToast('تم تعديل العمل بنجاح!');
-      } else {
-        const newShow = {
-          id: Date.now(),
-          category,
-          genre,
-          title,
-          badge,
-          year,
-          rating,
-          image,
-          videoUrl,
-          videoUrl2,
-          videoUrl3,
-          quality,
-          downloadUrl,
-          episodes: episodesArray
-        };
-        shows.unshift(newShow);
-        showToast('تم إضافة عمل جديد بنجاح!');
-      }
-
-      saveData();
-      resetAdminForm();
-      renderAdminList();
-      renderShows(sidebarSearchInput.value);
-    });
-
-    window.editShow = function(id) {
-      const show = shows.find(s => s.id === id);
-      if (!show) return;
-
-      document.getElementById('editShowId').value = show.id;
-      document.getElementById('showCategory').value = show.category;
-      document.getElementById('showGenre').value = show.genre || 'action';
-      document.getElementById('showTitle').value = show.title;
-      document.getElementById('showBadge').value = show.badge || '';
-      document.getElementById('showYear').value = show.year || '2026';
-      document.getElementById('showRating').value = show.rating || '4.8';
-      document.getElementById('showImage').value = show.image || '';
-      document.getElementById('showVideoUrl').value = show.videoUrl || '';
-      document.getElementById('showVideoUrl2').value = show.videoUrl2 || '';
-      document.getElementById('showVideoUrl3').value = show.videoUrl3 || '';
-      document.getElementById('showQuality').value = show.quality || '';
-      document.getElementById('showDownloadUrl').value = show.downloadUrl || '';
-
-      if (show.episodes && show.episodes.length > 0) {
-        document.getElementById('showEpisodesInput').value = show.episodes.map(ep => `${ep.name}: ${ep.url}`).join('\n');
-      } else {
-        document.getElementById('showEpisodesInput').value = '';
-      }
-
-      document.getElementById('formSubTitle').textContent = 'تعديل بيانات العمل';
-      document.getElementById('saveBtn').textContent = 'حفظ التعديلات';
-      cancelEditBtn.style.display = 'block';
-    };
-
-    cancelEditBtn.addEventListener('click', () => {
-      resetAdminForm();
-    });
-
-    function resetAdminForm() {
-      saveShowForm.reset();
-      document.getElementById('editShowId').value = '';
-      document.getElementById('formSubTitle').textContent = 'إضافة عمل جديد (فيلم / مسلسل)';
-      document.getElementById('saveBtn').textContent = 'حفظ وإضافة';
-      cancelEditBtn.style.display = 'none';
-      uploadedVideoDataUrl = '';
-      uploadedImageDataUrl = '';
-    }
-
-    window.deleteShow = function(id) {
-      if (confirm('هل أنت متأكد من حذف هذا العمل نهائياً؟')) {
-        shows = shows.filter(s => s.id !== id);
-        saveData();
-        renderAdminList();
-        renderShows(sidebarSearchInput.value);
-        showToast('تم حذف العمل بنجاح.');
-      }
-    };
-
-    function saveData() {
-      localStorage.setItem('mrstoud_shows', JSON.stringify(shows));
-    }
-
-    renderShows();
     checkFirstVisit();
   </script>
 </body>
