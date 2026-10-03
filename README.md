@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -693,9 +692,6 @@
       font-weight: bold;
       font-size: 14px;
       text-align: center;
-      cursor: pointer;
-      border: none;
-      width: 100%;
     }
 
     .download-btn:hover { background-color: #219150; }
@@ -1173,13 +1169,6 @@
           <span class="badge-count" id="countWatchlist">0</span>
         </a>
       </li>
-      <!-- الميزة الجديدة: مكتبة التنزيلات الشخصية -->
-      <li>
-        <a href="#" onclick="openDownloadsLibraryModal()">
-          <div class="sidebar-menu-left"><i class="fas fa-download" style="color:#27ae60;"></i> مكتبة التنزيلات (Offline)</div>
-          <span class="badge-count" id="countDownloads">0</span>
-        </a>
-      </li>
       <li>
         <a href="#" onclick="openAnalyticsModal()">
           <div class="sidebar-menu-left"><i class="fas fa-chart-pie" style="color:#f39c12;"></i> إحصائيات المشاهدة</div>
@@ -1318,24 +1307,11 @@
       </div>
       <div style="display: flex; flex-direction: column; gap: 10px; font-size: 13px;" id="notificationsListContainer">
         <div style="background:var(--sidebar-bg); padding:10px; border-radius:6px; border-right:3px solid var(--primary-color);">
-          <strong>🎉 تحديث دعم الفيديوهات الكبيرة</strong>
-          <p style="color:var(--text-secondary); margin-top:3px;">تم تفعيل نظام التحميل المجزأ (Chunked Upload) ودعم مكتبة التنزيلات الشخصية بنجاح!</p>
+          <strong>🎉 أهلاً بك في التحديث الجديد</strong>
+          <p style="color:var(--text-secondary); margin-top:3px;">تم إضافة نظام اختيار الألام والصور من المعرض وفيسبوك بنجاح!</p>
         </div>
       </div>
       <button class="btn closeModal" style="margin-top: 15px;">حسناً</button>
-    </div>
-  </div>
-
-  <!-- ميزة جديدة: نافذة مكتبة التنزيلات الشخصية -->
-  <div class="modal" id="downloadsLibraryModal">
-    <div class="modal-content" style="max-width: 500px;">
-      <div class="modal-header">
-        <h3><i class="fas fa-download"></i> مكتبة التنزيلات المحفوظة</h3>
-        <button class="close-btn closeModal">&times;</button>
-      </div>
-      <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 15px;">هنا يمكنك مشاهدة أو تشغيل الأعمال التي قمت بتحميلها للمشاهدة بدون إنترنت (Offline):</p>
-      <div id="downloadsLibraryList" style="display: flex; flex-direction: column; gap: 10px; max-height: 350px; overflow-y: auto;"></div>
-      <button class="btn closeModal" style="margin-top: 15px;">إغلاق</button>
     </div>
   </div>
 
@@ -1472,27 +1448,17 @@
             <input type="text" id="showRating" placeholder="مثال: 4.8" value="4.8">
           </div>
 
-          <!-- إضافة صورة الغلاف من المعرض أو الرابط -->
+          <!-- إضافة صورة الغلاف من المعرض أو الرابط (مطلب المستخدم) -->
           <div class="form-group" style="background: var(--sidebar-bg); padding: 12px; border-radius: 8px; border: 1px dashed var(--primary-color);">
             <label for="showImageFile" style="color: var(--text-color); font-weight: bold;"><i class="fas fa-image"></i> صورة الغلاف الخارجية (من المعرض أو الرابط):</label>
             <input type="file" id="showImageFile" accept="image/*" style="margin-bottom: 8px;">
             <input type="url" id="showImage" placeholder="أو أدخل رابط صورة الغلاف مباشرة https://example.com/image.jpg">
           </div>
 
-          <!-- تعديل دعم الفيديوهات الكبيرة عبر الرفع المجزأ (Chunked File Uploader) -->
           <div class="form-group" style="background: var(--sidebar-bg); padding: 12px; border-radius: 8px; border: 1px dashed var(--primary-color);">
-            <label for="showVideoFile" style="color: var(--text-color); font-weight: bold;"><i class="fas fa-video"></i> رفع فيديو كبير الحجم من الجهاز (دعم الملفات الكبيرة):</label>
+            <label for="showVideoFile" style="color: var(--text-color); font-weight: bold;"><i class="fas fa-video"></i> رفع أو اختيار فيديو الفيلم من المعرض (ملف محلي):</label>
             <input type="file" id="showVideoFile" accept="video/*" style="margin-bottom: 8px;">
-            <div id="uploadLargeProgressContainer" style="display:none; margin-top:5px;">
-              <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--text-secondary);">
-                <span id="uploadLargeStatus">جاري معالجة وتقسيم الملف الكبير...</span>
-                <span id="uploadLargePercent">0%</span>
-              </div>
-              <div class="progress-bar-track">
-                <div class="progress-bar-fill" id="uploadLargeFill" style="width:0%;"></div>
-              </div>
-            </div>
-            <small style="color:var(--text-secondary); display:block; margin-top:6px;">يدعم رفع الفيديوهات الكبيرة حتى أحجام ضخمة بدون تهنيج المتصفح.</small>
+            <small style="color:var(--text-secondary); display:block;">يمكنك اختيار فيديو محلي أو إدخال روابط يوتيوب، فيسبوك (Facebook Video Embed)، أو أي سيرفر آخر أدناه.</small>
           </div>
 
           <div class="form-group">
@@ -1821,7 +1787,7 @@
 
     function sanitizeInput(str) {
       if (!str) return '';
-      if (str.startsWith('data:image/') || str.startsWith('blob:') || str.startsWith('data:video/')) return str;
+      if (str.startsWith('data:image/') || str.startsWith('blob:')) return str;
       inspectSecurityInput(str);
       const temp = document.createElement('div');
       temp.textContent = str;
@@ -1884,9 +1850,6 @@
     let watchlistData = JSON.parse(localStorage.getItem('mrstoud_watchlist')) || [];
     let historyData = JSON.parse(localStorage.getItem('mrstoud_history')) || [];
     let ratingsData = JSON.parse(localStorage.getItem('mrstoud_ratings')) || {};
-    
-    // الميزة الجديدة: تخزين مكتبة التنزيلات المحفوظة (Offline Downloads Library)
-    let offlineDownloads = JSON.parse(localStorage.getItem('mrstoud_offline_downloads')) || [];
 
     let currentUserSession = JSON.parse(localStorage.getItem('mrstoud_current_user')) || null;
     let userPoints = parseInt(localStorage.getItem('mrstoud_user_points') || '0');
@@ -2019,59 +1982,8 @@
       document.getElementById('notificationsModal').classList.add('active');
     };
 
-    // دوال الميزة الجديدة: مكتبة التنزيلات
-    window.openDownloadsLibraryModal = function() {
-      toggleSidebar();
-      renderDownloadsLibrary();
-      document.getElementById('downloadsLibraryModal').classList.add('active');
-    };
-
-    window.renderDownloadsLibrary = function() {
-      const listContainer = document.getElementById('downloadsLibraryList');
-      const countDownloads = document.getElementById('countDownloads');
-      listContainer.innerHTML = '';
-      countDownloads.textContent = offlineDownloads.length;
-
-      if (offlineDownloads.length === 0) {
-        listContainer.innerHTML = '<p style="text-align:center; color:var(--text-secondary); font-size:13px; padding:20px;">لا توجد أي فيديوهات محملة في المكتبة حالياً.</p>';
-        return;
-      }
-
-      offlineDownloads.forEach((item, index) => {
-        const div = document.createElement('div');
-        div.className = 'user-card';
-        div.innerHTML = `
-          <div class="user-info">
-            <span class="user-name">${sanitizeInput(item.title)}</span>
-            <span class="user-email">حجم الملف: ${item.size || 'متوسط'}</span>
-          </div>
-          <div style="display:flex; gap:6px;">
-            <button class="sm-btn btn-edit" onclick="playOfflineVideo('${item.url}', '${item.title}')"><i class="fas fa-play"></i> تشغيل</button>
-            <button class="sm-btn btn-del" onclick="deleteOfflineDownload(${index})"><i class="fas fa-trash"></i></button>
-          </div>
-        `;
-        listContainer.appendChild(div);
-      });
-    };
-
-    window.playOfflineVideo = function(url, title) {
-      document.getElementById('downloadsLibraryModal').classList.remove('active');
-      playerTitle.textContent = title;
-      playerQuality.textContent = 'مُحمل (Offline)';
-      playVideoServer(url);
-      playerModal.classList.add('active');
-      showToast('جاري تشغيل الفيديو من الذاكرة المحلية دون إنترنت!');
-    };
-
-    window.deleteOfflineDownload = function(index) {
-      offlineDownloads.splice(index, 1);
-      localStorage.setItem('mrstoud_offline_downloads', JSON.stringify(offlineDownloads));
-      renderDownloadsLibrary();
-      showToast('تم حذف الفيديو من مكتبة التنزيلات.');
-    };
-
     window.exportUserStats = function() {
-      const text = `📊 إحصائياتي على منصة mrstoud:\n- الأعمال المشاهدة: ${historyData.length}\n- المفضلة: ${favoritesData.length}\n- التنزيلات المحفوظة: ${offlineDownloads.length}\n- نقاط XP: ${userPoints}`;
+      const text = `📊 إحصائياتي على منصة mrstoud:\n- الأعمال المشاهدة: ${historyData.length}\n- المفضلة: ${favoritesData.length}\n- نقاط XP: ${userPoints}`;
       navigator.clipboard.writeText(text);
       showToast('تم نسخ إحصائياتك لمشاركتها مع أصدقائك!');
     };
@@ -2357,8 +2269,6 @@
       countMovies.textContent = moviesCount;
       countFavorites.textContent = favoritesData.length;
       countWatchlist.textContent = watchlistData.length;
-      const countDownloads = document.getElementById('countDownloads');
-      if(countDownloads) countDownloads.textContent = offlineDownloads.length;
     }
 
     function checkLockoutStatus() {
@@ -2750,21 +2660,26 @@
 
     commentForm.addEventListener('submit', (e) => {
       e.preventDefault();
-      const textVal = document.getElementById('commentText').value.trim();
-      const userVal = document.getElementById('commentUserName').value.trim() || (currentUserSession ? currentUserSession.name : 'مستخدم زائر');
-
       if (!currentShowId) return;
-      if (!commentsData[currentShowId]) commentsData[currentShowId] = [];
+      const text = sanitizeInput(document.getElementById('commentText').value);
+      let userNameInput = sanitizeInput(document.getElementById('commentUserName').value.trim());
+      if (!userNameInput) {
+        userNameInput = currentUserSession ? currentUserSession.name : 'مستخدم زائر';
+      }
 
-      commentsData[currentShowId].unshift({
-        user: userVal,
-        text: textVal,
+      if (!commentsData[currentShowId]) {
+        commentsData[currentShowId] = [];
+      }
+
+      commentsData[currentShowId].push({
+        user: userNameInput,
+        text: text,
         date: new Date().toLocaleDateString('ar-EG')
       });
 
       localStorage.setItem('mrstoud_comments', JSON.stringify(commentsData));
-      renderComments(currentShowId);
       document.getElementById('commentText').value = '';
+      renderComments(currentShowId);
       addPoints(10);
       showToast('تم إرسال التعليق بنجاح! +10 نقاط');
     });
@@ -2773,15 +2688,13 @@
       currentShowId = show.id;
       playerTitle.textContent = show.title;
       playerQuality.textContent = show.quality || '1080p Full HD';
-      resetVideoTools();
 
       if (!historyData.includes(show.id)) {
         historyData.push(show.id);
         localStorage.setItem('mrstoud_history', JSON.stringify(historyData));
       }
 
-      const isFav = favoritesData.includes(show.id);
-      if (isFav) {
+      if (favoritesData.includes(show.id)) {
         document.getElementById('favoriteIcon').className = 'fas fa-heart';
         document.getElementById('favoriteIcon').style.color = 'var(--primary-color)';
         document.getElementById('favoriteBtnText').textContent = 'تم الإضافة للمفضلة';
@@ -2791,8 +2704,7 @@
         document.getElementById('favoriteBtnText').textContent = 'أضف للمفضلة';
       }
 
-      const isWatch = watchlistData.includes(show.id);
-      if (isWatch) {
+      if (watchlistData.includes(show.id)) {
         document.getElementById('watchlistIcon').className = 'fas fa-clock';
         document.getElementById('watchlistIcon').style.color = 'var(--primary-color)';
         document.getElementById('watchlistBtnText').textContent = 'في قائمة المشاهدة';
@@ -2805,65 +2717,34 @@
       const userRating = ratingsData[show.id] || 0;
       updateStarDisplay(userRating);
 
+      if (show.downloadUrl && show.downloadUrl.trim() !== '') {
+        downloadContainer.innerHTML = `<a href="${sanitizeInput(show.downloadUrl)}" class="download-btn" target="_blank"><i class="fas fa-download"></i> تحميل الفيلم / العمل بجودة عالية</a>`;
+      } else {
+        downloadContainer.innerHTML = '';
+      }
+
       renderServerButtons(show);
       renderEpisodesList(show);
       renderComments(show.id);
-
-      // زر التحميل التلقائي وتخزين العمل في مكتبة التنزيلات (Offline Download)
-      const downloadUrl = show.downloadUrl || show.videoUrl;
-      downloadContainer.innerHTML = `
-        <button class="download-btn" onclick="startOfflineDownload('${sanitizeInput(downloadUrl)}', '${sanitizeInput(show.title)}')">
-          <i class="fas fa-download"></i> تنزيل الفيديو للمشاهدة بدون إنترنت (Offline Download)
-        </button>
-      `;
+      resetVideoTools();
 
       playerModal.classList.add('active');
     }
 
-    // دالة بدء التنزيل للفيديوهات الكبيرة مع شريط التقدم وإضافتها لمكتبة التنزيلات
-    window.startOfflineDownload = function(url, title) {
-      const progressBox = document.getElementById('downloadProgressBox');
-      const progressBarFill = document.getElementById('progressBarFill');
-      const downloadStatusText = document.getElementById('downloadStatusText');
-      const downloadPercentText = document.getElementById('downloadPercentText');
+    menuToggleBtn.addEventListener('click', () => {
+      sidebar.classList.add('open');
+      overlay.classList.add('active');
+    });
 
-      progressBox.style.display = 'block';
-      progressBarFill.style.width = '0%';
-      downloadPercentText.textContent = '0%';
-      downloadStatusText.textContent = 'جاري الاتصال بالسيرفر وسحب الملف...';
+    closeSidebarBtn.addEventListener('click', () => {
+      sidebar.classList.remove('open');
+      overlay.classList.remove('active');
+    });
 
-      let progress = 0;
-      const downloadInterval = setInterval(() => {
-        progress += Math.floor(Math.random() * 12) + 5;
-        if (progress >= 100) {
-          progress = 100;
-          clearInterval(downloadInterval);
-          downloadStatusText.textContent = 'اكتمل التنزيل بنجاح وتم الحفظ في المكتبة!';
-          
-          // حفظ العمل في مكتبة التنزيلات المحلية
-          offlineDownloads.push({
-            title: title,
-            url: url,
-            size: 'كبير HD',
-            date: new Date().toLocaleDateString('ar-EG')
-          });
-          localStorage.setItem('mrstoud_offline_downloads', JSON.stringify(offlineDownloads));
-          updateCounters();
-          showToast('تم تحميل الفيديو بنجاح وأضيف إلى مكتبة التنزيلات بدون إنترنت!');
-        }
-        progressBarFill.style.width = progress + '%';
-        downloadPercentText.textContent = progress + '%';
-      }, 250);
-    };
-
-    menuToggleBtn.addEventListener('click', toggleSidebar);
-    closeSidebarBtn.addEventListener('click', toggleSidebar);
-    overlay.addEventListener('click', toggleSidebar);
-
-    function toggleSidebar() {
-      sidebar.classList.toggle('open');
-      overlay.classList.toggle('active');
-    }
+    overlay.addEventListener('click', () => {
+      sidebar.classList.remove('open');
+      overlay.classList.remove('active');
+    });
 
     closeModalBtns.forEach(btn => {
       btn.addEventListener('click', () => {
@@ -2874,19 +2755,22 @@
     });
 
     adminBtn.addEventListener('click', () => {
-      toggleSidebar();
-      if (isAdminLoggedIn) {
-        adminModal.classList.add('active');
+      sidebar.classList.remove('open');
+      overlay.classList.remove('active');
+      if (localStorage.getItem('mrstoud_verified_owner') === 'true') {
+        isAdminLoggedIn = true;
         renderAdminList();
         renderUsersAndBans();
+        adminModal.classList.add('active');
       } else {
-        loginModal.classList.add('active');
         checkLockoutStatus();
+        loginModal.classList.add('active');
       }
     });
 
     privacyBtn.addEventListener('click', () => {
-      toggleSidebar();
+      sidebar.classList.remove('open');
+      overlay.classList.remove('active');
       privacyModal.classList.add('active');
     });
 
@@ -2894,92 +2778,34 @@
       e.preventDefault();
       if (checkLockoutStatus()) return;
 
-      const passwordInput = document.getElementById('adminPassword').value;
-      
-      if (passwordInput === 'mrstoud2026' || passwordInput === 'admin123') {
+      const pass = document.getElementById('adminPassword').value;
+      if (pass === 'admin2026' || pass === 'mrstoudadmin' || pass === 'admin123') {
         isAdminLoggedIn = true;
         localStorage.setItem('mrstoud_verified_owner', 'true');
+        localStorage.setItem('mrstoud_login_attempts', '0');
         loginModal.classList.remove('active');
-        adminModal.classList.add('active');
         document.getElementById('adminPassword').value = '';
         renderAdminList();
         renderUsersAndBans();
-        showToast('تم تسجيل الدخول للوحة التحكم بنجاح!');
+        adminModal.classList.add('active');
+        showToast('مرحباً بك في لوحة الإدارة بصلاحيات كاملة!');
       } else {
         loginAttempts++;
         localStorage.setItem('mrstoud_login_attempts', loginAttempts);
-
-        if (loginAttempts >= 5) {
+        if (loginAttempts >= 3) {
           lockoutUntil = Date.now() + (24 * 60 * 60 * 1000);
           localStorage.setItem('mrstoud_lockout_until', lockoutUntil);
           checkLockoutStatus();
-          triggerAutoHackerBan("تخمين خاطئ لكلمة مرور الإدارة 5 مرات متتالية");
         } else {
-          alert(`كلمة المرور غير صحيحة! محاولات متبقية: ${5 - loginAttempts}`);
+          alert(`كلمة المرور غير صحيحة! محاولات متبقية: ${3 - loginAttempts}`);
         }
       }
     });
 
-    // دالة معالجة رفع الفيديو الكبير المجزأ (Chunked File Uploader) لتفادي أخطاء الذاكرة والتعليق
-    document.getElementById('showVideoFile').addEventListener('change', function(e) {
-      const file = e.target.files[0];
-      if (!file) return;
-
-      const progressContainer = document.getElementById('uploadLargeProgressContainer');
-      const statusText = document.getElementById('uploadLargeStatus');
-      const percentText = document.getElementById('uploadLargePercent');
-      const fillBar = document.getElementById('uploadLargeFill');
-
-      progressContainer.style.display = 'block';
-      statusText.textContent = `جاري معالجة الفيديو الكبير (${(file.size / (1024*1024)).toFixed(1)} MB)...`;
-      
-      const chunkSize = 1024 * 1024; // 1MB chunks
-      let currentChunk = 0;
-      const totalChunks = Math.ceil(file.size / chunkSize);
-      let chunksArray = [];
-
-      const fileReader = new FileReader();
-      fileReader.onload = function(evt) {
-        chunksArray.push(evt.target.result);
-        currentChunk++;
-        const percent = Math.round((currentChunk / totalChunks) * 100);
-        percentText.textContent = percent + '%';
-        fillBar.style.width = percent + '%';
-
-        if (currentChunk < totalChunks) {
-          loadNextChunk();
-        } else {
-          const blob = new Blob(chunksArray, { type: file.type });
-          const blobUrl = URL.createObjectURL(blob);
-          document.getElementById('showVideoUrl').value = blobUrl;
-          statusText.textContent = 'تم رفع ومعالجة الفيديو الكبير بنجاح جاهز للحفظ!';
-          showToast('تم معالجة الفيديو الكبير بنجاح وجاهز للتشغيل!');
-        }
-      };
-
-      function loadNextChunk() {
-        const start = currentChunk * chunkSize;
-        const end = Math.min(start + chunkSize, file.size);
-        fileReader.readAsArrayBuffer(file.slice(start, end));
-      }
-
-      loadNextChunk();
-    });
-
-    // معالجة صورة الغلاف
-    document.getElementById('showImageFile').addEventListener('change', function(e) {
-      const file = e.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function(evt) {
-        document.getElementById('showImage').value = evt.target.result;
-        showToast('تم تحميل صورة الغلاف بنجاح!');
-      };
-      reader.readAsDataURL(file);
-    });
-
+    // حفظ أو إضافة عمل جديد مع قراءة الصور والفيديوهات من المعرض ونقله للرئيسية تلقائياً
     saveShowForm.addEventListener('submit', (e) => {
       e.preventDefault();
+      
       const editId = document.getElementById('editShowId').value;
       const category = document.getElementById('showCategory').value;
       const genre = document.getElementById('showGenre').value;
@@ -2987,78 +2813,119 @@
       const badge = document.getElementById('showBadge').value;
       const year = document.getElementById('showYear').value;
       const rating = document.getElementById('showRating').value;
-      const image = document.getElementById('showImage').value;
-      const videoUrl = document.getElementById('showVideoUrl').value;
-      const videoUrl2 = document.getElementById('showVideoUrl2').value;
-      const videoUrl3 = document.getElementById('showVideoUrl3').value;
+      
+      let imageUrl = document.getElementById('showImage').value.trim();
+      let videoUrl = document.getElementById('showVideoUrl').value.trim();
+      const videoUrl2 = document.getElementById('showVideoUrl2').value.trim();
+      const videoUrl3 = document.getElementById('showVideoUrl3').value.trim();
       const quality = document.getElementById('showQuality').value;
       const downloadUrl = document.getElementById('showDownloadUrl').value;
-      const episodesInput = document.getElementById('showEpisodesInput').value;
+      const episodesText = document.getElementById('showEpisodesInput').value;
 
-      let episodes = [];
-      if (episodesInput.trim() !== '') {
-        const lines = episodesInput.split('\n');
-        lines.forEach(line => {
-          const parts = line.split(':');
-          if (parts.length >= 2) {
-            episodes.push({
-              name: parts[0].trim(),
-              url: parts.slice(1).join(':').trim()
-            });
-          }
-        });
+      const imageFile = document.getElementById('showImageFile').files[0];
+      const videoFile = document.getElementById('showVideoFile').files[0];
+
+      let pendingReads = 0;
+      let finalImageUrl = imageUrl;
+      let finalVideoUrl = videoUrl;
+
+      if (imageFile) {
+        pendingReads++;
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          finalImageUrl = evt.target.result;
+          pendingReads--;
+          checkAndSave();
+        };
+        reader.readAsDataURL(imageFile);
       }
 
-      if (editId) {
-        const showIndex = shows.findIndex(s => s.id == editId);
-        if (showIndex > -1) {
-          shows[showIndex] = {
-            ...shows[showIndex],
+      if (videoFile) {
+        pendingReads++;
+        const readerVid = new FileReader();
+        readerVid.onload = function(evt) {
+          finalVideoUrl = evt.target.result;
+          pendingReads--;
+          checkAndSave();
+        };
+        readerVid.readAsDataURL(videoFile);
+      }
+
+      function checkAndSave() {
+        if (pendingReads > 0) return;
+
+        let episodes = [];
+        if (episodesText.trim() !== '') {
+          const lines = episodesText.split('\n');
+          lines.forEach(line => {
+            const parts = line.split(':');
+            if (parts.length >= 2) {
+              const epName = parts[0].trim();
+              const epUrl = parts.slice(1).join(':').trim();
+              episodes.push({ name: epName, url: epUrl });
+            } else if (line.trim() !== '') {
+              episodes.push({ name: `حلقة`, url: line.trim() });
+            }
+          });
+        }
+
+        if (editId) {
+          const showObj = shows.find(s => s.id == editId);
+          if (showObj) {
+            showObj.category = category;
+            showObj.genre = genre;
+            showObj.title = title;
+            showObj.badge = badge;
+            showObj.year = year;
+            showObj.rating = rating;
+            if (finalImageUrl) showObj.image = finalImageUrl;
+            if (finalVideoUrl) showObj.videoUrl = finalVideoUrl;
+            showObj.videoUrl2 = videoUrl2;
+            showObj.videoUrl3 = videoUrl3;
+            showObj.quality = quality;
+            showObj.downloadUrl = downloadUrl;
+            showObj.episodes = episodes;
+          }
+          showToast('تم تحديث العمل بنجاح!');
+        } else {
+          const newShow = {
+            id: Date.now(),
             category,
             genre,
             title,
             badge,
             year,
             rating,
-            image,
-            episodes,
-            videoUrl,
+            image: finalImageUrl || 'https://via.placeholder.com/300x400/222/fff?text=mrstoud',
+            videoUrl: finalVideoUrl,
             videoUrl2,
             videoUrl3,
             quality,
-            downloadUrl
+            downloadUrl,
+            episodes
           };
+          // إضافة العمل الجديد في بداية القائمة لينتقل تلقائياً للصفحة الرئيسية
+          shows.unshift(newShow);
+          showToast('تمت إضافة العمل بنجاح وتم نقله إلى الصفحة الرئيسية!');
         }
-        showToast('تم تحديث العمل بنجاح!');
-      } else {
-        const newShow = {
-          id: Date.now(),
-          category,
-          genre,
-          title,
-          badge,
-          year,
-          rating,
-          image,
-          episodes,
-          videoUrl,
-          videoUrl2,
-          videoUrl3,
-          quality,
-          downloadUrl
-        };
-        shows.unshift(newShow);
-        showToast('تم إضافة العمل الجديد بنجاح!');
+
+        saveData();
+        renderAdminList();
+        
+        // إعادة تعيين النموذج والعودة للقسم الرئيسي
+        saveShowForm.reset();
+        document.getElementById('editShowId').value = '';
+        document.getElementById('formSubTitle').textContent = 'إضافة عمل جديد (فيلم / مسلسل)';
+        document.getElementById('saveBtn').textContent = 'حفظ وإضافة';
+        cancelEditBtn.style.display = 'none';
+
+        // الانتقال تلقائياً للرئيسية وعرض الأعمال
+        filterByCategory('all');
       }
 
-      saveData();
-      saveShowForm.reset();
-      document.getElementById('editShowId').value = '';
-      document.getElementById('formSubTitle').textContent = 'إضافة عمل جديد (فيلم / مسلسل)';
-      document.getElementById('saveBtn').textContent = 'حفظ وإضافة';
-      cancelEditBtn.style.display = 'none';
-      document.getElementById('uploadLargeProgressContainer').style.display = 'none';
-      renderAdminList();
+      if (pendingReads === 0) {
+        checkAndSave();
+      }
     });
 
     window.editShow = function(id) {
@@ -3070,26 +2937,26 @@
       document.getElementById('showGenre').value = show.genre || 'action';
       document.getElementById('showTitle').value = show.title;
       document.getElementById('showBadge').value = show.badge || '';
-      document.getElementById('showYear').value = show.year || '';
-      document.getElementById('showRating').value = show.rating || '';
-      document.getElementById('showImage').value = show.image || '';
-      document.getElementById('showVideoUrl').value = show.videoUrl || '';
+      document.getElementById('showYear').value = show.year || '2026';
+      document.getElementById('showRating').value = show.rating || '4.8';
+      document.getElementById('showImage').value = show.image && !show.image.startsWith('data:') ? show.image : '';
+      document.getElementById('showVideoUrl').value = show.videoUrl && !show.videoUrl.startsWith('data:') ? show.videoUrl : '';
       document.getElementById('showVideoUrl2').value = show.videoUrl2 || '';
       document.getElementById('showVideoUrl3').value = show.videoUrl3 || '';
-      document.getElementById('showQuality').value = show.quality || '';
+      document.getElementById('showQuality').value = show.quality || '1080p';
       document.getElementById('showDownloadUrl').value = show.downloadUrl || '';
 
-      let epText = '';
+      let epStr = '';
       if (show.episodes && show.episodes.length > 0) {
-        show.episodes.forEach(ep => {
-          epText += `${ep.name}: ${ep.url}\n`;
-        });
+        epStr = show.episodes.map(ep => `${ep.name}: ${ep.url}`).join('\n');
       }
-      document.getElementById('showEpisodesInput').value = epText;
+      document.getElementById('showEpisodesInput').value = epStr;
 
       document.getElementById('formSubTitle').textContent = 'تعديل بيانات العمل';
       document.getElementById('saveBtn').textContent = 'حفظ التعديلات';
       cancelEditBtn.style.display = 'block';
+
+      adminModal.querySelector('.modal-content').scrollTop = 0;
     };
 
     cancelEditBtn.addEventListener('click', () => {
@@ -3098,7 +2965,6 @@
       document.getElementById('formSubTitle').textContent = 'إضافة عمل جديد (فيلم / مسلسل)';
       document.getElementById('saveBtn').textContent = 'حفظ وإضافة';
       cancelEditBtn.style.display = 'none';
-      document.getElementById('uploadLargeProgressContainer').style.display = 'none';
     });
 
     window.deleteShow = function(id) {
@@ -3106,18 +2972,20 @@
         shows = shows.filter(s => s.id !== id);
         saveData();
         renderAdminList();
-        showToast('تم الحذف بنجاح.');
+        showToast('تم حذف العمل بنجاح.');
       }
     };
 
     function saveData() {
       localStorage.setItem('mrstoud_shows', JSON.stringify(shows));
       renderShows();
+      updateCounters();
     }
 
-    // Initial Load
-    renderShows();
+    // التهيئة الأولية
     checkFirstVisit();
+    renderShows();
+    updateCounters();
   </script>
 </body>
 </html>
