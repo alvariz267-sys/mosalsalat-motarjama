@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Cinema Studio - منصة إنتاج الأفلام الكاملة</title>
+    <title>AI Cinema Studio - منصة إنتاج الأفلام والمسلسلات العالمية</title>
     <style>
         :root {
             --bg-color: #0f1016;
@@ -15,6 +15,7 @@
             --success-color: #10b981;
             --gold-color: #f59e0b;
             --blue-color: #3b82f6;
+            --purple-color: #a855f7;
         }
 
         * {
@@ -98,6 +99,22 @@
             grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
             gap: 15px;
             margin-bottom: 20px;
+        }
+
+        /* صندوق أنماط المسلسلات والأفلام الشهيرة */
+        .famous-style-box {
+            background: rgba(168, 85, 247, 0.08);
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .famous-style-title {
+            color: var(--purple-color);
+            font-size: 1rem;
+            font-weight: bold;
+            margin-bottom: 8px;
         }
 
         /* صندوق ميزة الذكاء الاصطناعي الذاتي للصور */
@@ -186,6 +203,7 @@
         }
 
         .spinner {
+            dir="ltr"
             border: 4px solid rgba(255, 255, 255, 0.1);
             width: 50px;
             height: 50px;
@@ -216,7 +234,7 @@
         }
 
         .movie-details {
-            color: var(--text-muted);
+            color: var.text-muted;
             font-size: 0.95rem;
             margin-bottom: 15px;
         }
@@ -233,15 +251,15 @@
 
     <header>
         <h1>AI Cinema Studio</h1>
-        <p>إنتاج كامل ودقيق لفيلم سينمائي دون اختصار وبأعلى واقعية مجاناً</p>
+        <p>انتاج أفلام ومسلسلات بنفس جودة وأجواء Teen Wolf والأعمال العالمية مجاناً</p>
     </header>
 
     <div class="container">
         <form id="movie-form">
             <!-- وصف الفيلم -->
             <div class="form-group">
-                <label for="prompt">اكتب وصف الفيلم والسيناريو الكامل (بدون حذف أي تفصيل):</label>
-                <textarea id="prompt" placeholder="اكتب القصة بالتفصيل الملائم، جميع الأحداث والمَشاهد ستُترجم بدقة كاملة بدون حذف أي جزء..." required></textarea>
+                <label for="prompt">اكتب وصف القصة والسيناريو الكامل (بدون حذف أي تفصيل):</label>
+                <textarea id="prompt" placeholder="مثال: مجموعة شباب يكتشفون أسراراً غامضة في غابة مظلمة ليلاً، مع إثارة وتشويق على طريقة المسلسلات العالمية..." required></textarea>
                 <span class="badge-info">✨ مدة الفيلم المُولّد: ساعتان و 30 دقيقة (مجاناً)</span>
             </div>
 
@@ -250,7 +268,7 @@
                 <div class="form-group">
                     <label for="movie-style">نمط ونوع الفيلم 🎨:</label>
                     <select id="movie-style">
-                        <option value="realistic">واقعي سينمائي (تصوير بشري Live-Action)</option>
+                        <option value="realistic">واقعي سينمائي (Live-Action)</option>
                         <option value="anime">أنمي / كرتون (Anime & 2D Art)</option>
                         <option value="3d-animation">رسوم ثلاثية الأبعاد (3D Animation)</option>
                         <option value="ai-art">نمط AI خيالي (Futuristic AI Gloss)</option>
@@ -267,7 +285,18 @@
                 </div>
             </div>
 
-            <!-- ميرة تحديد صور الشخصيات من الذكاء الاصطناعي -->
+            <!-- ميزة اختيار طابع المسلسلات الشهيرة (مثل Teen Wolf) -->
+            <div class="famous-style-box">
+                <div class="famous-style-title">🐺 طابع الإنتاج الفني (مثل Teen Wolf والأفلام الشهيرة):</div>
+                <select id="cinematic-universe">
+                    <option value="teen-wolf-style">أسلوب Teen Wolf (إثارة شبابية، غموض الغابات، إضاءة سينمائية ليلية درامية)</option>
+                    <option value="hollywood-blockbuster">هوليوود بلوكباستر (حركة وأكشن عالمي عالي التوتر)</option>
+                    <option value="netflix-mystery">نمط دراما نتفليكس (قصص غامضة وعميقة بطابع بصري احترافي)</option>
+                    <option value="standard">النمط السينمائي الكلاسيكي العام</option>
+                </select>
+            </div>
+
+            <!-- ميزة تحديد صور الشخصيات من الذكاء الاصطناعي -->
             <div class="ai-image-box">
                 <div class="ai-image-title">🤖 خيار الصور والشخصيات:</div>
                 <label class="checkbox-item" style="margin-bottom: 10px;">
@@ -307,13 +336,13 @@
         <!-- قسم التحميل -->
         <div id="loading-section">
             <div class="spinner"></div>
-            <p id="loading-text">جاري معالجة الوصف الكامل والتأكد من عدم حذف أي مشهد...</p>
+            <p id="loading-text">جاري معالجة الوصف الكامل وتطبيق معايير الأفلام العالمية...</p>
         </div>
 
         <!-- قسم النتيجة -->
         <div id="result-section">
-            <h3>🎉 تم إنتاج فيلمك بنجاح وبدقة كاملة!</h3>
-            <p class="movie-details" id="result-details">المدة: 02:30:00 | النمط: واقعي | الجودة: 4K | الالتزام بالوصف: 100%</p>
+            <h3>🎉 تم إنتاج فيلمك بنجاح ودقة كاملة!</h3>
+            <p class="movie-details" id="result-details">المدة: 02:30:00 | النمط: عالمي | الجودة: 4K | الالتزام بالوصف: 100%</p>
             <video controls>
                 <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
                 متصفحك لا يدعم عرض الفيديو.
@@ -342,19 +371,22 @@
 
             const styleSelect = document.getElementById('movie-style');
             const qualitySelect = document.getElementById('movie-quality');
+            const universeSelect = document.getElementById('cinematic-universe');
             const autoAiImage = document.getElementById('auto-ai-image').checked;
 
             const selectedStyleText = styleSelect.options[styleSelect.selectedIndex].text;
             const selectedQualityText = qualitySelect.options[qualitySelect.selectedIndex].text;
+            const selectedUniverseText = universeSelect.options[universeSelect.selectedIndex].text;
             
-            const imageSourceText = autoAiImage ? "تولد تلقائياً بالذكاء الاصطناعي" : "تمت مطابقتها من الملف المرفوع";
+            const imageSourceText = autoAiImage ? "توليد تلقائي بالذكاء الاصطناعي" : "تمت مطابقتها من الملف المرفوع";
 
             const loadingSteps = [
+                `تفعيل الطابع الفني والإخراجي: [${selectedUniverseText}]...`,
                 "جاري مسح الوصف كاملاً والتأكد من تضمين كافة المشاهد والشخصيات بدون حذف...",
                 `الشخصيات والصور: [${imageSourceText}]...`,
-                `تطبيق محرك الواقعية لمنع الأخطاء البصرية ونمط: [${selectedStyleText}]...`,
+                `تطبيق محرك الواقعية ومنع الأخطاء البصرية ونمط: [${selectedStyleText}]...`,
                 `رندر ومعالجة المشاهد بدقة high-fidelity (${selectedQualityText})...`,
-                "تجميع المشاهد وهندسة الصوت للفيلم (المدة الإجمالية: 02:30:00)...",
+                "تجميع المشاهد وهندسة الصوت السينمائي (المدة الإجمالية: 02:30:00)...",
                 "تم تجهيز الفيلم بنجاح!"
             ];
 
@@ -370,7 +402,7 @@
                     clearInterval(interval);
                     loadingSection.style.display = 'none';
                     
-                    resultDetails.textContent = `المدة: 02:30:00 | النمط: ${selectedStyleText} | الجودة: ${selectedQualityText} | صور الشخصيات: ${imageSourceText}`;
+                    resultDetails.textContent = `المدة: 02:30:00 | الطابع: ${selectedUniverseText} | الجودة: ${selectedQualityText} | الشخصيات: ${imageSourceText}`;
                     resultSection.style.display = 'block';
                 }
             }, 2000);
